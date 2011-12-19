@@ -1,10 +1,8 @@
-#! /usr/bin/env python2
+#! /usr/bin/env python
 
-import tvdb_api, tvdb_exceptions
+import thetvdb.api
 import fnmatch
 import sys
-
-db = tvdb_api.Tvdb()
 
 class EpisodeUrl():
     
@@ -83,6 +81,12 @@ class EpisodeUrlList(list):
         for eurl in self:
             ret.append(str(eurl))
         return ret
+
+    def find_by_eurl(self, _eurl):
+        for eurl in self:
+            if eurl.show == _eurl.show and eurl.season == _eurl.season and eurl.episode == _eurl.episode:
+                return eurl
+        return None
     
     def find_by_data(self, show, season, episode):
         for eurl in self:
@@ -119,13 +123,13 @@ class Manager():
         for show in shows:
             sys.stdout.write("[%s]: " %(show))
             sys.stdout.flush()
-            try: 
-                for season in db[show]:
-                    for episode in db[show][season]:
-                        if not self.seen.find_by_data(show, season, episode):
-                            self.pending.append(EpisodeUrl(show, season, episode))
+            try:
+                for episode_str in thetvdb.api.get_episodes(show):
+                    eurl = EpisodeUrl.parse(episode_str)
+                    if not self.seen.find_by_eurl(eurl):
+                        self.pending.append(eurl)
                 print("ok")
-            except tvdb_exceptions.tvdb_error as ex:
+            except Exception as ex:
                 print("fail (%s)"%(ex))
 
         
