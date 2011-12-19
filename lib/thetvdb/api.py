@@ -22,15 +22,14 @@ def get_show_id(name):
             return s.text
     return None
     
-
 def get_episodes(name):
-    l = []
     id = get_show_id(name)
     
     url = "http://thetvdb.com/api/%s/series/%s/all/en.xml" % (APIKEY, id)
     response = _get_url(url)
     root = ElementTree.XML(response)
     
+    l = []
     for e in list(root):
         if e.tag == "Episode":
             season = 0
