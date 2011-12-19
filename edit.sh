@@ -1,0 +1,2 @@
+emacs $(find -iname "*.py")
+
