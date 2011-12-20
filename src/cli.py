@@ -9,31 +9,44 @@ class Cmd(cmd.Cmd, manager.Manager):
         manager.Manager.__init__(self)
         cmd.Cmd.__init__(self)
         self.load()
-        
-    def _complete(self, text):
-        return self.db.filter(status = episode.STATUS_NONE).complete_text(text)
     
     def do_shows(self, line):
         print(self.db.list_shows())
+        
+    def complete_adquire(self, text, line, start_index, end_index):
+        subdb = self.db.filter(status = episode.STATUS_NONE)
+        return subdb.complete_text(text)
+        
+    def do_adquire(self, line):
+        subdb = self.db.filter_by_url_pattern(line if line else "*")
+        subdb = subdb.filter(status = episode.STATUS_NONE)
+        
+        for eurl in subdb:
+            eurl.update(status = episode.STATUS_ADQUIRED)
+            print(eurl.fmt_color())
+            
+    def complete_see(self, text, line, start_index, end_index):
+        subdb = self.db.filter(status = episode.STATUS_NONE) + self.db.filter(status = episode.STATUS_ADQUIRED)
+        return subdb.complete_text(text)
     
     def do_see(self, line):
-        eurls = self.db.filter_by_url_pattern(line)
+        subdb = self.db.filter_by_url_pattern(line if line else "*")
+        subdb = subdb.filter(status = episode.STATUS_NONE) + subdb.filter(status = episode.STATUS_ADQUIRED)
         
-        for eurl in eurls:
+        for eurl in subdb:
             eurl.update(status = episode.STATUS_SEEN)
             print(eurl.fmt_color())
-    
-    def complete_see(self, text, line, start_index, end_index):
-        return self._complete(text)
+            
+    def complete_ls(self, text, line, start_index, end_index):
+        subdb = self.db.filter(status = episode.STATUS_NONE) + self.db.filter(status = episode.STATUS_ADQUIRED)
+        return subdb.complete_text(text)
     
     def do_ls(self, line):
-        if not line: line = "*"
+        subdb = self.db.filter_by_url_pattern(line if line else "*")
+        subdb = subdb.filter(status = episode.STATUS_NONE) + subdb.filter(status = episode.STATUS_ADQUIRED)
         
-        for eurl in self.db.filter_by_url_pattern(line).filter(status=episode.STATUS_NONE):
+        for eurl in subdb:
             print(eurl.fmt_color())
-    
-    def complete_ls(self, text, line, start_index, end_index):
-        return self._complete(text)
     
     def do_save(self, line):
         self.save()
@@ -45,7 +58,7 @@ class Cmd(cmd.Cmd, manager.Manager):
     def do_exit(self, arg):
         sys.exit(0)
         
-    def do_quit(self, arg):
+    def do_quit(se21lf, arg):
         self.do_exit(arg)
         
     def do_EOF(self, arg):

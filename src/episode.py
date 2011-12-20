@@ -6,7 +6,7 @@ import fnmatch, datetime
 COLOR_NONE = "\033[31m"
 COLOR_ADQUIRED = "\033[33m"
 COLOR_SEEN = "\033[32m"
-COLOR_FUTURE = "\033[34m"
+COLOR_FUTURE = "\033[41m"
 COLOR_END = "\033[0m"
 #COLOR_FUTURE = "\033[33m"
 
@@ -18,7 +18,6 @@ class Url(dict):
     
     # expected: show, season, episode, name, date, status
     def __init__(self, **kwargs):
-        self["status"] = STATUS_NONE
         self.update(**kwargs)
         
     def update(self, **kwargs):
@@ -89,6 +88,12 @@ class DB(list):
             s = s+url.url() + "\n"
         return s
     
+    def __add__(self, other):
+        db = DB()
+        db.extend(self)
+        db.extend(other)
+        return db
+    
     def update(self, **kwargs):
         for url in self:
             url.update(**kwargs)
@@ -107,7 +112,6 @@ class DB(list):
                 db.append(url)
         return db
     
-    # usage result = filter(show="lost", season=1)
     def filter(self, **kwargs):
         db = DB()
         for item in self:

@@ -20,9 +20,10 @@ class Manager():
             try:
                 for d in thetvdb.api.get_episodes(show):
                     eurl = episode.Url(show=d["show"], season=d["season"], episode=d["episode"], name=d["name"], date=d["date"])
-                    self.db.append(eurl)
                     try: eurl.update(status = self.cfg.get_status()[eurl.url()])
-                    except KeyError: pass
+                    except KeyError: eurl.update(status = episode.STATUS_NONE)
+                    
+                    self.db.append(eurl)
                 print("ok")
             except Exception as ex:
                 print( "fail (%s)" % (ex) )
