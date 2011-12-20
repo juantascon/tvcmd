@@ -1,36 +1,43 @@
 #! /usr/bin/env python2
 
-import os, json
-
-CONFIG_DIR = os.environ["XDG_CONFIG_HOME"]+"/pyepisodes/"
-
-try: os.makedirs(CONFIG_DIR)
-except: pass
+import os, configparser
 
 class Config():
-    def __init__(self, path, data):
-        self.path = path
-        self.data = data
+    
+    DIR = os.environ["XDG_CONFIG_HOME"]+"/tvcmd/"
+    
+    def __init__(self):
+        self.main = configparser.ConfigParser()
+        self.status = configparser.ConfigParser()
         
-        try: f = open(self.path, "r+")
-        except: f = open(self.path, "w+")
+    def load(self):
+        self.main.read(self.DIR+"main.cfg")
+        self.status.read(self.DIR+"status.cfg")
         
-        f.close()
+        try: self.main.add_section("general")
+        except: pass
+        
+        try: self.status.add_section("status")
+        except: pass
+        
+    def get_status(self):
+        d = {}
+        for s in self.status.items("status"):
+            d[s[0]] = int(s[1])
+        return d
+        
+    def set_status(self, eurl, status):
+        self.status.set("status", eurl, str(status))
+        
+    def remove_status(self, eurl):
+        self.status.remove_option("status", eurl)
+    
+    def get_shows(self):
+        return [s.strip() for s in self.main.get("general", "shows", fallback="").split(',')]
     
     def save(self):
-        f = open(self.path, "w+")
-        try: f.write(str(json.dumps(self.data, indent=1, separators=(',',':'))+"\n"))
+        try: os.makedirs(self.CONFIG_DIR)
         except: pass
-        f.close()
-    
-    def load(self):
-        f = open(self.path, "r+")
-        try: self.data.extend(json.loads(f.read()))
-        except: pass
-        f.close()
-
-SHOWS = Config(CONFIG_DIR+"shows.db", [])
-SHOWS.load()
-
-SEEN = Config(CONFIG_DIR+"seen.db", [])
-SEEN.load()
+        
+        self.status.write(open(self.DIR+"status.cfg", "w"))
+        

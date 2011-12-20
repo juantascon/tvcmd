@@ -22,23 +22,7 @@ def get_show_id(show):
             return s.text
     return None
 
-def get_episode_info(show, season, episode):
-    id = get_show_id(show)
-    
-    url = "http://thetvdb.com/api/%s/series/%s/default/%d/%d/en.xml" % (APIKEY, id, season, episode)
-    response = _get_url(url)
-    root = ElementTree.XML(response)
-    
-    info = {}
-    for e in list(list(root)[0]):
-        if e.tag == "FirstAired":
-            info["firstaired"] = e.text
-        if e.tag == "EpisodeName":
-            info["episodename"] = e.text
-    
-    return info
-    
-def get_episodes_list(show):
+def get_episodes(show):
     id = get_show_id(show)
     
     url = "http://thetvdb.com/api/%s/series/%s/all/en.xml" % (APIKEY, id)
@@ -48,17 +32,19 @@ def get_episodes_list(show):
     l = []
     for e in list(root):
         if e.tag == "Episode":
-            season = 0
-            episode = 0
+            d = { "show": show, "season": 0, "episode": 0, "name": "", "date": "" }
+            
             for info in list(e):
                 if info.tag == "SeasonNumber":
-                    season = int(info.text)
-                if info.tag == "EpisodeNumber":
-                    episode = int(info.text)
-            l.append("%s.s%02de%02d" %(show, season, episode))
-
+                    d["season"] = int(info.text)
+                elif info.tag == "EpisodeNumber":
+                    d["episode"] = int(info.text)
+                elif info.tag == "FirstAired":
+                    d["date"] = info.text
+                elif info.tag == "EpisodeName":
+                    d["name"] = info.text
+                    
+            l.append(d)
+                
     return l
-
-if __name__ == "__main__":
-    print(get_episode_info("lost", 1, 2))
     
