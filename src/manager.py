@@ -16,7 +16,7 @@ class Manager():
             sys.stdout.write("[%s]: " %(show))
             sys.stdout.flush()
             try:
-                for episode_str in thetvdb.api.get_episodes(show):
+                for episode_str in thetvdb.api.get_episodes_list(show):
                     eurl = episode.Url.parse(episode_str)
                     if not self.seen.find_by_url(eurl):
                         self.pending.append(eurl)

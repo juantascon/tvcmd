@@ -16,10 +16,12 @@ class Url():
         self.episode = episode
         
     def fmt(self):
-        try: name = db[self.show][self.season][self.episode]["episodename"]
+        info = thetvdb.api.get_episode_info(self.show, self.season, self.episode)
+        
+        try: name = info["episodename"]
         except: name = "N/A"
         
-        try: date = db[self.show][self.season][self.episode]["firstaired"]
+        try: date = info["firstaired"]
         except: date = "N/A"
         
         return "%s : [ %s ] [ %s ]" % (str(self), date, name)
