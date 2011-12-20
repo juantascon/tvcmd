@@ -7,7 +7,7 @@ sys.path.insert(0, os.path.abspath(os.path.dirname(__file__))+"/src/")
 
 def main(argv):
     import cli
-    cli.EpisodesCmd().cmdloop()
+    cli.Cmd().cmdloop()
     
 if __name__ == "__main__":
     sys.exit(main(sys.argv))

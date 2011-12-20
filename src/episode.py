@@ -1,10 +1,12 @@
 #! /usr/bin/env python
 
 import thetvdb.api
-import fnmatch
+import fnmatch, datetime
 
-COLOR_PENDING = "\033[31m"
+COLOR_NONE = "\033[31m"
+COLOR_ADQUIRED = "\033[33m"
 COLOR_SEEN = "\033[32m"
+COLOR_FUTURE = "\033[34m"
 COLOR_END = "\033[0m"
 #COLOR_FUTURE = "\033[33m"
 
@@ -12,23 +14,34 @@ STATUS_NONE = 0
 STATUS_ADQUIRED = 1
 STATUS_SEEN = 2
 
-class Url(dict):    
+class Url(dict):
     
     # expected: show, season, episode, name, date, status
     def __init__(self, **kwargs):
         self["status"] = STATUS_NONE
-        for key,value in kwargs.items():
-            self[key] = value
+        self.update(**kwargs)
         
     def update(self, **kwargs):
         for key,value in kwargs.items():
             self[key] = value
     
     def fmt(self):
-        return "%s : [ %s ] [ %s ]" % (self.url(), self["date"], self["name"])
+        return "%s : [ %s ] [ %s ]" % (self.url(), str(self["date"]), self["name"])
         
     def fmt_color(self):
-        return (COLOR_SEEN if self["status"] == STATUS_SEEN else COLOR_PENDING) + self.fmt() + COLOR_END
+        color = COLOR_NONE
+        if self["status"] == STATUS_ADQUIRED:
+            color = COLOR_ADQUIRED
+        if self["status"] == STATUS_SEEN:
+            color = COLOR_SEEN
+            
+        try:
+            if self["date"] > datetime.date.today():
+                color = COLOR_FUTURE
+        except: color = COLOR_FUTURE
+
+        
+        return color + self.fmt() + COLOR_END
     
     def fmt_episode(self):
         try: return ( "e%02d" %(self["episode"]) )
@@ -69,7 +82,7 @@ class Url(dict):
         return url
     
 class DB(list):
-
+    
     def __repr__(self):
         s = ""
         for url in self:
@@ -78,7 +91,7 @@ class DB(list):
     
     def update(self, **kwargs):
         for url in self:
-            url.update(kwargs)
+            url.update(**kwargs)
     
     def filter_by_url_pattern(self, pattern):
         db = DB()

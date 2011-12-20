@@ -3,18 +3,18 @@
 import readline, cmd, sys
 import episode, manager
 
-class EpisodesCmd(cmd.Cmd, manager.Manager):
+class Cmd(cmd.Cmd, manager.Manager):
 
     def __init__(self):
         manager.Manager.__init__(self)
         cmd.Cmd.__init__(self)
         self.load()
         
-    def do_shows(self, line):
-        print(self.db.list_shows())
-    
     def _complete(self, text):
         return self.db.filter(status = episode.STATUS_NONE).complete_text(text)
+    
+    def do_shows(self, line):
+        print(self.db.list_shows())
     
     def do_see(self, line):
         eurls = self.db.filter_by_url_pattern(line)
@@ -27,8 +27,7 @@ class EpisodesCmd(cmd.Cmd, manager.Manager):
         return self._complete(text)
     
     def do_ls(self, line):
-        if not line:
-            line = "*"
+        if not line: line = "*"
         
         for eurl in self.db.filter_by_url_pattern(line).filter(status=episode.STATUS_NONE):
             print(eurl.fmt_color())

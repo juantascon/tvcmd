@@ -2,6 +2,7 @@
 
 import httplib2
 import xml.etree.cElementTree as ElementTree
+import datetime
 
 APIKEY = "FD9D34DB64F25A09"
 
@@ -32,7 +33,7 @@ def get_episodes(show):
     l = []
     for e in list(root):
         if e.tag == "Episode":
-            d = { "show": show, "season": 0, "episode": 0, "name": "", "date": "" }
+            d = { "show": show, "season": None, "episode": None, "name": "", "date": None }
             
             for info in list(e):
                 if info.tag == "SeasonNumber":
@@ -40,7 +41,8 @@ def get_episodes(show):
                 elif info.tag == "EpisodeNumber":
                     d["episode"] = int(info.text)
                 elif info.tag == "FirstAired":
-                    d["date"] = info.text
+                    try: d["date"] = datetime.date(int(info.text[0:4]), int(info.text[5:7]), int(info.text[8:10]))
+                    except: d["date"] = None
                 elif info.tag == "EpisodeName":
                     d["name"] = info.text
                     
