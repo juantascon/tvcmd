@@ -3,13 +3,6 @@
 import thetvdb.api
 import fnmatch, datetime
 
-COLOR_NONE = "\033[31m"
-COLOR_ADQUIRED = "\033[33m"
-COLOR_SEEN = "\033[32m"
-COLOR_FUTURE = "\033[41m"
-COLOR_END = "\033[0m"
-#COLOR_FUTURE = "\033[33m"
-
 STATUS_NONE = 0
 STATUS_ADQUIRED = 1
 STATUS_SEEN = 2
@@ -28,6 +21,13 @@ class Url(dict):
         return "%s : [ %s ] [ %s ]" % (self.url(), str(self["date"]), self["name"])
         
     def fmt_color(self):
+        COLOR_NONE = "\033[31m"
+        COLOR_ADQUIRED = "\033[33m"
+        COLOR_SEEN = "\033[32m"
+        #COLOR_FUTURE = "\033[41m"
+        COLOR_FUTURE = "\033[30m"
+        COLOR_END = "\033[0m"
+        
         color = COLOR_NONE
         if self["status"] == STATUS_ADQUIRED:
             color = COLOR_ADQUIRED
@@ -38,7 +38,6 @@ class Url(dict):
             if self["date"] > datetime.date.today():
                 color = COLOR_FUTURE
         except: color = COLOR_FUTURE
-
         
         return color + self.fmt() + COLOR_END
     

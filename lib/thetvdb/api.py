@@ -33,7 +33,7 @@ def get_episodes(show):
     l = []
     for e in list(root):
         if e.tag == "Episode":
-            d = { "show": show, "season": None, "episode": None, "name": "", "date": None }
+            d = { "show": show, "season": None, "episode": None, "name": "", "date": datetime.date.max }
             
             for info in list(e):
                 if info.tag == "SeasonNumber":
@@ -42,7 +42,7 @@ def get_episodes(show):
                     d["episode"] = int(info.text)
                 elif info.tag == "FirstAired":
                     try: d["date"] = datetime.date(int(info.text[0:4]), int(info.text[5:7]), int(info.text[8:10]))
-                    except: d["date"] = None
+                    except: pass
                 elif info.tag == "EpisodeName":
                     d["name"] = info.text
                     

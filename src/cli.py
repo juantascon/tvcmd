@@ -44,6 +44,7 @@ class Cmd(cmd.Cmd, manager.Manager):
     def do_ls(self, line):
         subdb = self.db.filter_by_url_pattern(line if line else "*")
         subdb = subdb.filter(status = episode.STATUS_NONE) + subdb.filter(status = episode.STATUS_ADQUIRED)
+        subdb.sort(key=lambda url: url["date"], reverse = True)
         
         for eurl in subdb:
             print(eurl.fmt_color())
