@@ -8,17 +8,20 @@ class Cmd(cmd.Cmd, manager.Manager):
     def __init__(self):
         manager.Manager.__init__(self)
         cmd.Cmd.__init__(self)
-        self.load()
+        
+    def load(self):
+        manager.Manager.load(self)
     
     def do_shows(self, line):
         print(self.db.list_shows())
-        
+    
     def complete_adquire(self, text, line, start_index, end_index):
         subdb = self.db.filter(lambda url: url["status"] in [episode.STATUS_NONE])
         return subdb.complete_text(text)
         
     def do_adquire(self, line):
-        subdb = self.db.filter(lambda url: url.match(line or "*") and url["status"] in [episode.STATUS_NONE])
+        subdb = self.db.filter(lambda url: url.match(line) and url["status"] in [episode.STATUS_NONE])
+        print(subdb)
         
         for eurl in subdb:
             eurl.update(status = episode.STATUS_ADQUIRED)
@@ -29,7 +32,7 @@ class Cmd(cmd.Cmd, manager.Manager):
         return subdb.complete_text(text)
     
     def do_see(self, line):
-        subdb = self.db.filter(lambda url: url.match(line or "*") and url["status"] in [episode.STATUS_NONE, episode.STATUS_ADQUIRED])
+        subdb = self.db.filter(lambda url: url.match(line) and url["status"] in [episode.STATUS_NONE, episode.STATUS_ADQUIRED])
         
         for eurl in subdb:
             eurl.update(status = episode.STATUS_SEEN)
@@ -50,22 +53,23 @@ class Cmd(cmd.Cmd, manager.Manager):
         self.save()
     
     ## Basic commands:
+    
     def emptyline(self):
         pass
     
     def do_exit(self, arg):
-        sys.exit(0)
+        return True
         
-    def do_quit(se21lf, arg):
-        self.do_exit(arg)
+    def do_quit(self, arg):
+        return True
         
     def do_EOF(self, arg):
         print()
-        self.do_exit(arg)
+        return True
         
     def cmdloop(self):
         try:
-            cmd.Cmd.cmdloop(self)
+            return cmd.Cmd.cmdloop(self)
         except KeyboardInterrupt:
             print()
-            self.do_exit("")
+            return True
