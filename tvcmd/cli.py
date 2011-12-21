@@ -1,14 +1,14 @@
 #! /usr/bin/env python2
 
 import readline, cmd
-import torrent, episode, manager
+from tvcmd import torrent, episode, manager
 
 class Cmd(cmd.Cmd, manager.Manager):
-
+    
     def __init__(self):
         manager.Manager.__init__(self)
         cmd.Cmd.__init__(self)
-        self.prompt = "tvcmd:>"
+        self.prompt = "tvcmd:> "
         
     def load(self):
         manager.Manager.load(self)

@@ -1,6 +1,5 @@
 #! /usr/bin/env python
 
-import thetvdb.api
 import fnmatch, datetime
 
 STATUS_NONE = 0

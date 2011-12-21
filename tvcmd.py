@@ -2,12 +2,9 @@
 
 import sys, os
 
-sys.path.insert(0, os.path.abspath(os.path.dirname(__file__))+"/lib/")
-sys.path.insert(0, os.path.abspath(os.path.dirname(__file__))+"/src/")
+import tvcmd.cli
 
-import cli
-
-tvcmd = cli.Cmd()
+ui = tvcmd.cli.Cmd()
 
 def interactive():
     import readline
@@ -16,16 +13,16 @@ def interactive():
     
     import code
     code.interact(local=globals())
-
+    
 def main(argv):
-    tvcmd.load()
+    ui.load()
     
     # print torrent urls and exit
     if "-t" in argv:
-        tvcmd.onecmd("tor *")
+        ui.onecmd("tor *")
     # main execution mode
     else:
-        tvcmd.cmdloop()
+        ui.cmdloop()
         interactive()
         
 if __name__ == "__main__":

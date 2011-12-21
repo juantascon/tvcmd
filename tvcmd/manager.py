@@ -1,7 +1,6 @@
 #! /usr/bin/env python
 
-import thetvdb.api
-import episode, config
+from tvcmd import episode, config, thetvdb
 import sys
 import logging
 
@@ -20,7 +19,7 @@ class Manager():
         for show in self.cfg.get_shows():
             log().info("[%s]: loading"%(show))
             try:
-                for d in thetvdb.api.get_episodes(show):
+                for d in thetvdb.get_episodes(show):
                     eurl = episode.Url(show=d["show"], season=d["season"], episode=d["episode"], name=d["name"], date=d["date"])
                     try: eurl.update(status = self.cfg.get_status()[eurl.url()])
                     except KeyError: eurl.update(status = episode.STATUS_NONE)
