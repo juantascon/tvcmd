@@ -8,6 +8,7 @@ class Cmd(cmd.Cmd, manager.Manager):
     def __init__(self):
         manager.Manager.__init__(self)
         cmd.Cmd.__init__(self)
+        self.prompt = "tvcmd:>"
         
     def load(self):
         manager.Manager.load(self)
