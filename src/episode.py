@@ -12,16 +12,25 @@ class Url(dict):
     # expected: show, season, episode, name, date, status
     def __init__(self, **kwargs):
         self.update(**kwargs)
-        
+    
+    def __repr__(self):
+        return self.url()
+    
+    def __eq__(self, other):
+        return (self.url() == other.url())
+    
     def update(self, **kwargs):
         for key,value in kwargs.items():
             self[key] = value
     
     def fmt(self):
         return "%s : [ %s ] [ %s ]" % (self.url(), str(self["date"]), self["name"])
-
+    
     def match(self, pattern):
         return fnmatch.fnmatch(self.url(), pattern)
+    
+    def startswith(self, pattern):
+        return self.url().startswith(pattern)
     
     def future(self):
         try:
@@ -61,9 +70,6 @@ class Url(dict):
     def url(self):
         return self.fmt_show() + self.fmt_season() + self.fmt_episode()
     
-    def __eq__(self, other):
-        return (self.url() == other.url())
-        
     @classmethod
     def parse(cls, _str):
         parts1 = _str.partition(".")
@@ -86,57 +92,28 @@ class Url(dict):
     
 class DB(list):
     
-    def __repr__(self):
-        s = ""
-        for url in self:
-            s = s+url.url() + "\n"
-        return s
-    
-    def __add__(self, other):
-        db = DB()
-        db.extend(self)
-        db.extend(other)
-        return db
-    
     def update(self, **kwargs):
         for url in self:
             url.update(**kwargs)
     
-    def filter_by_url_pattern(self, pattern):
-        db = DB()
-        for url in self:
-            if fnmatch.fnmatch(url.url(), pattern):
-                db.append(url)
-        return db
-    
-    def filter_by_url_startswith(self, pattern):
-        db = DB()
-        for url in self:
-            if url.url().startswith(pattern):
-                db.append(url)
-        return db
-
     def filter(self, function):
         return DB(item for item in self if function(item))
     
-    def to_str_list(self):
-        return (url.url() for url in self)
-    
     def complete_text(self, text):
-        urls = self.filter_by_url_startswith(text)
+        subdb = self.filter(lambda url: url.startswith(text))
         eurl = Url.parse(text)
         
         # complete shows
         try: text.index(".")
-        except: return urls.list_shows()
+        except: return subdb.list_shows()
         
         # complete season
         try: eurl["season"]
-        except KeyError: return urls.list_seasons()
+        except KeyError: return subdb.list_seasons()
         
         # complete episodes
         try: eurl["episode"]
-        except KeyError: return urls.list_episodes()
+        except KeyError: return subdb.list_episodes()
         
         return []
     
@@ -157,4 +134,4 @@ class DB(list):
         for url in self:
             s.add( url.fmt_show() )
         return list(s)
-        
+    
