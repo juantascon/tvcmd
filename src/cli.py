@@ -14,36 +14,33 @@ class Cmd(cmd.Cmd, manager.Manager):
         print(self.db.list_shows())
         
     def complete_adquire(self, text, line, start_index, end_index):
-        subdb = self.db.filter(status = episode.STATUS_NONE)
+        subdb = self.db.filter(lambda url: url["status"] in [episode.STATUS_NONE])
         return subdb.complete_text(text)
         
     def do_adquire(self, line):
-        subdb = self.db.filter_by_url_pattern(line if line else "*")
-        subdb = subdb.filter(status = episode.STATUS_NONE)
+        subdb = self.db.filter(lambda url: url.match(line or "*") and url["status"] in [episode.STATUS_NONE])
         
         for eurl in subdb:
             eurl.update(status = episode.STATUS_ADQUIRED)
             print(eurl.fmt_color())
             
     def complete_see(self, text, line, start_index, end_index):
-        subdb = self.db.filter(status = episode.STATUS_NONE) + self.db.filter(status = episode.STATUS_ADQUIRED)
+        subdb = self.db.filter(lambda url: url["status"] in [episode.STATUS_NONE, episode.STATUS_ADQUIRED])
         return subdb.complete_text(text)
     
     def do_see(self, line):
-        subdb = self.db.filter_by_url_pattern(line if line else "*")
-        subdb = subdb.filter(status = episode.STATUS_NONE) + subdb.filter(status = episode.STATUS_ADQUIRED)
+        subdb = self.db.filter(lambda url: url.match(line or "*") and url["status"] in [episode.STATUS_NONE, episode.STATUS_ADQUIRED])
         
         for eurl in subdb:
             eurl.update(status = episode.STATUS_SEEN)
             print(eurl.fmt_color())
-            
+    
     def complete_ls(self, text, line, start_index, end_index):
-        subdb = self.db.filter(status = episode.STATUS_NONE) + self.db.filter(status = episode.STATUS_ADQUIRED)
+        subdb = self.db.filter(lambda url: url["status"] in [episode.STATUS_NONE, episode.STATUS_ADQUIRED])
         return subdb.complete_text(text)
     
     def do_ls(self, line):
-        subdb = self.db.filter_by_url_pattern(line if line else "*")
-        subdb = subdb.filter(status = episode.STATUS_NONE) + subdb.filter(status = episode.STATUS_ADQUIRED)
+        subdb = self.db.filter(lambda url: url.match(line or "*") and url["status"] in [episode.STATUS_NONE, episode.STATUS_ADQUIRED])
         subdb.sort(key=lambda url: url["date"], reverse = True)
         
         for eurl in subdb:

@@ -19,6 +19,9 @@ class Url(dict):
     
     def fmt(self):
         return "%s : [ %s ] [ %s ]" % (self.url(), str(self["date"]), self["name"])
+
+    def match(self, pattern):
+        return fnmatch.fnmatch(self.url(), pattern)
     
     def future(self):
         try:
@@ -112,25 +115,12 @@ class DB(list):
             if url.url().startswith(pattern):
                 db.append(url)
         return db
-    
-    def filter(self, **kwargs):
-        db = DB()
-        for item in self:
-            for key,value in kwargs.items():
-                try:
-                    if item[key] == value:
-                        db.append(item)
-                    else:
-                        break
-                except KeyError:
-                    break
-        return db
+
+    def filter(self, function):
+        return DB(item for item in self if function(item))
     
     def to_str_list(self):
-        l = []
-        for url in self:
-            l.append(url.url())
-        return l
+        return (url.url() for url in self)
     
     def complete_text(self, text):
         urls = self.filter_by_url_startswith(text)
