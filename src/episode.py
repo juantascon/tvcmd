@@ -19,6 +19,14 @@ class Url(dict):
     
     def fmt(self):
         return "%s : [ %s ] [ %s ]" % (self.url(), str(self["date"]), self["name"])
+    
+    def future(self):
+        try:
+            if self["date"] < datetime.date.today():
+                return False
+        except: pass
+        
+        return True
         
     def fmt_color(self):
         COLOR_NONE = "\033[31m"
@@ -29,15 +37,9 @@ class Url(dict):
         COLOR_END = "\033[0m"
         
         color = COLOR_NONE
-        if self["status"] == STATUS_ADQUIRED:
-            color = COLOR_ADQUIRED
-        if self["status"] == STATUS_SEEN:
-            color = COLOR_SEEN
-            
-        try:
-            if self["date"] > datetime.date.today():
-                color = COLOR_FUTURE
-        except: color = COLOR_FUTURE
+        if self["status"] == STATUS_ADQUIRED: color = COLOR_ADQUIRED
+        if self["status"] == STATUS_SEEN: color = COLOR_SEEN
+        if self.future(): color = COLOR_FUTURE
         
         return color + self.fmt() + COLOR_END
     

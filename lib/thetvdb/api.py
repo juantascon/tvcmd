@@ -3,18 +3,19 @@
 import httplib2
 import xml.etree.cElementTree as ElementTree
 import datetime
+import zipfile
+import io
 
 APIKEY = "FD9D34DB64F25A09"
 
 def _get_url(url):
     h = httplib2.Http(cache = "/tmp/tvcmd-cache")
     resp, content = h.request(url, "GET")
-    str_content = content.decode("utf-8")
-    return str_content
+    return content
 
 def get_show_id(show):
     url = "http://thetvdb.com/api/GetSeries.php?seriesname=%s" % (show)
-    response = _get_url(url)
+    response = _get_url(url).decode("utf-8")
     root = ElementTree.XML(response)
     series = list(root)[0]
     
@@ -26,8 +27,8 @@ def get_show_id(show):
 def get_episodes(show):
     id = get_show_id(show)
     
-    url = "http://thetvdb.com/api/%s/series/%s/all/en.xml" % (APIKEY, id)
-    response = _get_url(url)
+    url = "http://thetvdb.com/api/%s/series/%s/all/en.zip" % (APIKEY, id)
+    response = zipfile.ZipFile(io.BytesIO(_get_url(url))).read("en.xml")
     root = ElementTree.XML(response)
     
     l = []
@@ -50,3 +51,5 @@ def get_episodes(show):
                 
     return l
     
+if __name__ == "__main__":
+    get_episodes("lost")
