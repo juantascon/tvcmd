@@ -1,8 +1,5 @@
 #! /usr/bin/python
 
-# this is only for python interactive mode
-
-
 import sys, os
 
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__))+"/lib/")
@@ -12,19 +9,28 @@ import cli
 
 tvcmd = cli.Cmd()
 
-def interactive(argv):
+def interactive():
     import readline
     import rlcompleter
     readline.parse_and_bind("tab: complete")
-    
-    main(argv)
     
     import code
     code.interact(local=globals())
 
 def main(argv):
     tvcmd.load()
-    tvcmd.cmdloop()
-
+    
+    # print torrent urls and exit
+    if "-t" in argv:
+        tvcmd.onecmd("tor *")
+    # main execution mode
+    else:
+        tvcmd.cmdloop()
+        interactive()
+        
 if __name__ == "__main__":
-    interactive(sys.argv)
+    import logging
+    logging.basicConfig(level=logging.DEBUG)
+    
+    main(sys.argv)
+    

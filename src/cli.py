@@ -1,7 +1,7 @@
 #! /usr/bin/env python2
 
-import readline, cmd, sys
-import episode, manager
+import readline, cmd
+import torrent, episode, manager
 
 class Cmd(cmd.Cmd, manager.Manager):
 
@@ -14,6 +14,16 @@ class Cmd(cmd.Cmd, manager.Manager):
     
     def do_shows(self, line):
         print(self.db.list_shows())
+
+    def complete_tor(self, text, line, start_index, end_index):
+        subdb = self.db.filter(lambda url: url["status"] in [episode.STATUS_NONE])
+        return subdb.complete_text(text)
+    
+    def do_tor(self, line):
+        subdb = self.db.filter(lambda url: url.match(line) and url["status"] in [episode.STATUS_NONE])
+        
+        for eurl in subdb:
+            print(torrent.fmt_url(eurl["show"], eurl["season"], eurl["episode"]))
     
     def complete_adquire(self, text, line, start_index, end_index):
         subdb = self.db.filter(lambda url: url["status"] in [episode.STATUS_NONE])
@@ -21,7 +31,6 @@ class Cmd(cmd.Cmd, manager.Manager):
         
     def do_adquire(self, line):
         subdb = self.db.filter(lambda url: url.match(line) and url["status"] in [episode.STATUS_NONE])
-        print(subdb)
         
         for eurl in subdb:
             eurl.update(status = episode.STATUS_ADQUIRED)

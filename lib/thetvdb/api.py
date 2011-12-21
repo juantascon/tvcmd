@@ -5,10 +5,15 @@ import xml.etree.cElementTree as ElementTree
 import datetime
 import zipfile
 import io
+import logging
 
 APIKEY = "FD9D34DB64F25A09"
 
+def log():
+    return logging.getLogger(__name__)
+
 def _get_url(url):
+    log().debug(url)
     h = httplib2.Http(cache = "/tmp/tvcmd-cache")
     resp, content = h.request(url, "GET", headers={"cache-control":"private,max-age=86400"})
     return content

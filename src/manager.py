@@ -3,6 +3,10 @@
 import thetvdb.api
 import episode, config
 import sys
+import logging
+
+def log():
+    return logging.getLogger(__name__)
 
 class Manager():
     
@@ -14,9 +18,7 @@ class Manager():
         self.cfg.load()
         
         for show in self.cfg.get_shows():
-            sys.stdout.write("[%s]: " %(show))
-            sys.stdout.flush()
-            
+            log().info("[%s]: loading"%(show))
             try:
                 for d in thetvdb.api.get_episodes(show):
                     eurl = episode.Url(show=d["show"], season=d["season"], episode=d["episode"], name=d["name"], date=d["date"])
@@ -24,9 +26,10 @@ class Manager():
                     except KeyError: eurl.update(status = episode.STATUS_NONE)
                     
                     self.db.append(eurl)
-                print("ok")
+                log().info("[%s]: OK"%(show))
             except Exception as ex:
-                print( "fail (%s)" % (ex) )
+                log().info("[%s]: FAIL" %(show))
+                raise ex
                 
     def save(self):
         for eurl in self.db:
