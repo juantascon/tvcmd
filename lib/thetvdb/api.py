@@ -10,7 +10,7 @@ APIKEY = "FD9D34DB64F25A09"
 
 def _get_url(url):
     h = httplib2.Http(cache = "/tmp/tvcmd-cache")
-    resp, content = h.request(url, "GET")
+    resp, content = h.request(url, "GET", headers={"cache-control":"private,max-age=86400"})
     return content
 
 def get_show_id(show):
@@ -27,8 +27,9 @@ def get_show_id(show):
 def get_episodes(show):
     id = get_show_id(show)
     
-    url = "http://thetvdb.com/api/%s/series/%s/all/en.zip" % (APIKEY, id)
-    response = zipfile.ZipFile(io.BytesIO(_get_url(url))).read("en.xml")
+    url = "http://thetvdb.com/api/%s/series/%s/all/en.xml" % (APIKEY, id)
+    # response = zipfile.ZipFile(io.BytesIO(_get_url(url))).read("en.xml")
+    response = _get_url(url).decode("utf-8")
     root = ElementTree.XML(response)
     
     l = []
