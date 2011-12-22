@@ -2,6 +2,11 @@
 
 import os, configparser
 
+import logging
+
+def log():
+    return logging.getLogger(__name__)
+
 class Config():
     
     DIR = os.environ["XDG_CONFIG_HOME"]+"/tvcmd/"
@@ -33,10 +38,14 @@ class Config():
         self.status.remove_option("status", eurl)
     
     def get_shows(self):
-        return [s.strip() for s in self.main.get("general", "shows", fallback="").split(',')]
+        l = []
+        for s in self.main.get("general", "shows", fallback="").split(","):
+            s = s.strip()
+            if len(s) > 0: l.append(s)
+        return l
     
     def save(self):
-        try: os.makedirs(self.CONFIG_DIR)
+        try: os.makedirs(self.DIR)
         except: pass
         
         self.status.write(open(self.DIR+"status.cfg", "w"))
