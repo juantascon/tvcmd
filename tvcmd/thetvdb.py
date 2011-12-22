@@ -3,39 +3,59 @@
 import httplib2
 import xml.etree.cElementTree as ElementTree
 import datetime
-import zipfile
-import io
-import logging
+import zipfile, io
 
-APIKEY = "FD9D34DB64F25A09"
+from tvcmd.errors import (ServerError)
+
+import logging
 
 def log():
     return logging.getLogger(__name__)
 
+APIKEY = "FD9D34DB64F25A09"
+
 def _get_url(url):
-    log().debug(url)
-    h = httplib2.Http(cache = "/tmp/tvcmd-cache")
-    resp, content = h.request(url, "GET", headers={"cache-control":"private,max-age=86400"})
-    return content
+    log().debug(" GETURL: "+url)
+    
+    try: 
+        h = httplib2.Http(cache = "/tmp/tvcmd-cache")
+        resp, content = h.request(url, "GET", headers={"cache-control":"private,max-age=86400"})
+    except: raise ServerError("Error connecting thetvdb.com")
+    
+    if (resp["status"] == "200"): return content
+    else: raise ServerError("Invalid thetvdb.com response")
+
+def _get_xml_zip():
+    # response = zipfile.ZipFile(io.BytesIO(_get_url(url))).read("en.xml")
+    pass
+    
+def _get_xml(url):
+    response = _get_url(url)
+    
+    try: return ElementTree.XML(response.decode("utf-8"))
+    except: raise ServerError("Unexpected thetvdb.com response")
 
 def get_show_id(show):
     url = "http://thetvdb.com/api/GetSeries.php?seriesname=%s" % (show)
-    response = _get_url(url).decode("utf-8")
-    root = ElementTree.XML(response)
-    series = list(root)[0]
     
-    for s in list(series):
-        if s.tag == "seriesid":
-            return s.text
-    return None
+    try: root = _get_xml(url)
+    except ServerError as ex: raise ServerError("Show not found (%s)"%(ex))
+    
+    for data in list(root):
+        for s in list(data):
+            if s.tag == "seriesid":
+                return s.text
+    
+    raise ServerError("Show not found")
 
 def get_episodes(show):
-    id = get_show_id(show)
+    try: id = get_show_id(show)
+    except ServerError as ex: raise ServerError("Error getting episodes list (%s)"%(ex))
     
     url = "http://thetvdb.com/api/%s/series/%s/all/en.xml" % (APIKEY, id)
-    # response = zipfile.ZipFile(io.BytesIO(_get_url(url))).read("en.xml")
-    response = _get_url(url).decode("utf-8")
-    root = ElementTree.XML(response)
+    
+    try: root = _get_xml(url)
+    except ServerError as ex: raise ServerError("Error getting episodes list (%s)"%(ex))
     
     l = []
     for e in list(root):
@@ -54,8 +74,6 @@ def get_episodes(show):
                     d["name"] = info.text
                     
             l.append(d)
-                
-    return l
     
-if __name__ == "__main__":
-    get_episodes("lost")
+    return l
+
