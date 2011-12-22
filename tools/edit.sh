@@ -1,4 +1,3 @@
 cd $(dirname $0)/..
-pwd
-emacs $(find -iname "*.py")
+emacs $(find -iname "*.py") $(find -iname *.sh) script/*
 
