@@ -3,7 +3,6 @@
 import sys, os
 import logging
 
-ui = None
 
 def interactive():
     import readline
@@ -25,16 +24,23 @@ def main(argv):
     # main execution mode
     else:
         ui.cmdloop()
-        
+    
 if __name__ == "__main__":
     
-    logging.basicConfig(level=logging.INFO)
+    # NORMAL mode
+    if not os.environ.get("DEBUG"):
+        logging.basicConfig(level=logging.INFO)
+        main(sys.argv)
+        sys.exit(0)
     
-    if os.environ.get("DEBUG"):
-        sys.path.insert(0, os.path.dirname(__file__)+"/..")
-        logging.basicConfig(level=logging.DEBUG)
+    # DEBUG mode
+    logging.basicConfig(level=logging.DEBUG)
+    sys.path.insert(0, os.path.dirname(__file__)+"/..")
     
-    main(sys.argv)
+    import traceback
     
-    if os.environ.get("DEBUG"): interactive()
+    try: main(sys.argv)
+    except: traceback.print_exc()
     
+    interactive()
+
