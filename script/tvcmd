@@ -3,7 +3,6 @@
 import sys, os
 import logging
 
-
 def interactive():
     import readline
     import rlcompleter
@@ -27,20 +26,26 @@ def main(argv):
     
 if __name__ == "__main__":
     
+    # DEBUG mode
+    if os.environ.get("DEBUG"):
+        
+        logging.basicConfig(level=logging.DEBUG)
+        sys.path.insert(0, os.path.dirname(__file__)+"/..")
+        
+        import tvcmd.cons
+        tvcmd.cons.CONFIGDIR = tvcmd.cons.CONFIGDIR+"_debug"
+        
+        import traceback
+        try: main(sys.argv)
+        except: traceback.print_exc()
+        
+        interactive()
+        
     # NORMAL mode
-    if not os.environ.get("DEBUG"):
+    else:
+        
         logging.basicConfig(level=logging.INFO)
         main(sys.argv)
         sys.exit(0)
     
-    # DEBUG mode
-    logging.basicConfig(level=logging.DEBUG)
-    sys.path.insert(0, os.path.dirname(__file__)+"/..")
-    
-    import traceback
-    
-    try: main(sys.argv)
-    except: traceback.print_exc()
-    
-    interactive()
 
