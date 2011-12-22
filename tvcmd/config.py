@@ -7,46 +7,72 @@ import logging
 def log():
     return logging.getLogger(__name__)
 
-class Config():
+DIR = os.environ["XDG_CONFIG_HOME"]+"/tvcmd/"
+
+class ConfigFileParser(configparser.ConfigParser):
     
-    DIR = os.environ["XDG_CONFIG_HOME"]+"/tvcmd/"
+    def __init__(self,filename):
+        super().__init__()
+        self.filename = filename
+        
+    def read(self):
+        return super().read(self.filename)
+        
+    def write(self):
+        try: os.makedirs(os.path.dirname(self.filename))
+        except: pass
+        
+        with open(self.filename, "w") as f:
+            return super().write(f)
+
+
+class Status(ConfigFileParser):
     
     def __init__(self):
-        self.main = configparser.ConfigParser()
-        self.status = configparser.ConfigParser()
+        super().__init__(DIR+"status.cfg")
         
-    def load(self):
-        self.main.read(self.DIR+"main.cfg")
-        self.status.read(self.DIR+"status.cfg")
-        
-        try: self.main.add_section("general")
+    def read(self):
+        super().read()
+        try: self.add_section("status")
         except: pass
+
+    def get(self, eurl):
+        try: return int(super().get("status", eurl))
+        except: return None
         
-        try: self.status.add_section("status")
-        except: pass
-        
-    def get_status(self):
+    def get_all(self):
         d = {}
-        for s in self.status.items("status"):
+        for s in self.items("status"):
             d[s[0]] = int(s[1])
         return d
-        
-    def set_status(self, eurl, status):
-        self.status.set("status", eurl, str(status))
-        
-    def remove_status(self, eurl):
-        self.status.remove_option("status", eurl)
     
+    def set(self, eurl, status):
+        super().set("status", eurl, str(status))
+        
+    def remove(self, eurl):
+        self.remove_option("status", eurl)
+    
+
+class Main(ConfigFileParser):
+    
+    def __init__(self):
+        super().__init__(DIR+"main.cfg")
+        
+    def read(self):
+        super().read()
+        try: self.add_section("general")
+        except: pass
+        
     def get_shows(self):
         l = []
-        for s in self.main.get("general", "shows", fallback="").split(","):
+        for s in self.get("general", "shows", fallback="").split(","):
             s = s.strip()
             if len(s) > 0: l.append(s)
         return l
-    
-    def save(self):
-        try: os.makedirs(self.DIR)
-        except: pass
         
-        self.status.write(open(self.DIR+"status.cfg", "w"))
+    def add_show(self, show):
+        shows = self.get_shows()
+        if not show in shows:
+            shows.append(show)
+            self.main.set("general", "shows", ",".join(shows))
         
