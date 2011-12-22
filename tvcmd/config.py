@@ -1,13 +1,12 @@
 #! /usr/bin/env python
 
-import os, configparser
+from tvcmd import cons
 
+import os, configparser
 import logging
 
 def log():
     return logging.getLogger(__name__)
-
-DIR = os.environ["XDG_CONFIG_HOME"]+"/tvcmd/"
 
 class ConfigFileParser(configparser.ConfigParser):
     
@@ -29,7 +28,7 @@ class ConfigFileParser(configparser.ConfigParser):
 class Status(ConfigFileParser):
     
     def __init__(self):
-        super().__init__(DIR+"status.cfg")
+        super().__init__(cons.CONFIGDIR+"/status.cfg")
         
     def read(self):
         super().read()
@@ -56,7 +55,7 @@ class Status(ConfigFileParser):
 class Main(ConfigFileParser):
     
     def __init__(self):
-        super().__init__(DIR+"main.cfg")
+        super().__init__(cons.CONFIGDIR+"/main.cfg")
         
     def read(self):
         super().read()

@@ -35,8 +35,8 @@ def _get_xml(url):
     try: return ElementTree.XML(response.decode("utf-8"))
     except: raise ServerError("Unexpected thetvdb.com response")
 
-def get_show_info(show):
-    url = "http://thetvdb.com/api/GetSeries.php?seriesname=%s" % (show)
+def get_show_info(show_name):
+    url = "http://thetvdb.com/api/GetSeries.php?seriesname=%s" % (show_name)
     
     try: root = _get_xml(url)
     except ServerError as ex: raise ServerError("Show not found (%s)"%(ex))
@@ -44,12 +44,14 @@ def get_show_info(show):
     l = []
     for data in list(root):
         if data.tag == "Series":
-                info = { "show": show, "name": None, "id": None }
+                info = { "show": show_name, "name": None, "id": None, "language": None }
                 for s in list(data):
                     if s.tag == "seriesid":
                         info["id"] = s.text
                     if s.tag == "SeriesName":
                         info["name"] = s.text
+                    if s.tag == "language":
+                        info["language"] = s.text
                 if info["id"]: l.append(info)
     
     if len(l) > 0: return l

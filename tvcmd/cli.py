@@ -1,65 +1,70 @@
 #! /usr/bin/env python
 
 import readline, cmd
-from tvcmd import torrent, episode, manager
+from tvcmd import cons, manager, torrent
 
 class Cmd(cmd.Cmd, manager.Manager):
     
     def __init__(self):
         manager.Manager.__init__(self)
         cmd.Cmd.__init__(self)
-        self.prompt = "tvcmd:> "
+        self.update_prompt()
         
+    def update_prompt(self):
+        self.prompt = "tvcmd:> "
+    
     def load(self):
         manager.Manager.load(self)
     
-    def do_show_list(self, line):
-        print("\n".join(self.shows))
-
-    def do_show_add(self, line):
-        self.add_show(line)
-
+    def do_shows(self, line):
+        db = self.shows
+        print("\n%s\n"%(db.fmt()))
+    
+    def do_search(self, line):
+        db = self.search_show(line)
+        print("\n%s\n"%(db.fmt()))
+    
     def complete_tor(self, text, line, start_index, end_index):
-        subdb = self.db.filter(lambda url: url["status"] in [episode.STATUS_NONE])
-        return subdb.complete_text(text)
+        db = self.episodes.filter(lambda url: url["status"] in [cons.NONE])
+        return db.complete_text(text)
     
     def do_tor(self, line):
-        subdb = self.db.filter(lambda url: url.match(line) and url["status"] in [episode.STATUS_NONE])
+        db = self.episodes.filter(lambda url: url.match(line) and url["status"] in [cons.NONE])
         
-        for eurl in subdb:
+        for eurl in db:
             print(torrent.fmt_url(eurl["show"], eurl["season"], eurl["episode"]))
     
     def complete_adquire(self, text, line, start_index, end_index):
-        subdb = self.db.filter(lambda url: url["status"] in [episode.STATUS_NONE])
-        return subdb.complete_text(text)
+        db = self.episodes.filter(lambda url: url["status"] in [cons.NONE])
+        return db.complete_text(text)
         
     def do_adquire(self, line):
-        subdb = self.db.filter(lambda url: url.match(line) and url["status"] in [episode.STATUS_NONE])
+        db = self.episodes.filter(lambda url: url.match(line) and url["status"] in [cons.NONE])
         
-        for eurl in subdb:
-            eurl.update(status = episode.STATUS_ADQUIRED)
+        for eurl in db:
+            eurl.update(status = cons.ADQUIRED)
             print(eurl.fmt_color())
             
     def complete_see(self, text, line, start_index, end_index):
-        subdb = self.db.filter(lambda url: url["status"] in [episode.STATUS_NONE, episode.STATUS_ADQUIRED])
-        return subdb.complete_text(text)
+        db = self.episodes.filter(lambda url: url["status"] in [cons.NONE, cons.ADQUIRED])
+        return db.complete_text(text)
     
     def do_see(self, line):
-        subdb = self.db.filter(lambda url: url.match(line) and url["status"] in [episode.STATUS_NONE, episode.STATUS_ADQUIRED])
+        db = self.episodes.filter(lambda url: url.match(line) and url["status"] in [cons.NONE, cons.ADQUIRED])
         
-        for eurl in subdb:
-            eurl.update(status = episode.STATUS_SEEN)
+        for eurl in db:
+            eurl.update(status = cons.SEEN)
             print(eurl.fmt_color())
     
     def complete_ls(self, text, line, start_index, end_index):
-        subdb = self.db.filter(lambda url: url["status"] in [episode.STATUS_NONE, episode.STATUS_ADQUIRED])
-        return subdb.complete_text(text)
+        db = self.episodes.filter(lambda url: url["status"] in [cons.NONE, cons.ADQUIRED])
+        return db.complete_text(text)
     
     def do_ls(self, line):
-        subdb = self.db.filter(lambda url: url.match(line or "*") and url["status"] in [episode.STATUS_NONE, episode.STATUS_ADQUIRED])
-        subdb.sort(key=lambda url: url["date"], reverse = True)
+        db = self.episodes.filter(lambda url: url.match(line or "*") and url["status"] in [cons.NONE, cons.ADQUIRED])
+        db.sort(key=lambda url: url["date"], reverse = True)
         
-        for eurl in subdb:
+        for eurl in db:
             print(eurl.fmt_color())
     
     def do_save(self, line):

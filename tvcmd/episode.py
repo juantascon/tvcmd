@@ -2,9 +2,7 @@
 
 import fnmatch, datetime
 
-STATUS_NONE = 0
-STATUS_ADQUIRED = 1
-STATUS_SEEN = 2
+from tvcmd import cons
 
 class Url(dict):
     
@@ -48,8 +46,8 @@ class Url(dict):
         COLOR_END = "\033[0m"
         
         color = COLOR_NONE
-        if self["status"] == STATUS_ADQUIRED: color = COLOR_ADQUIRED
-        if self["status"] == STATUS_SEEN: color = COLOR_SEEN
+        if self["status"] == cons.ADQUIRED: color = COLOR_ADQUIRED
+        if self["status"] == cons.SEEN: color = COLOR_SEEN
         if self.future(): color = COLOR_FUTURE
         
         return color + self.fmt() + COLOR_END
