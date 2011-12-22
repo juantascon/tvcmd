@@ -18,11 +18,11 @@ class Manager():
         self.shows = []
     
     def load(self):
-        # read status and shows
+        # read both
         self.status.read()
         self.main.read()
         
-        # load
+        # sync status and shows
         for show in self.main.get_shows():
             self.add_show(show)
     
@@ -45,7 +45,9 @@ class Manager():
     def add_show(self, show):
         log().info(" show[%s]: loading ... "%(show))
         try:
-            for d in thetvdb.get_episodes(show):
+            show_info = thetvdb.get_show_info(show)
+            
+            for d in thetvdb.get_episodes(show_info):
                 eurl = episode.Url(show=d["show"], season=d["season"], episode=d["episode"], name=d["name"], date=d["date"])
                 eurl.update(status = self.status.get(eurl.url()) or episode.STATUS_NONE)
                 self.db.append(eurl)
