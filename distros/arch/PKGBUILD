@@ -15,4 +15,4 @@ build() {
     python setup.py install --root $pkgdir
 }
 
-md5sums=('c7762a4c52a37cdf48b6328fabc3322c')
+md5sums=('9e3d2af684f21e952c0795190e75e7e5')
