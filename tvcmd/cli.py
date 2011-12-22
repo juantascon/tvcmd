@@ -1,4 +1,4 @@
-#! /usr/bin/env python2
+#! /usr/bin/env python
 
 import readline, cmd
 from tvcmd import torrent, episode, manager
