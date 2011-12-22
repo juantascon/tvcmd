@@ -1,12 +1,10 @@
 #! /usr/bin/env python
 
-from setuptools import setup
-import os
-
+from distutils.core import setup
 
 setup (
     name="tvcmd",
-    version="0.1",
+    version="0.2",
     description="Command line tool to keep track of tv shows",
     author="Juan Tascón",
     author_email="juantascon@gmail.com",
@@ -17,6 +15,7 @@ setup (
     
     packages=["tvcmd"],
     scripts=["script/tvcmd"],
-    data_files=[("share/tvcmd", ["README", "share/tvcmd.svg"])],
-    install_requires=[],
-    license="GPL, Version 3.0" )
+    data_files=[("share/tvcmd", ["README", "LICENSE", "share/tvcmd.svg"])],
+    
+    license="GPL, Version 3.0"
+    )
