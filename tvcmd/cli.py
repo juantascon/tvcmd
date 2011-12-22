@@ -13,8 +13,11 @@ class Cmd(cmd.Cmd, manager.Manager):
     def load(self):
         manager.Manager.load(self)
     
-    def do_shows(self, line):
-        print(self.db.list_shows())
+    def do_show_list(self, line):
+        print("\n".join(self.shows))
+
+    def do_show_add(self, line):
+        self.add_show(line)
 
     def complete_tor(self, text, line, start_index, end_index):
         subdb = self.db.filter(lambda url: url["status"] in [episode.STATUS_NONE])

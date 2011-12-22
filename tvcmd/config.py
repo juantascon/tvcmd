@@ -74,5 +74,5 @@ class Main(ConfigFileParser):
         shows = self.get_shows()
         if not show in shows:
             shows.append(show)
-            self.main.set("general", "shows", ",".join(shows))
+            self.set("general", "shows", ",".join(shows))
         

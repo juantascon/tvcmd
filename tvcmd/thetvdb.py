@@ -3,7 +3,7 @@
 import httplib2
 import xml.etree.cElementTree as ElementTree
 import datetime
-import zipfile, io
+#import zipfile, io
 
 from tvcmd.errors import (ServerError)
 
@@ -41,17 +41,18 @@ def get_show_info(show):
     try: root = _get_xml(url)
     except ServerError as ex: raise ServerError("Show not found (%s)"%(ex))
     
-    info = { "show": show, "name": None, "id": None }
+    l = []
+    for data in list(root):
+        if data.tag == "Series":
+                info = { "show": show, "name": None, "id": None }
+                for s in list(data):
+                    if s.tag == "seriesid":
+                        info["id"] = s.text
+                    if s.tag == "SeriesName":
+                        info["name"] = s.text
+                if info["id"]: l.append(info)
     
-    if len(list(root)) > 0:
-        data = list(root)[0]
-        for s in list(data):
-            if s.tag == "seriesid":
-                info["id"] = s.text
-            if s.tag == "SeriesName":
-                info["name"] = s.text
-    
-    if info["id"]: return info
+    if len(l) > 0: return l
     else: raise ServerError("Show not found")
 
 def get_episodes(show_info):
