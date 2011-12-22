@@ -1,10 +1,9 @@
 #! /usr/bin/env python
 
 import sys, os
+import logging
 
-import tvcmd.cli
-
-ui = tvcmd.cli.Cmd()
+ui = None
 
 def interactive():
     import readline
@@ -15,6 +14,9 @@ def interactive():
     code.interact(local=globals())
     
 def main(argv):
+    import tvcmd.cli
+    
+    ui = tvcmd.cli.Cmd()
     ui.load()
     
     # print torrent urls and exit
@@ -23,11 +25,16 @@ def main(argv):
     # main execution mode
     else:
         ui.cmdloop()
-        interactive()
         
 if __name__ == "__main__":
-    import logging
-    logging.basicConfig(level=logging.DEBUG)
+    
+    logging.basicConfig(level=logging.INFO)
+    
+    if os.environ.get("DEBUG"):
+        sys.path.insert(0, os.path.dirname(__file__)+"/..")
+        logging.basicConfig(level=logging.DEBUG)
     
     main(sys.argv)
+    
+    if os.environ.get("DEBUG"): interactive()
     
