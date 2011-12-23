@@ -123,9 +123,18 @@ class Cmd(cmd.Cmd, manager.Manager):
         """Exit the application\n\nSyntax:\n quit"""
         return self.exit()
     
-    def do_EOF(self, arg):
+    def default(self, line):
+        if line == "EOF":
+            print()
+            return self.exit()
+        
         print()
-        return self.exit()
+        print("Invalid command: %s"%(line.split(" ")[0]))
+        return self.do_help("")
+    
+    # def do_EOF(self, arg):
+    #     print()
+    #     return self.exit()
     
     def cmdloop(self):
         try:

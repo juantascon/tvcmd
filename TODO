@@ -1,9 +1,9 @@
 *** v0.6:
 
 * help for every command
-TAB shouldnt include the EOF command
+* TAB shouldnt include the EOF command
 * ctrl+c should act like in bash4 (print C and not run anythin)
-when an invalid command is input it should not show "Unknown syntax xxxx"
+* when an invalid command is input it should not show "Unknown syntax xxxx"
 help command shouldnt include the EOF command, but instead some personlized text
 help on how to configure
 
