@@ -1,25 +1,44 @@
-*** v0.6:
+*** v0.1: 
+* initial version, basic commands: ls, see, adquire, save, exit
 
+*** v0.2:
+* new tools directory
+* added example main.cfg
+* several bugs fixed
+* handling of DEBUG env variable
+
+*** v0.3:
+* added commands: show_add and show_list
+* added thetvdb.get_show_info
+* improved config handling
+* better error handling in thetvdb queries
+* added debug mode and normal mode
+
+*** v0.4:
+* command: search, search tv shows in thetvdb.com
+* command: shows, print tracked tv shows
+
+*** v0.5:
+* improved save command
+
+*** v0.6:
 * help for every command
 * TAB shouldnt include the EOF command
 * ctrl+c should act like in bash4 (print C and not run anythin)
 * when an invalid command is input it should not show "Unknown syntax xxxx"
-help command shouldnt include the EOF command, but instead some personlized text
+* help command shouldnt include the EOF command, but instead some personlized text
 help on how to configure
 
 *** v0.7
-
 some commands (ls, see, adquire, tor) should include multiple inputs
 implement -e for executing commands and exit inmediatly
 ls should also filter by status, ex: ls -s shows seen episodes
 
 *** v0.8
-
 dynamic prompt
 better info at: "loading...", "searching ...", "saving..." "updating ..."
 
 
 *** ? version 2.0
-
 ? add an option to import tv shows from thetvdb favorites
 ? implement a way to download torrent files or megaupload files
