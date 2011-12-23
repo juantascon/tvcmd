@@ -15,9 +15,24 @@ def interactive():
     
 def main():
     parser = argparse.ArgumentParser(description = "tvcmd command line tv episodes tracker")
+    
     parser.add_argument("-t", "--torrent", action="store_true", help="print torrent urls and exit")
+    parser.add_argument("--help-conf", action="store_true", help="print help on how to configure")
     
     args = parser.parse_args()
+    
+    # print configuration help
+    if args.help_conf:
+        import tvcmd.cons
+        print("PATHS:")
+        print(" config: %s"%(tvcmd.cons.CONFIGDIR+"/"+tvcmd.cons.MAINCONFIGFILE))
+        print(" status-db: %s"%(tvcmd.cons.CONFIGDIR+"/"+tvcmd.cons.STATUSDBFILE))
+        print("")
+        print("EXAMPLE CONFIG:")
+        print("")
+        print("[general]")
+        print("shows = an_idiot_abroad, the_office_us, lost")
+        return
     
     import tvcmd.cli
     ui = tvcmd.cli.Cmd()
@@ -38,7 +53,7 @@ if __name__ == "__main__":
         
         logging.basicConfig(level=logging.DEBUG)
         sys.path.insert(0, os.path.dirname(__file__)+"/..")
-        
+
         import tvcmd.cons
         tvcmd.cons.CONFIGDIR = tvcmd.cons.CONFIGDIR+"_debug"
         

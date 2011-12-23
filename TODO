@@ -27,7 +27,7 @@
 * ctrl+c should act like in bash4 (print C and not run anythin)
 * when an invalid command is input it should not show "Unknown syntax xxxx"
 * help command shouldnt include the EOF command, but instead some personlized text
-help on how to configure
+* help on how to configure
 
 *** v0.7
 some commands (ls, see, adquire, tor) should include multiple inputs

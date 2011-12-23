@@ -13,3 +13,5 @@ IGNORED = 2
 
 # config
 CONFIGDIR = os.environ["XDG_CONFIG_HOME"]+"/tvcmd"
+MAINCONFIGFILE = "main.cfg"
+STATUSDBFILE = "status.cfg"

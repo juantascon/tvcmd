@@ -28,7 +28,7 @@ class ConfigFileParser(configparser.ConfigParser):
 class Status(ConfigFileParser):
     
     def __init__(self):
-        super().__init__(cons.CONFIGDIR+"/status.cfg")
+        super().__init__(cons.CONFIGDIR+"/"+cons.STATUSDBFILE)
         
     def read(self):
         super().read()
@@ -55,7 +55,7 @@ class Status(ConfigFileParser):
 class Main(ConfigFileParser):
     
     def __init__(self):
-        super().__init__(cons.CONFIGDIR+"/main.cfg")
+        super().__init__(cons.CONFIGDIR+"/"+cons.MAINCONFIGFILE)
         
     def read(self):
         super().read()
