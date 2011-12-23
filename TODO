@@ -1,0 +1,21 @@
+*** version 1.0:
+
+before exiting it should ask to save when the status has changed
+better info at: "loading...", "searching ...", "saving..." "updating ..."
+some commands (ls, see, adquire, tor) should include multiple inputs
+ls should also filter by status, ex: ls -s shows seen episodes
+implement -e for executing commands and exit inmediatly
+ctrl+c should act like in bash4 (print C and not run anythin)
+TAB shouldnt include the EOF command
+better prompt
+
+when an invalid command is input it should not show "Unknown syntax xxxx"
+implent --help
+help for every command
+help on how to configure
+help command shouldnt include the EOF command, but instead some personlized text
+
+
+*** ? version 2.0
+? add an option to import tv shows from thetvdb favorites
+? implement a way to download torrent files or megaupload files
