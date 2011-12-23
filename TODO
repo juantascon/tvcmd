@@ -32,11 +32,11 @@
 *** v0.7
 some commands (ls, see, adquire, tor) should include multiple inputs
 implement -e for executing commands and exit inmediatly
-ls should also filter by status, ex: ls -s shows seen episodes
 
 *** v0.8
-dynamic prompt
 better info at: "loading...", "searching ...", "saving..." "updating ..."
+ls should also filter by status, ex: ls -s shows seen episodes
+dynamic prompt
 
 
 *** ? version 2.0
