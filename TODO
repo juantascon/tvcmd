@@ -1,18 +1,19 @@
-*** version 1.0:
-
-implent --help
+*** v0.6:
 help for every command
-some commands (ls, see, adquire, tor) should include multiple inputs
-ls should also filter by status, ex: ls -s shows seen episodes
-better info at: "loading...", "searching ...", "saving..." "updating ..."
-implement -e for executing commands and exit inmediatly
-ctrl+c should act like in bash4 (print C and not run anythin)
 TAB shouldnt include the EOF command
-better prompt
-
+ctrl+c should act like in bash4 (print C and not run anythin)
 when an invalid command is input it should not show "Unknown syntax xxxx"
-help on how to configure
 help command shouldnt include the EOF command, but instead some personlized text
+help on how to configure
+
+*** v0.7
+some commands (ls, see, adquire, tor) should include multiple inputs
+implement -e for executing commands and exit inmediatly
+ls should also filter by status, ex: ls -s shows seen episodes
+
+*** v0.8
+dynamic prompt
+better info at: "loading...", "searching ...", "saving..." "updating ..."
 
 
 *** ? version 2.0

@@ -2,6 +2,7 @@
 
 import sys, os
 import logging
+import argparse
 
 def interactive():
     import readline
@@ -9,20 +10,26 @@ def interactive():
     readline.parse_and_bind("tab: complete")
     
     import code
+    print("\nLaunching python interactive shell ...\n")
     code.interact(local=globals())
     
-def main(argv):
-    import tvcmd.cli
+def main():
+    parser = argparse.ArgumentParser(description = "tvcmd command line tv episodes tracker")
+    parser.add_argument("-t", "--torrent", action="store_true", help="print torrent urls and exit")
     
+    args = parser.parse_args()
+    
+    import tvcmd.cli
     ui = tvcmd.cli.Cmd()
     ui.load()
     
     # print torrent urls and exit
-    if "-t" in argv:
+    if args.torrent:
         ui.onecmd("tor *")
+        return
+    
     # main execution mode
-    else:
-        ui.cmdloop()
+    ui.cmdloop()
     
 if __name__ == "__main__":
     
@@ -36,7 +43,8 @@ if __name__ == "__main__":
         tvcmd.cons.CONFIGDIR = tvcmd.cons.CONFIGDIR+"_debug"
         
         import traceback
-        try: main(sys.argv)
+        try: main()
+        except SystemExit: pass
         except: traceback.print_exc()
         
         interactive()
@@ -45,5 +53,5 @@ if __name__ == "__main__":
     else:
         
         logging.basicConfig(level=logging.INFO)
-        main(sys.argv)
+        main()
         sys.exit(0)
