@@ -1,7 +1,7 @@
 # Contributor: Juan Tascon
 
 pkgname=tvcmd
-pkgver=0.4
+pkgver=0.5
 pkgrel=1
 pkgdesc="tvcmd is a command line tool to keep track of tv shows episodes"
 arch=('any')

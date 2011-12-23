@@ -47,5 +47,3 @@ if __name__ == "__main__":
         logging.basicConfig(level=logging.INFO)
         main(sys.argv)
         sys.exit(0)
-    
-

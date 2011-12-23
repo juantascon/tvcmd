@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 
 from tvcmd import cons, episode, show, config, thetvdb
-from tvcmd.errors import (ServerError)
+from tvcmd.errors import (ServerError, ConfigError)
 
 import sys
 import logging
@@ -30,16 +30,18 @@ class Manager():
             self.track_show(show)
     
     def save(self):
-        # sync status
-        for eurl in self.episodes:
-            if eurl["status"] == cons.NONE:
-                self.status.remove(eurl.url())
-            else:
-                self.status.set(eurl.url(), eurl["status"])
-        
-        # write status
-        self.status.write()
-
+        try:
+            # sync status
+            for eurl in self.episodes:
+                if eurl["status"] == cons.NONE:
+                    self.status.remove(eurl.url())
+                else:
+                    self.status.set(eurl.url(), eurl["status"])
+                    
+            # write status
+            self.status.write()
+        except Exception as ex: raise ConfigError("Error saving db (%s)"%(ex))
+                    
     def search_show(self, show_name):
         log().info(" [%s]: SEARCHING ... "%(show_name))
         db = show.DB()
