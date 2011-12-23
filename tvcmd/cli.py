@@ -131,5 +131,5 @@ class Cmd(cmd.Cmd, manager.Manager):
         try:
             return cmd.Cmd.cmdloop(self)
         except KeyboardInterrupt:
-            print()
-            return self.exit()
+            print("^C")
+            return self.cmdloop()
