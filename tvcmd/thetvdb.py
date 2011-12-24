@@ -1,5 +1,3 @@
-#! /usr/bin/env python
-
 import httplib2
 import xml.etree.cElementTree as ElementTree
 import datetime

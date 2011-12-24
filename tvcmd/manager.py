@@ -1,5 +1,3 @@
-#! /usr/bin/env python
-
 from tvcmd import cons, episode, show, config, thetvdb
 from tvcmd.errors import (ServerError, ConfigError)
 

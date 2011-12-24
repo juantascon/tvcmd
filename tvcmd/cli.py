@@ -1,5 +1,3 @@
-#! /usr/bin/env python
-
 import readline, cmd, argparse
 from tvcmd import cons, manager, torrent
 

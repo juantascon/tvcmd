@@ -1,5 +1,3 @@
-#! /usr/bin/env python
-
 from tvcmd import cons
 
 import os, configparser

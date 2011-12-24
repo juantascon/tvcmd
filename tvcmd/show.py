@@ -1,5 +1,3 @@
-#! /usr/bin/env python
-
 class Url(dict):
     
     # expected: id, name, language
