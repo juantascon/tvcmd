@@ -25,7 +25,7 @@ class Cmd(cmd.Cmd, manager.Manager):
             edb = self.search_episodes(surl)
             self.shows.append(surl)
             self.episodes.extend(edb)
-        except Exception as ex: msg("FAIL: ()"%(ex))
+        except Exception as ex: msg("FAIL: (%s)"%(ex))
         
         msg("OK: %d episodes found\n"%(len(edb)))
         
@@ -112,29 +112,28 @@ class Cmd(cmd.Cmd, manager.Manager):
         
         for eurl in db:
             print(eurl.fmt_color())
+
+    def save(self):
+        try:
+            msg("Saving ... ")
+            manager.Manager.save(self)
+            msg("OK\n")
+            self.modified = False
+            return True
+        except ConfigError as ex:
+            msg("FAIL: (%s)\n"%(ex))
+            return False
     
     def do_save(self, line):
         """Save episodes status DB\n\nSyntax:\n save"""
-        try:
-            msg("Saving ... ")
-            self.save()
-            msg("OK\n")
-        except ConfigError as ex:
-            msg("FAIL: (%s)\n"%(ex))
-    
+        self.save()
+        
     ## Basic commands:
     def exit(self):
         if self.modified:
             answer = input("Database has been modified. Do you want to save it now? [Y/n]: ")
             if not answer.lower().startswith("n"):
-                try:
-                    msg("Saving ... ")
-                    self.save()
-                    msg("OK\n")
-                except ConfigError as ex:
-                    msg("FAIL: (%s)\n"%(ex))
-                    return False
-        
+                return self.save()
         return True
     
     def emptyline(self):
@@ -156,10 +155,6 @@ class Cmd(cmd.Cmd, manager.Manager):
         
         msg("Invalid command: %s"%(line.split(" ")[0]))
         return self.do_help("")
-    
-    # def do_EOF(self, arg):
-    #     print()
-    #     return self.exit()
     
     def cmdloop(self):
         try:
