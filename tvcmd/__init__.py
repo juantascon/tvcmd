@@ -1,7 +1,7 @@
 import inspect, sys, os
 
 def version():
-    return "DEV"
+    return "0.7"
 
 def msg(value):
     sys.stderr.write(value)

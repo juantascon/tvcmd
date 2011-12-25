@@ -1,15 +1,5 @@
 TODO:
 
-*** v0.7
-* implement tool dist.sh to distribute in every server
-* fix python3 shebangs
-* add btjunkie urls to tor command
-* tor should filter future episodes
-* implement -e for executing commands and exit inmediatly
-* after do_save the db should be set as not modified
-* better information displayed: loading, searching, saving, updating, using tvcmd lib XX
-* new command: reload
-
 *** v0.8
 some commands (ls, see, adquire, tor) should include multiple inputs
 when shows list is empty it should print a warning or something
@@ -21,7 +11,6 @@ dynamic prompt
 *** ? version 2.0
 ? add an option to import tv shows from thetvdb favorites
 ? implement a way to download torrent files or megaupload files
-
 
 
 CHANGELOG:
@@ -57,3 +46,12 @@ CHANGELOG:
 * help command shouldnt include the EOF command, but instead some personlized text
 * help on how to configure
 
+*** v0.7
+* implement tool dist.sh to distribute in every server
+* fix python3 shebangs
+* add btjunkie urls to tor command
+* tor should filter future episodes
+* implement -e for executing commands and exit inmediatly
+* after do_save the db should be set as not modified
+* better information displayed: loading, searching, saving, updating, using tvcmd lib XX
+* new command: reload
