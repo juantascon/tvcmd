@@ -17,7 +17,28 @@ class Cmd(cmd.Cmd, manager.Manager):
         
     def update_prompt(self):
         self.prompt = "tvcmd:> "
-    
+        
+    def track_show(self, show):
+        msg("Tracking show %s ... "%(show))
+        try:
+            surl = self.search_shows(show)[0]
+            edb = self.search_episodes(surl)
+            self.shows.append(surl)
+            self.episodes.extend(edb)
+        except Exception as ex: msg("FAIL: ()"%(ex))
+        
+        msg("OK: %d episodes found\n"%(len(edb)))
+        
+    def load(self):
+        manager.Manager.load(self)
+        
+        for show in self.main.get_shows():
+            self.track_show(show)
+        
+    def do_reload(self, line):
+        """Reload episodes lists and reset their status\n\nSyntax:\n reload"""
+        self.load()
+        
     def do_shows(self, line):
         """Print tracked shows list\n\nSyntax:\n shows"""
         db = self.shows

@@ -1,15 +1,14 @@
 """Exceptions raised by TVCMD"""
 
 class TVCMDError(Exception):
-    """Base class for all TVCMD exceptions.
-    """
+    """Base class for all TVCMD exceptions"""
 
 class ServerError(TVCMDError):
-    """Raised when an error ocurred contacting the server or the server
-    reply an unexpected response
-    """
+    """Error contacting the server or server unexpected response"""
 
 class ConfigError(TVCMDError):
-    """Raised when an error ocurred contacting the server or the server
-    reply an unexpected response
+    """Error on saving or loading a configuration file
     """
+
+class TrackError(TVCMDError):
+    """Error tracking a tv show"""

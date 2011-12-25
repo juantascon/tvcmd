@@ -11,7 +11,7 @@ def log(): return logging.getLogger(__name__)
 APIKEY = "FD9D34DB64F25A09"
 
 def _get_url(url):
-    log().debug("GETURL: "+url)
+    # log().debug("GETURL: "+url)
     
     try:
         h = httplib2.Http(cache = "/tmp/tvcmd-cache")
@@ -53,8 +53,8 @@ def get_show_info(show_name):
     if len(l) > 0: return l
     else: raise ServerError("Show not found")
 
-def get_episodes(show_info):
-    url = "http://thetvdb.com/api/%s/series/%s/all/en.xml" % (APIKEY, show_info["id"])
+def get_episodes(show_name, show_id):
+    url = "http://thetvdb.com/api/%s/series/%s/all/en.xml" % (APIKEY, show_id)
     
     try: root = _get_xml(url)
     except ServerError as ex: raise ServerError("Error getting episodes list (%s)"%(ex))
@@ -62,7 +62,7 @@ def get_episodes(show_info):
     l = []
     for e in list(root):
         if e.tag == "Episode":
-            d = { "show": show_info["show"], "season": None, "episode": None, "name": "", "date": datetime.date.max }
+            d = { "show": show_name, "season": None, "episode": None, "name": "", "date": datetime.date.max }
             
             for info in list(e):
                 if info.tag == "SeasonNumber":

@@ -90,6 +90,9 @@ class Url(dict):
     
 class DB(list):
     
+    def clear(self):
+        while len(self) > 0 : self.pop()
+    
     def update(self, **kwargs):
         for url in self:
             url.update(**kwargs)

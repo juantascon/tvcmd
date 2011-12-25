@@ -24,7 +24,10 @@ class Url(dict):
         return self["name"].replace("(","").replace(")","").replace(" ", "_").lower()
     
 class DB(list):
-
+    
+    def clear(self):
+        while len(self) > 0 : self.pop()
+    
     def fmt(self):
         return "\n".join([ url.fmt() for url in self ])
         
@@ -34,4 +37,3 @@ class DB(list):
     
     def filter(self, function):
         return DB(item for item in self if function(item))
-    

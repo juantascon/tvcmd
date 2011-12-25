@@ -7,10 +7,11 @@ TODO:
 tor should filter future episodes
 implement -e for executing commands and exit inmediatly
 after do_save the db should be set as not modified
+* better information displayed: loading, searching, saving, updating, using tvcmd lib XX
+* new command: reload
 
 *** v0.8
 some commands (ls, see, adquire, tor) should include multiple inputs
-better info at: "loading...", "searching ...", "saving..." "updating ..." "using tvcmd lib XX"
 when shows list is empty it should print a warning or something
 ls should also filter by status, ex: ls -s shows seen episodes
 tor should have an option to print only btjunkie or torrentz urls, ex: tor --torz * | tor --btj * 

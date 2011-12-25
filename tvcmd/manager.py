@@ -14,15 +14,11 @@ class Manager():
         self.shows = show.DB()
     
     def load(self):
-        # read status
         self.status.read()
-        
-        # read shows
         self.main.read()
         
-        # sync status and shows
-        for show in self.main.get_shows():
-            self.track_show(show)
+        self.episodes.clear()
+        self.shows.clear()
     
     def save(self):
         try:
@@ -37,7 +33,7 @@ class Manager():
             self.status.write()
         except Exception as ex: raise ConfigError("Error saving db (%s)"%(ex))
                     
-    def search_show(self, show_name):
+    def search_shows(self, show_name):
         db = show.DB()
         try:
             for s in thetvdb.get_show_info(show_name):
@@ -47,20 +43,16 @@ class Manager():
         
         return db
     
-    def track_show(self, show_name):
-        log().debug("[%s]: SEARCHING ... "%(show_name))
+    def search_episodes(self, surl):
+        db = episode.DB()
+        
         try:
-            s = thetvdb.get_show_info(show_name)[0]
-            surl = show.Url(id=s["id"], name=s["name"], language=s["language"])
+            episodes = thetvdb.get_episodes(surl.url(), surl["id"])
             
-            log().debug("[%s]: TRACKING: %s ... "%(show_name, surl.fmt()))
-            
-            for d in thetvdb.get_episodes(s):
-                eurl = episode.Url(show=d["show"], season=d["season"], episode=d["episode"], name=d["name"], date=d["date"])
+            for e in episodes:
+                eurl = episode.Url(show=e["show"], season=e["season"], episode=e["episode"], name=e["name"], date=e["date"])
                 eurl.update(status = self.status.get(eurl.url()) or cons.NONE)
-                self.episodes.append(eurl)
-            
-            self.shows.append(surl)
-            log().debug("[%s]: OK"%(show_name))
-        except ServerError as ex:
-            log().debug("[%s]: FAIL (%s)" %(show_name, ex))
+                db.append(eurl)
+        except Exception as ex: raise TrackError("Error tracking show %s: (%s)"%(show_name, ex))
+        
+        return db
