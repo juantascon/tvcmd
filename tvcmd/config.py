@@ -1,10 +1,9 @@
 from tvcmd import cons
 
 import os, configparser
-import logging
 
-def log():
-    return logging.getLogger(__name__)
+import logging
+def log(): return logging.getLogger(__name__)
 
 class ConfigFileParser(configparser.ConfigParser):
     

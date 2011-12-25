@@ -2,6 +2,9 @@ import fnmatch, datetime
 
 from tvcmd import cons
 
+import logging
+def log(): return logging.getLogger(__name__)
+
 class Url(dict):
     
     # expected: show, season, episode, name, date, status

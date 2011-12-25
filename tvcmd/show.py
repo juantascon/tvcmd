@@ -1,3 +1,6 @@
+import logging
+def log(): return logging.getLogger(__name__)
+
 class Url(dict):
     
     # expected: id, name, language

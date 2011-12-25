@@ -1,11 +1,8 @@
 from tvcmd import cons, episode, show, config, thetvdb
 from tvcmd.errors import (ServerError, ConfigError)
 
-import sys
 import logging
-
-def log():
-    return logging.getLogger(__name__)
+def log(): return logging.getLogger(__name__)
 
 class Manager():
     
@@ -19,7 +16,7 @@ class Manager():
     def load(self):
         # read status
         self.status.read()
-
+        
         # read shows
         self.main.read()
         
@@ -41,25 +38,22 @@ class Manager():
         except Exception as ex: raise ConfigError("Error saving db (%s)"%(ex))
                     
     def search_show(self, show_name):
-        log().info(" [%s]: SEARCHING ... "%(show_name))
         db = show.DB()
         try:
             for s in thetvdb.get_show_info(show_name):
                 surl = show.Url(id=s["id"], name=s["name"], language=s["language"])
                 db.append(surl)
-        except ServerError as ex:
-            log().info(" [%s]: FAIL (%s)" %(show_name, ex))
-            
-        log().info(" [%s]: %d item(s) FOUND" %(show_name, len(db)))
+        except ServerError as ex: raise ex
+        
         return db
-            
+    
     def track_show(self, show_name):
-        log().info(" [%s]: SEARCHING ... "%(show_name))
+        log().debug("[%s]: SEARCHING ... "%(show_name))
         try:
             s = thetvdb.get_show_info(show_name)[0]
             surl = show.Url(id=s["id"], name=s["name"], language=s["language"])
             
-            log().info(" [%s]: TRACKING: %s ... "%(show_name, surl.fmt()))
+            log().debug("[%s]: TRACKING: %s ... "%(show_name, surl.fmt()))
             
             for d in thetvdb.get_episodes(s):
                 eurl = episode.Url(show=d["show"], season=d["season"], episode=d["episode"], name=d["name"], date=d["date"])
@@ -67,6 +61,6 @@ class Manager():
                 self.episodes.append(eurl)
             
             self.shows.append(surl)
-            log().info(" [%s]: OK"%(show_name))
+            log().debug("[%s]: OK"%(show_name))
         except ServerError as ex:
-            log().info(" [%s]: FAIL (%s)" %(show_name, ex))
+            log().debug("[%s]: FAIL (%s)" %(show_name, ex))

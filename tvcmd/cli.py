@@ -1,10 +1,11 @@
 import readline, cmd, argparse
 from tvcmd import cons, manager, torrent
 
-import logging
+from tvcmd.errors import (ServerError, ConfigError)
+from tvcmd import msg
 
-def log():
-    return logging.getLogger(__name__)
+import logging
+def log(): return logging.getLogger(__name__)
 
 class Cmd(cmd.Cmd, manager.Manager):
     
@@ -24,7 +25,12 @@ class Cmd(cmd.Cmd, manager.Manager):
     
     def do_search(self, line):
         """Search for shows in thetvdb.com database\n\nSyntax:\n search <TEXT>\nExample:\n search the_office"""
-        db = self.search_show(line)
+        msg("Searching [%s] ... "%(line))
+        try:
+            db = self.search_show(line)
+        except ServerError as ex: msg("FAIL: (%)\n"%(ex))
+        
+        msg("OK: %d shows found\n"%(len(db)))
         print("\n%s\n"%(db.fmt()))
     
     def complete_adquire(self, text, line, start_index, end_index):
@@ -34,12 +40,12 @@ class Cmd(cmd.Cmd, manager.Manager):
     def do_adquire(self, line):
         """Mark episodes as ADQUIRED\n\nSyntax:\n adquire <EPISODE>\nExample:\n adquire lost.s01*"""
         db = self.episodes.filter(lambda url: url.match(line) and url["status"] in [cons.NONE])
+
+        msg("Marking %d episode(s) as ADQUIRED:\n"%(len(db)))
         
-        if not len(db):
-            print("episode list empty")
-            return
+        if not len(db): return
         
-        if len(db): self.modified = True
+        self.modified = True
         
         for eurl in db:
             eurl.update(status = cons.ADQUIRED)
@@ -53,10 +59,10 @@ class Cmd(cmd.Cmd, manager.Manager):
         """Mark episodes as SEEN\n\nSyntax:\n see <EPISODE>\nExample:\n see lost.s01*"""
         db = self.episodes.filter(lambda url: url.match(line) and url["status"] in [cons.NONE, cons.ADQUIRED])
         
-        if not len(db):
-            print("episode list empty")
-            return
-            
+        msg("Marking %d episode(s) as SEEN:\n"%(len(db)))
+        
+        if not len(db): return
+        
         self.modified = True
         
         for eurl in db:
@@ -89,11 +95,11 @@ class Cmd(cmd.Cmd, manager.Manager):
     def do_save(self, line):
         """Save episodes status DB\n\nSyntax:\n save"""
         try:
-            log().info("saving ...")
+            msg("Saving ... ")
             self.save()
-            log().info("OK")
+            msg("OK\n")
         except ConfigError as ex:
-            log().info(ex)
+            msg("FAIL: (%s)\n"%(ex))
     
     ## Basic commands:
     def exit(self):
@@ -101,11 +107,11 @@ class Cmd(cmd.Cmd, manager.Manager):
             answer = input("Database has been modified. Do you want to save it now? [Y/n]: ")
             if not answer.lower().startswith("n"):
                 try:
-                    log().info("SAVING ...")
+                    msg("Saving ... ")
                     self.save()
-                    log().info("OK")
+                    msg("OK\n")
                 except ConfigError as ex:
-                    log().info("FAIL (%s)"%(ex))
+                    msg("FAIL: (%s)\n"%(ex))
                     return False
         
         return True
@@ -122,12 +128,12 @@ class Cmd(cmd.Cmd, manager.Manager):
         return self.exit()
     
     def default(self, line):
+        print()
+        
         if line == "EOF":
-            print()
             return self.exit()
         
-        print()
-        print("Invalid command: %s"%(line.split(" ")[0]))
+        msg("Invalid command: %s"%(line.split(" ")[0]))
         return self.do_help("")
     
     # def do_EOF(self, arg):

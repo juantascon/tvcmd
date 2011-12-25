@@ -6,14 +6,12 @@ import datetime
 from tvcmd.errors import (ServerError)
 
 import logging
-
-def log():
-    return logging.getLogger(__name__)
+def log(): return logging.getLogger(__name__)
 
 APIKEY = "FD9D34DB64F25A09"
 
 def _get_url(url):
-    log().debug(" GETURL: "+url)
+    log().debug("GETURL: "+url)
     
     try:
         h = httplib2.Http(cache = "/tmp/tvcmd-cache")
