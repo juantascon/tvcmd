@@ -96,7 +96,7 @@ class Cmd(cmd.Cmd, manager.Manager):
     
     def do_tor(self, line):
         """Print torrent urls for NOT ADQUIRED episodes\n\nSyntax:\n tor [EPISODE]\nExample:\n tor *"""
-        db = self.episodes.filter(lambda url: url.match(line or "*") and url["status"] in [cons.NONE])
+        db = self.episodes.filter(lambda url: not url.future() and url.match(line or "*") and url["status"] in [cons.NONE])
         
         for eurl in db:
             print(torrent.fmt_url(eurl["show"], eurl["season"], eurl["episode"]))
