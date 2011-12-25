@@ -23,6 +23,7 @@ sed -i "s/version=.*/version=\"$VER\",/g" setup.py
 # distribute to sf.net
 ./setup.py sdist
 scp ./dist/tvcmd-$VER.tar.gz juantascon,tvcmd@frs.sourceforge.net:/home/frs/project/t/tv/tvcmd/
+scp ./TODO juantascon,tvcmd@frs.sourceforge.net:/home/frs/project/t/tv/tvcmd/README
 
 # arch dist
 pushd distros/arch
