@@ -5,7 +5,7 @@ TODO:
 * fix python3 shebangs
 * add btjunkie urls to tor command
 * tor should filter future episodes
-implement -e for executing commands and exit inmediatly
+* implement -e for executing commands and exit inmediatly
 * after do_save the db should be set as not modified
 * better information displayed: loading, searching, saving, updating, using tvcmd lib XX
 * new command: reload
