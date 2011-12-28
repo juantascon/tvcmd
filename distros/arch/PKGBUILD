@@ -1,7 +1,7 @@
 # Contributor: Juan Tascon
 
 pkgname=tvcmd
-pkgver=0.7
+pkgver=0.7.1
 pkgrel=1
 pkgdesc="tvcmd is a command line tool to keep track of tv shows episodes"
 arch=('any')
@@ -15,4 +15,4 @@ build() {
     python setup.py install --root $pkgdir
 }
 
-md5sums=('324b04a6bb3d1546b009634afa5fbda6')
+md5sums=('ed0e75a3f2daa2cb1e49b107a6c3775c')
