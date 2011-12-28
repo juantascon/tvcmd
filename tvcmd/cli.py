@@ -1,7 +1,7 @@
 import readline, cmd, argparse
 from tvcmd import cons, manager, torrent
 
-from tvcmd.errors import (ServerError, ConfigError)
+from tvcmd.errors import (ServerError, ConfigError, TrackError)
 from tvcmd import msg
 
 import logging
@@ -25,7 +25,9 @@ class Cmd(cmd.Cmd, manager.Manager):
             edb = self.search_episodes(surl)
             self.shows.append(surl)
             self.episodes.extend(edb)
-        except Exception as ex: msg("FAIL: (%s)"%(ex))
+        except Exception as ex:
+            msg("FAIL: (%s)\n"%(ex))
+            return
         
         msg("OK: %d episodes found\n"%(len(edb)))
         

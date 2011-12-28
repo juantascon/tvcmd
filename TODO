@@ -1,6 +1,8 @@
 TODO:
 
 *** v0.8
+when exit do you wish to save should accept only y/n
+command:reload should ask before proceding and should mark the database as not modified
 some commands (ls, see, adquire, tor) should include multiple inputs
 implement a command to set episode status to NONE
 when shows list is empty it should print a warning or a message on how to configure

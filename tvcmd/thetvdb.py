@@ -11,7 +11,7 @@ def log(): return logging.getLogger(__name__)
 APIKEY = "FD9D34DB64F25A09"
 
 def _get_url(url):
-    # log().debug("GETURL: "+url)
+    # log().debug("\nGETURL: %s\n"%(url))
     
     try:
         h = httplib2.Http(cache = "/tmp/tvcmd-cache")
@@ -29,7 +29,7 @@ def _get_xml(url):
     response = _get_url(url)
     
     try: return ElementTree.XML(response.decode("utf-8"))
-    except: raise ServerError("Unexpected thetvdb.com response")
+    except Exception as ex: raise ServerError("Unexpected thetvdb.com XML response (%s)"%(ex))
 
 def get_show_info(show_name):
     url = "http://thetvdb.com/api/GetSeries.php?seriesname=%s" % (show_name)

@@ -1,5 +1,5 @@
 from tvcmd import cons, episode, show, config, thetvdb
-from tvcmd.errors import (ServerError, ConfigError)
+from tvcmd.errors import (ServerError, ConfigError, TrackError)
 
 import logging
 def log(): return logging.getLogger(__name__)
@@ -53,6 +53,7 @@ class Manager():
                 eurl = episode.Url(show=e["show"], season=e["season"], episode=e["episode"], name=e["name"], date=e["date"])
                 eurl.update(status = self.status.get(eurl.url()) or cons.NONE)
                 db.append(eurl)
-        except Exception as ex: raise TrackError("Error tracking show %s: (%s)"%(show_name, ex))
+        except Exception as ex:
+            raise TrackError("Error tracking show %s: (%s)"%(surl, ex))
         
         return db
