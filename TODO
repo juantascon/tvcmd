@@ -58,3 +58,8 @@ CHANGELOG:
 * after do_save the db should be set as not modified
 * better information displayed: loading, searching, saving, updating, using tvcmd lib XX
 * new command: reload
+
+*** v0.7.1
+* APIKEY moved to cons.py
+* fixed bug when receiving invalid response from thetvdb.com
+

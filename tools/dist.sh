@@ -18,6 +18,10 @@ pushd $(dirname $0)/..
 
 clean
 
+#fix tvcmd/__init__ version
+sed -i "s/def version(): return .*/def version(): return \"$VER\"/g" tvcmd/__init__.py
+
+#fix setup.py version
 sed -i "s/version=.*/version=\"$VER\",/g" setup.py
 
 # distribute to sf.net
