@@ -4,11 +4,10 @@ import datetime
 #import zipfile, io
 
 from tvcmd.errors import (ServerError)
+from tvcmd import cons
 
 import logging
 def log(): return logging.getLogger(__name__)
-
-APIKEY = "FD9D34DB64F25A09"
 
 def _get_url(url):
     # log().debug("\nGETURL: %s\n"%(url))
@@ -54,7 +53,7 @@ def get_show_info(show_name):
     else: raise ServerError("Show not found")
 
 def get_episodes(show_name, show_id):
-    url = "http://thetvdb.com/api/%s/series/%s/all/en.xml" % (APIKEY, show_id)
+    url = "http://thetvdb.com/api/%s/series/%s/all/en.xml" % (cons.APIKEY, show_id)
     
     try: root = _get_xml(url)
     except ServerError as ex: raise ServerError("Error getting episodes list (%s)"%(ex))

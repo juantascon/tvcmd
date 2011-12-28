@@ -13,3 +13,6 @@ IGNORED = 2
 CONFIGDIR = os.environ["XDG_CONFIG_HOME"]+"/tvcmd"
 MAINCONFIGFILE = "main.cfg"
 STATUSDBFILE = "status.cfg"
+
+# thetvdb.com
+APIKEY = "FD9D34DB64F25A09"
