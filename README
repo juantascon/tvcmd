@@ -1,14 +1,2 @@
 tvcmd is a cli application with a purpose similar to websites like myepisodes.com
 
-ICON:
-The icon is based on the terminal icon found at the Humanoid icon set by schollidesign [1]
-
-TVDB:
-The episodes information is fetched using the thetvdb.com api [2], feel free to contribute
-
-** references:
-
-[1]: http://schollidesign.deviantart.com/art/Humanoid-nearly-Human-123984041
-[2]: http://thetvdb.com/wiki/index.php?title=Programmers_API
-
-
