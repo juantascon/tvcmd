@@ -141,7 +141,6 @@ class Cmd(cmd.Cmd, manager.Manager):
         return db.complete_text(text)
     
     def do_tor(self, line):
-        """Print torrent urls for NEW episodes\n\nSyntax:\n tor [EPISODE] ...\nExample:\n tor lost.s02* the_offi*"""
         if not line: line = "*"
         
         db = episode.DB()
@@ -172,9 +171,9 @@ class Cmd(cmd.Cmd, manager.Manager):
         try: args = parser.parse_args(line.split())
         except SystemExit: return
         
-        db = self.episode_db
+        db = episode.DB()
         for pattern in args.filters:
-            db = db.filter(lambda url: url.match(pattern))
+            db.extend(self.episode_db.filter(lambda url: url.match(pattern)))
         
         # defaults: NEW and ADQUIRED
         if not (args.new or args.adquired or args.seen or args.future):
