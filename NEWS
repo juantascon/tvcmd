@@ -1,0 +1,55 @@
+NEWS / CHANGELOG:
+
+*** v0.1:
+* initial version, basic commands: ls, see, adquire, save, exit
+
+*** v0.2:
+* new tools directory
+* added example main.cfg
+* several bugs fixed
+* handling of DEBUG env variable
+
+*** v0.3:
+* added commands: show_add and show_list
+* added thetvdb.get_show_info
+* improved config handling
+* better error handling in thetvdb queries
+* added debug mode and normal mode
+
+*** v0.4:
+* command: search, search tv shows in thetvdb.com
+* command: shows, print tracked tv shows
+
+*** v0.5:
+* improved save command
+
+*** v0.6:
+* help for every command
+* TAB shouldnt include the EOF command
+* ctrl+c should act like in bash4 (print C and not run anythin)
+* when an invalid command is input it should not show "Unknown syntax xxxx"
+* help command shouldnt include the EOF command, but instead some personlized text
+* help on how to configure
+
+*** v0.7
+* implement tool dist.sh to distribute in every server
+* fix python3 shebangs
+* add btjunkie urls to tor command
+* tor should filter future episodes
+* implement -e for executing commands and exit inmediatly
+* after do_save the db should be set as not modified
+* better information displayed: loading, searching, saving, updating, using tvcmd lib XX
+* new command: reload
+
+*** v0.7.1
+* APIKEY moved to cons.py
+* fixed bug when receiving invalid response from thetvdb.com
+
+*** v0.7.2
+* fixed bug when searching
+
+*** v0.7.3
+* fix cache path to per-user directory
+* on exit do you wish to save should accept only y/n
+* command:reload should ask before proceding and should mark the database as not modified
+
