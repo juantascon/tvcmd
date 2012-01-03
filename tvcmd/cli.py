@@ -18,24 +18,17 @@ class Cmd(cmd.Cmd, manager.Manager):
     def update_prompt(self):
         self.prompt = "tvcmd:> "
         
-    def track_show(self, show):
-        msg("Tracking show %s ... "%(show))
-        try:
-            surl = self.search_shows(show)[0]
-            edb = self.search_episodes(surl)
-            self.shows.append(surl)
-            self.episodes.extend(edb)
-        except Exception as ex:
-            msg("FAIL: (%s)\n"%(ex))
-            return
-        
-        msg("OK: %d episodes found\n"%(len(edb)))
-        
     def load(self):
         manager.Manager.load(self)
         
-        for show in self.main.get_shows():
-            self.track_show(show)
+        for show_name in self.main.get_shows():
+            msg("Tracking show %s ... "%(show_name))
+            try:
+                surl, edb = self.track(show_name)
+                
+                msg("OK: %d episodes found\n"%(len(edb)))
+            except Exception as ex:
+                msg("FAIL: (%s)\n"%(ex))
         
     def do_reload(self, line):
         """Reload episodes lists and reset their status\n\nSyntax:\n reload"""
@@ -50,8 +43,8 @@ class Cmd(cmd.Cmd, manager.Manager):
         """Search for shows in thetvdb.com database\n\nSyntax:\n search <TEXT>\nExample:\n search the_office"""
         msg("Searching [%s] ... "%(line))
         try:
-            db = self.search_show(line)
-        except ServerError as ex: msg("FAIL: (%)\n"%(ex))
+            db = self.search_shows(line)
+        except ServerError as ex: msg("FAIL: (%s)\n"%(ex))
         
         msg("OK: %d shows found\n"%(len(db)))
         print("\n%s\n"%(db.fmt()))
@@ -63,7 +56,7 @@ class Cmd(cmd.Cmd, manager.Manager):
     def do_adquire(self, line):
         """Mark episodes as ADQUIRED\n\nSyntax:\n adquire <EPISODE>\nExample:\n adquire lost.s01*"""
         db = self.episodes.filter(lambda url: url.match(line) and url["status"] in [cons.NONE])
-
+        
         msg("Marking %d episode(s) as ADQUIRED:\n"%(len(db)))
         
         if not len(db): return

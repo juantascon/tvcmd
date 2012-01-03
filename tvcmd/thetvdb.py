@@ -1,7 +1,9 @@
 import httplib2
+import urllib.parse
+
+#import zipfile, io
 import xml.etree.cElementTree as ElementTree
 import datetime
-#import zipfile, io
 
 from tvcmd.errors import (ServerError)
 from tvcmd import cons
@@ -20,9 +22,9 @@ def _get_url(url):
     if (resp["status"] == "200"): return content
     else: raise ServerError("Invalid thetvdb.com response")
 
-def _get_xml_zip():
-    # response = zipfile.ZipFile(io.BytesIO(_get_url(url))).read("en.xml")
-    pass
+# def _get_xml_zip():
+#     response = zipfile.ZipFile(io.BytesIO(_get_url(url))).read("en.xml")
+#     return response
     
 def _get_xml(url):
     response = _get_url(url)
@@ -31,7 +33,13 @@ def _get_xml(url):
     except Exception as ex: raise ServerError("Unexpected thetvdb.com XML response (%s)"%(ex))
 
 def get_show_info(show_name):
-    url = "http://thetvdb.com/api/GetSeries.php?seriesname=%s" % (show_name)
+    shows = get_shows(show_name)
+    
+    try: return shows[0]
+    except: raise ServerError("Show not found")
+    
+def get_shows(pattern):
+    url = "http://thetvdb.com/api/GetSeries.php?seriesname=%s" % (urllib.parse.quote(pattern))
     
     try: root = _get_xml(url)
     except ServerError as ex: raise ServerError("Show not found (%s)"%(ex))
@@ -39,42 +47,41 @@ def get_show_info(show_name):
     l = []
     for data in list(root):
         if data.tag == "Series":
-                info = { "show": show_name, "name": None, "id": None, "language": None }
+                info = { "name": None, "id": None, "language": None }
                 for s in list(data):
-                    if s.tag == "seriesid":
+                    if s.tag.lower() == "seriesid":
                         info["id"] = s.text
-                    if s.tag == "SeriesName":
+                    elif s.tag.lower() == "seriesname":
                         info["name"] = s.text
-                    if s.tag == "language":
+                    elif s.tag.lower() == "language":
                         info["language"] = s.text
                 if info["id"]: l.append(info)
     
-    if len(l) > 0: return l
-    else: raise ServerError("Show not found")
-
-def get_episodes(show_name, show_id):
+    return l
+    
+def get_episodes(show_id):
     url = "http://thetvdb.com/api/%s/series/%s/all/en.xml" % (cons.APIKEY, show_id)
     
     try: root = _get_xml(url)
     except ServerError as ex: raise ServerError("Error getting episodes list (%s)"%(ex))
     
     l = []
-    for e in list(root):
-        if e.tag == "Episode":
-            d = { "show": show_name, "season": None, "episode": None, "name": "", "date": datetime.date.max }
+    for data in list(root):
+        if data.tag.lower() == "episode":
+            info = { "season": None, "episode": None, "name": "", "date": datetime.date.max }
             
-            for info in list(e):
-                if info.tag == "SeasonNumber":
-                    d["season"] = int(info.text)
-                elif info.tag == "EpisodeNumber":
-                    d["episode"] = int(info.text)
-                elif info.tag == "FirstAired":
-                    try: d["date"] = datetime.date(int(info.text[0:4]), int(info.text[5:7]), int(info.text[8:10]))
+            for e in list(data):
+                if e.tag.lower() == "seasonnumber":
+                    info["season"] = int(e.text)
+                elif e.tag.lower() == "episodenumber":
+                    info["episode"] = int(e.text)
+                elif e.tag.lower() == "firstaired":
+                    try: info["date"] = datetime.date(int(e.text[0:4]), int(e.text[5:7]), int(e.text[8:10]))
                     except: pass
-                elif info.tag == "EpisodeName":
-                    d["name"] = info.text
+                elif e.tag.lower() == "episodename":
+                    info["name"] = e.text
                     
-            l.append(d)
+            l.append(info)
     
     return l
 

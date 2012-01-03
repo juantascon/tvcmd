@@ -12,3 +12,6 @@ class ConfigError(TVCMDError):
 
 class TrackError(TVCMDError):
     """Error tracking a tv show"""
+
+class SearchError(TVCMDError):
+    """Error searching a tv show or its episodes"""
