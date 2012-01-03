@@ -1,13 +1,5 @@
 TODO:
 
-*** v0.8
-* some commands (ls, see, adquire, tor) should include multiple inputs
-* ls should also filter by status, ex: ls -s shows seen episodes
-* implement a command to set episode status to NEW
-* implement better argparsing system
-* command --help should not say "show this help message and exit"
-* divide TODO and create a NEWS or CHANGELOG file
-
 *** v0.9
 add website source code
 when shows list is empty it should print a warning or a message on how to configure

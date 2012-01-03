@@ -53,3 +53,11 @@ NEWS / CHANGELOG:
 * on exit do you wish to save should accept only y/n
 * command:reload should ask before proceding and should mark the database as not modified
 
+*** v0.8
+* added command:new to revert episode status to NEW
+* commands:ls, tor, new, adquire, see allow multiple inputs
+* command:ls has new options to filter status
+* better parse of arguments
+* improved command:help
+* every command has a -h/--help option
+* divided TODO file and created a NEWS file
