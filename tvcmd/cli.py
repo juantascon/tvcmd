@@ -1,4 +1,4 @@
-import readline, cmd, argparse
+import readline, cmd, argparse, sys
 from tvcmd import episode, show, cons, manager, torrent
 
 from tvcmd.errors import (ServerError, ConfigError, TrackError)
@@ -7,17 +7,25 @@ from tvcmd import msg
 import logging
 def log(): return logging.getLogger(__name__)
 
-class Cmd(cmd.Cmd, manager.Manager):
+class ArgumentParser(argparse.ArgumentParser):
     
+    def _print_message(self, message, file=None):
+        if message:
+            msg(message)
+            
+class Cmd(cmd.Cmd, manager.Manager):
     def __init__(self):
         manager.Manager.__init__(self)
         cmd.Cmd.__init__(self)
+        
+        readline.set_completer_delims(readline.get_completer_delims().replace("-", ""))
+        
         self.update_prompt()
         self.modified = False
         
     def update_prompt(self):
         self.prompt = "tvcmd:> "
-
+    
     #
     # DB IO commands
     #
@@ -56,7 +64,7 @@ class Cmd(cmd.Cmd, manager.Manager):
     def do_save(self, line):
         """Save episodes status DB\n\nSyntax:\n save"""
         self.save()
-        
+    
     #
     # Show Commands
     #
@@ -145,16 +153,43 @@ class Cmd(cmd.Cmd, manager.Manager):
             print(torrent.fmt_url(eurl["show"], eurl["season"], eurl["episode"]))
     
     def complete_ls(self, text, line, start_index, end_index):
-        db = self.episode_db.filter(lambda url: url["status"] in [cons.NEW, cons.ADQUIRED])
-        return db.complete_text(text)
+        db = self.episode_db
+        episodes = db.complete_text(text)
+        
+        options = ["-n", "--new", "-a", "--adquired", "-s", "--seen", "-f", "--future"]
+        options = [ opt for opt in options if opt.startswith(text) ]
+        
+        return  episodes + options
     
-    def do_ls(self, line):
-        """Show episodes information\n\nSyntax:\n ls [EPISODE] ...\nExample:\n ls lost.s02* the_offi*"""
-        if not line: line = "*"
-        db = episode.DB()
-        for pattern in line.split(" "):
-            if not pattern: continue
-            db.extend(self.episode_db.filter(lambda url: url.match(pattern) and url["status"] in [cons.NEW, cons.ADQUIRED]))
+    def do_ls(self,line):
+        parser = ArgumentParser(prog="ls", description="Show episodes information", epilog="example: ls -as lost*")
+        parser.add_argument("-n", "--new", action="store_true", help="list NEW episodes (default)")
+        parser.add_argument("-a", "--adquired", action="store_true", help="list ADQUIRED episodes (default)")
+        parser.add_argument("-s", "--seen", action="store_true", help="list SEEN episodes")
+        parser.add_argument("-f", "--future", action="store_true", help="list episodes not aired to date, implies -nas")
+        parser.add_argument("filters", metavar="EPISODE", nargs="*", default=["*"], help="episode name or filter, ex: lost.s01e0*")
+        
+        try: args = parser.parse_args(line.split())
+        except SystemExit: return
+        
+        db = self.episode_db
+        for pattern in args.filters:
+            db = db.filter(lambda url: url.match(pattern))
+        
+        # defaults: NEW and ADQUIRED
+        if not (args.new or args.adquired or args.seen or args.future):
+            args.new = args.adquired = True
+        
+        # future implies every other status
+        if args.future:
+            db = db.filter( lambda url: url.future() )
+            args.new = args.adquired = args.seen = True
+        else:
+            db = db.filter( lambda url: not url.future() )
+        
+        if not args.new: db = db.filter( lambda url: url["status"] != cons.NEW )
+        if not args.adquired: db = db.filter( lambda url: url["status"] != cons.ADQUIRED )
+        if not args.seen: db = db.filter( lambda url: url["status"] != cons.SEEN )
         
         db.sort(key=lambda url: url["date"], reverse = True)
         

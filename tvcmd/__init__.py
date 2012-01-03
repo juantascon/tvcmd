@@ -3,7 +3,7 @@ import inspect, sys, os
 def version(): return "0.7.3"
 
 def msg(value):
-    sys.stderr.write(value)
+    sys.stderr.write(str(value))
     sys.stderr.flush()
 
 # def debug(value):
