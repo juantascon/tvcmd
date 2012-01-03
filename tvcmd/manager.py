@@ -10,23 +10,23 @@ class Manager():
         self.status = config.Status()
         self.main = config.Main()
         
-        self.episodes = episode.DB()
-        self.shows = show.DB()
+        self.episode_db = episode.DB()
+        self.show_db = show.DB()
     
     def load(self):
         try: 
             self.status.read()
             self.main.read()
             
-            self.episodes.clear()
-            self.shows.clear()
+            self.episode_db.clear()
+            self.show_db.clear()
         except Exception as ex:
             raise ConfigError("Error loading db (%s)"%(ex))
             
     def save(self):
         try:
             # sync status
-            for eurl in self.episodes:
+            for eurl in self.episode_db:
                 if eurl["status"] == cons.NONE:
                     self.status.remove(eurl.url())
                 else:
@@ -69,8 +69,8 @@ class Manager():
         try:
             surl = self.search_shows(show_name)[0]
             edb = self.search_episodes(surl)
-            self.shows.append(surl)
-            self.episodes.extend(edb)
+            self.show_db.append(surl)
+            self.episode_db.extend(edb)
         except Exception as ex:
             raise TrackError("Error tracking show %s (%s)"%(show_name, ex))
         
