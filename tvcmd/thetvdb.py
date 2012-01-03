@@ -15,7 +15,7 @@ def _get_url(url):
     # log().debug("\nGETURL: %s\n"%(url))
     
     try:
-        h = httplib2.Http(cache = "/tmp/tvcmd-cache")
+        h = httplib2.Http(cache = cons.CACHEDIR)
         resp, content = h.request(url, "GET", headers={"cache-control":"private,max-age=86400"})
     except: raise ServerError("Error connecting thetvdb.com")
     

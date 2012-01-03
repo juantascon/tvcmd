@@ -14,5 +14,8 @@ CONFIGDIR = os.environ["XDG_CONFIG_HOME"]+"/tvcmd"
 MAINCONFIGFILE = "main.cfg"
 STATUSDBFILE = "status.cfg"
 
+# cache
+CACHEDIR = os.environ["XDG_CACHE_HOME"]+"/tvcmd"
+
 # thetvdb.com
 APIKEY = "FD9D34DB64F25A09"

@@ -25,7 +25,6 @@ class Cmd(cmd.Cmd, manager.Manager):
             msg("Tracking show %s ... "%(show_name))
             try:
                 surl, edb = self.track(show_name)
-                
                 msg("OK: %d episodes found\n"%(len(edb)))
             except Exception as ex:
                 msg("FAIL: (%s)\n"%(ex))
