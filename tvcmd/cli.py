@@ -28,9 +28,15 @@ class Cmd(cmd.Cmd, manager.Manager):
                 msg("OK: %d episodes found\n"%(len(edb)))
             except Exception as ex:
                 msg("FAIL: (%s)\n"%(ex))
+                
+        self.modified = False
         
     def do_reload(self, line):
         """Reload episodes lists and reset their status\n\nSyntax:\n reload"""
+        if self.modified:
+            answer = self.ask_yn("Database has been modified. Are you sure you want to reload?")
+            if not answer: return
+            
         self.load()
         
     def do_shows(self, line):
@@ -126,7 +132,7 @@ class Cmd(cmd.Cmd, manager.Manager):
     def ask_yn(self, question):
         answer = ""
         while True:
-            answer = input(question + " [Y/n]: ").lower()
+            answer = input(question + " [y/n]: ").lower()
             if answer in ["y", "yes"]: return True
             elif answer in ["n", "no"]: return False
             
