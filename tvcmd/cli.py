@@ -123,11 +123,17 @@ class Cmd(cmd.Cmd, manager.Manager):
         self.save()
         
     ## Basic commands:
+    def ask_yn(self, question):
+        answer = ""
+        while True:
+            answer = input(question + " [Y/n]: ").lower()
+            if answer in ["y", "yes"]: return True
+            elif answer in ["n", "no"]: return False
+            
     def exit(self):
         if self.modified:
-            answer = input("Database has been modified. Do you want to save it now? [Y/n]: ")
-            if not answer.lower().startswith("n"):
-                return self.save()
+            answer = self.ask_yn("Database has been modified. Do you want to save it now?")
+            if answer: return self.save()
         return True
     
     def emptyline(self):
