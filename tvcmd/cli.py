@@ -76,62 +76,76 @@ class Cmd(cmd.Cmd, manager.Manager):
         print("\n%s\n"%(db.fmt()))
 
     #
-    # Episode Commands
+    # Episode Status Commands
     #
-    def complete_adquire(self, text, line, start_index, end_index):
-        db = self.episode_db.filter(lambda url: url["status"] in [cons.NONE])
+    def complete_new(self, text, line, start_index, end_index):
+        db = self.episode_db.filter(lambda url: url["status"] in [cons.ADQUIRED, cons.SEEN])
         return db.complete_text(text)
+    
+    def complete_adquire(self, text, line, start_index, end_index):
+        db = self.episode_db.filter(lambda url: url["status"] in [cons.NEW])
+        return db.complete_text(text)
+    
+    def complete_see(self, text, line, start_index, end_index):
+        db = self.episode_db.filter(lambda url: url["status"] in [cons.NEW, cons.ADQUIRED])
+        return db.complete_text(text)
+    
+    def mark(self, edb, status):
+        msg("Marking %d episode(s) as %s:\n"%(len(edb), cons.ENUM_EPISODE_STATUS[status]))
+        if len(edb): self.modified = True
+        
+        for eurl in edb:
+            eurl.update(status = status)
+            print(eurl.fmt_color())
+    
+    def do_new(self, line):
+        """Mark episodes as NEW\n\nSyntax:\n new <EPISODE> ... \nExample:\n new lost.s01* lost.s02*"""
+        db = episode.DB()
+        for pattern in line.split(" "):
+            if not pattern: continue
+            db.extend(self.episode_db.filter(lambda url: url.match(pattern) and url["status"] in [cons.ADQUIRED, cons.SEEN]))
+        
+        self.mark(db, cons.NEW)
     
     def do_adquire(self, line):
         """Mark episodes as ADQUIRED\n\nSyntax:\n adquire <EPISODE> ... \nExample:\n adquire lost.s01* lost.s02*"""
         db = episode.DB()
         for pattern in line.split(" "):
             if not pattern: continue
-            db.extend(self.episode_db.filter(lambda url: url.match(pattern) and url["status"] in [cons.NONE]))
-            
-        msg("Marking %d episode(s) as ADQUIRED:\n"%(len(db)))
-        if len(db): self.modified = True
+            db.extend(self.episode_db.filter(lambda url: url.match(pattern) and url["status"] in [cons.NEW]))
         
-        for eurl in db:
-            eurl.update(status = cons.ADQUIRED)
-            print(eurl.fmt_color())
-    
-    def complete_see(self, text, line, start_index, end_index):
-        db = self.episode_db.filter(lambda url: url["status"] in [cons.NONE, cons.ADQUIRED])
-        return db.complete_text(text)
+        self.mark(db, cons.ADQUIRED)
     
     def do_see(self, line):
         """Mark episodes as SEEN\n\nSyntax:\n see <EPISODE> ...\nExample:\n see lost.s01* lost.s02*"""
         db = episode.DB()
         for pattern in line.split(" "):
             if not pattern: continue
-            db.extend(self.episode_db.filter(lambda url: url.match(pattern) and url["status"] in [cons.NONE, cons.ADQUIRED]))
+            db.extend(self.episode_db.filter(lambda url: url.match(pattern) and url["status"] in [cons.NEW, cons.ADQUIRED]))
         
-        msg("Marking %d episode(s) as SEEN:\n"%(len(db)))
-        if len(db): self.modified = True
-        
-        for eurl in db:
-            eurl.update(status = cons.SEEN)
-            print(eurl.fmt_color())
+        self.mark(db, cons.SEEN)
     
+    #
+    # Episode info Commands
+    #
     def complete_tor(self, text, line, start_index, end_index):
-        db = self.episode_db.filter(lambda url: not url.future() and url["status"] in [cons.NONE])
+        db = self.episode_db.filter(lambda url: not url.future() and url["status"] in [cons.NEW])
         return db.complete_text(text)
     
     def do_tor(self, line):
-        """Print torrent urls for NOT ADQUIRED episodes\n\nSyntax:\n tor [EPISODE] ...\nExample:\n tor lost.s02* the_offi*"""
+        """Print torrent urls for NEW episodes\n\nSyntax:\n tor [EPISODE] ...\nExample:\n tor lost.s02* the_offi*"""
         if not line: line = "*"
         
         db = episode.DB()
         for pattern in line.split(" "):
             if not pattern: continue
-            db.extend(self.episode_db.filter(lambda url: not url.future() and url.match(pattern) and url["status"] in [cons.NONE]))
+            db.extend(self.episode_db.filter(lambda url: not url.future() and url.match(pattern) and url["status"] in [cons.NEW]))
         
         for eurl in db:
             print(torrent.fmt_url(eurl["show"], eurl["season"], eurl["episode"]))
     
     def complete_ls(self, text, line, start_index, end_index):
-        db = self.episode_db.filter(lambda url: url["status"] in [cons.NONE, cons.ADQUIRED])
+        db = self.episode_db.filter(lambda url: url["status"] in [cons.NEW, cons.ADQUIRED])
         return db.complete_text(text)
     
     def do_ls(self, line):
@@ -140,7 +154,7 @@ class Cmd(cmd.Cmd, manager.Manager):
         db = episode.DB()
         for pattern in line.split(" "):
             if not pattern: continue
-            db.extend(self.episode_db.filter(lambda url: url.match(pattern) and url["status"] in [cons.NONE, cons.ADQUIRED]))
+            db.extend(self.episode_db.filter(lambda url: url.match(pattern) and url["status"] in [cons.NEW, cons.ADQUIRED]))
         
         db.sort(key=lambda url: url["date"], reverse = True)
         

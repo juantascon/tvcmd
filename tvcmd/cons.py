@@ -1,13 +1,10 @@
 import os
 
-# for episodes
-NONE = 0
+# episodes status
+NEW = 0
 ADQUIRED = 1
 SEEN = 2
-
-# for shows
-TRACKED = 1
-IGNORED = 2
+ENUM_EPISODE_STATUS = { NEW: "NEW", ADQUIRED: "ADQUIRED", SEEN: "SEEN" }
 
 # config
 CONFIGDIR = os.environ["XDG_CONFIG_HOME"]+"/tvcmd"

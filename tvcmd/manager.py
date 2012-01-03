@@ -27,7 +27,7 @@ class Manager():
         try:
             # sync status
             for eurl in self.episode_db:
-                if eurl["status"] == cons.NONE:
+                if eurl["status"] == cons.NEW:
                     self.status.remove(eurl.url())
                 else:
                     self.status.set(eurl.url(), eurl["status"])
@@ -57,7 +57,7 @@ class Manager():
             
             for e in episodes:
                 eurl = episode.Url(show=surl.url(), season=e["season"], episode=e["episode"], name=e["name"], date=e["date"])
-                eurl.update(status = self.status.get(eurl.url()) or cons.NONE)
+                eurl.update(status = self.status.get(eurl.url()) or cons.NEW)
                 db.append(eurl)
             
             return db
