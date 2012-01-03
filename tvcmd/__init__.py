@@ -1,6 +1,6 @@
 import inspect, sys, os
 
-def version(): return "0.7.2"
+def version(): return "0.7.3"
 
 def msg(value):
     sys.stderr.write(value)
