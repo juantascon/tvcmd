@@ -18,7 +18,7 @@ class Cmd(cmd.Cmd, manager.Manager):
         manager.Manager.__init__(self)
         cmd.Cmd.__init__(self)
         
-        readline.set_completer_delims(readline.get_completer_delims().replace("-", ""))
+        readline.set_completer_delims(" ")
         
         self.update_prompt()
         self.modified = False
