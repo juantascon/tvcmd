@@ -15,10 +15,10 @@ class ArgumentParser(argparse.ArgumentParser):
             
 class Cmd(cmd.Cmd, manager.Manager):
     def __init__(self):
+        readline.set_completer_delims(" ")
+        
         manager.Manager.__init__(self)
         cmd.Cmd.__init__(self)
-        
-        readline.set_completer_delims(" ")
         
         self.update_prompt()
         self.modified = False
@@ -112,13 +112,13 @@ class Cmd(cmd.Cmd, manager.Manager):
         return self._complete(text, ["-n", "--new", "-a", "--adquired", "-s", "--seen", "-f", "--future"], self.episode_db)
     
     def complete_new(self, text, line, start_index, end_index):
-        return self._complete(text, ["-h", "--help"], self.episode_db.filter(lambda url: url["status"] in [cons.ADQUIRED, cons.SEEN]))
+        return self._complete(text, ["-h", "--help"], self.episode_db.filter(lambda url: not url.future() and url["status"] in [cons.ADQUIRED, cons.SEEN]))
     
     def complete_adquire(self, text, line, start_index, end_index):
-        return self._complete(text, ["-h", "--help"], self.episode_db.filter(lambda url: url["status"] in [cons.NEW]))
+        return self._complete(text, ["-h", "--help"], self.episode_db.filter(lambda url: not url.future() and url["status"] in [cons.NEW]))
     
     def complete_see(self, text, line, start_index, end_index):
-        return self._complete(text, ["-h", "--help"], self.episode_db.filter(lambda url: url["status"] in [cons.NEW, cons.ADQUIRED]))
+        return self._complete(text, ["-h", "--help"], self.episode_db.filter(lambda url: not url.future() and url["status"] in [cons.NEW, cons.ADQUIRED]))
     
     #
     # Episode Status Commands
@@ -139,7 +139,7 @@ class Cmd(cmd.Cmd, manager.Manager):
         
         db = episode.DB()
         for pattern in args.filters:
-            db.extend(self.episode_db.filter(lambda url: url.match(pattern) and url["status"] in [cons.ADQUIRED, cons.SEEN]))
+            db.extend(self.episode_db.filter(lambda url: url.match(pattern) and not url.future() and url["status"] in [cons.ADQUIRED, cons.SEEN]))
         
         self._mark(db, cons.NEW)
     
@@ -151,7 +151,7 @@ class Cmd(cmd.Cmd, manager.Manager):
         
         db = episode.DB()
         for pattern in args.filters:
-            db.extend(self.episode_db.filter(lambda url: url.match(pattern) and url["status"] in [cons.NEW]))
+            db.extend(self.episode_db.filter(lambda url: url.match(pattern) and not url.future() and url["status"] in [cons.NEW]))
         
         self._mark(db, cons.ADQUIRED)
     
@@ -163,7 +163,7 @@ class Cmd(cmd.Cmd, manager.Manager):
         
         db = episode.DB()
         for pattern in args.filters:
-            db.extend(self.episode_db.filter(lambda url: url.match(pattern) and url["status"] in [cons.NEW, cons.ADQUIRED]))
+            db.extend(self.episode_db.filter(lambda url: url.match(pattern) and not url.future() and url["status"] in [cons.NEW, cons.ADQUIRED]))
         
         self._mark(db, cons.SEEN)
     
