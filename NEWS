@@ -1,5 +1,9 @@
 NEWS / CHANGELOG:
 
+*** v0.8.2
+* improved colors
+* tor command prints only torrentz and fenopy urls
+
 *** v0.8.1
 * adquire, see, new, and tor exlude future episodes
 
