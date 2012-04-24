@@ -39,17 +39,10 @@ class Url(dict):
         return True
         
     def fmt_color(self):
-        COLOR_NONE = "\033[31m"
-        COLOR_ADQUIRED = "\033[33m"
-        COLOR_SEEN = "\033[32m"
-        #COLOR_FUTURE = "\033[41m"
-        COLOR_FUTURE = "\033[30m"
         COLOR_END = "\033[0m"
         
-        color = COLOR_NONE
-        if self["status"] == cons.ADQUIRED: color = COLOR_ADQUIRED
-        if self["status"] == cons.SEEN: color = COLOR_SEEN
-        if self.future(): color = COLOR_FUTURE
+        if self.future(): color = cons.ENUM_EPISODE_STATUS[cons.FUTURE]["color"]
+        else: color = cons.ENUM_EPISODE_STATUS[self["status"]]["color"]
         
         return color + self.fmt() + COLOR_END
     

@@ -124,7 +124,7 @@ class Cmd(cmd.Cmd, manager.Manager):
     # Episode Status Commands
     #
     def _mark(self, edb, status):
-        msg("Marking %d episode(s) as %s:\n"%(len(edb), cons.ENUM_EPISODE_STATUS[status]))
+        msg("Marking %d episode(s) as %s:\n"%(len(edb), cons.ENUM_EPISODE_STATUS[status]["text"]))
         if len(edb): self.modified = True
         
         for eurl in edb:
