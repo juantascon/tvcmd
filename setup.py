@@ -4,12 +4,12 @@ from distutils.core import setup
 
 setup (
     name="tvcmd",
-    version="0.8.1",
+    version="0.8.2",
     description="Command line tool to keep track of tv shows",
     author="Juan Tascón",
-    author_email="juantascon@gmail.com",
+    author_email="juantascon@horlux.org",
     maintainer="Juan Tascón",
-    maintainer_email="juantascon@gmail.com",
+    maintainer_email="juantascon@horlug.org",
     url="https://sourceforge.net/projects/tvcmd/",
     keywords=["tvcmd", "episodes", "tv", "shows", "cli"],
     
