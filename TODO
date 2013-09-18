@@ -3,7 +3,6 @@ change the color of future episodes to be seen in a tty
 nocolor option
 invalid command info also shows help() without \n
 implement --version and version commands, also modify the tvcmd version message
-add website source code as module (website)
 add ticket and sourceforge summary urls in a new development page (website)
 configurable prompt: %date %episodes_total %episodes_seen %episodes_adquired %episodes_new %shows_total
 initialization should print something like episodes found/adquired/seen/total
