@@ -1,5 +1,5 @@
 import readline, cmd, argparse, sys
-from tvcmd import episode, show, cons, manager, torrent
+from tvcmd import episode, show, cons, manager
 
 from tvcmd.errors import (ServerError, ConfigError, TrackError)
 from tvcmd import msg
@@ -105,7 +105,7 @@ class Cmd(cmd.Cmd, manager.Manager):
         
         return _options + _episodes
     
-    def complete_tor(self, text, line, start_index, end_index):
+    def complete_format(self, text, line, start_index, end_index):
         return self._complete(text, ["-h", "--help"], self.episode_db.filter(lambda url: not url.future() and url["status"] in [cons.NEW]))
     
     def complete_ls(self, text, line, start_index, end_index):
@@ -170,8 +170,8 @@ class Cmd(cmd.Cmd, manager.Manager):
     #
     # Episode info Commands
     #
-    def do_tor(self, line):
-        parser = ArgumentParser(prog="tor", description="Show torrent urls for NEW episodes", epilog="example: tor lost*")
+    def do_format(self, line):
+        parser = ArgumentParser(prog="format", description="print episodes with given formats", epilog="example: format lost*")
         parser.add_argument("filters", metavar="EPISODE", nargs="*", default=["*"], help="episode name or filter, ex: lost.s01e0*")
         try: args = parser.parse_args(line.split())
         except SystemExit: return
@@ -179,9 +179,11 @@ class Cmd(cmd.Cmd, manager.Manager):
         db = episode.DB()
         for pattern in args.filters:
             db.extend(self.episode_db.filter(lambda url: not url.future() and url["status"] in [cons.NEW] and url.match(pattern)))
-        
+
+        formats = self.main.get_formats()
         for eurl in db:
-            print(torrent.fmt_url(eurl["show"], eurl["season"], eurl["episode"]))
+            for fmt in formats:
+                msg(eurl.format(fmt))
     
     def do_ls(self,line):
         parser = ArgumentParser(prog="ls", description="Show episodes information", epilog="example: ls -as lost*")
@@ -226,7 +228,7 @@ class Cmd(cmd.Cmd, manager.Manager):
         msg("To get specific help type: COMMAND --help\n\n")
         msg("Auxiliary commands:"+sep+sep.join(["exit", "quit", "help"]) + "\n")
         msg("DB commands:"+sep+sep.join(["save", "reload"]) + "\n")
-        msg("Episodes commands:"+sep+sep.join(["new", "adquire", "see", "tor", "ls"]) + "\n")
+        msg("Episodes commands:"+sep+sep.join(["new", "adquire", "see", "format", "ls"]) + "\n")
         msg("Shows commands:"+sep+sep.join(["shows", "search"]) + "\n")
     
     def ask_yn(self, question):

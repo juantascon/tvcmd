@@ -20,6 +20,13 @@ class Url(dict):
     def update(self, **kwargs):
         for key,value in kwargs.items():
             self[key] = value
+
+    def format(self, fmt):
+        fmt = fmt.replace("${show}", self["show"])
+        fmt = fmt.replace("${show+}", self["show"].replace("_", "+"))
+        fmt = fmt.replace("${season}", "%02d" % self["season"])
+        fmt = fmt.replace("${episode}", "%02d" % self["season"])
+        return fmt + "\n"
     
     def fmt(self):
         return "%s : [ %s ] [ %s ]" % (self.url(), str(self["date"]), self["name"])

@@ -64,7 +64,7 @@ class Manager():
         
         except Exception as ex:
             raise SearchError("Error searching episodes %s (%s)"%(surl, ex))
-        
+
     def track(self, show_name):
         try:
             surl = self.search_shows(show_name)[0]

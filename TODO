@@ -3,11 +3,8 @@ change the color of future episodes to be seen in a tty
 nocolor option
 invalid command info also shows help() without \n
 implement --version and version commands, also modify the tvcmd version message
-add ticket and sourceforge summary urls in a new development page (website)
 configurable prompt: %date %episodes_total %episodes_seen %episodes_adquired %episodes_new %shows_total
 initialization should print something like episodes found/adquired/seen/total
-configurable torrrent urls ??
-when shows list is empty it should print a warning or a message on how to configure also prompt and torrent url
-? add an option to import tv shows from thetvdb favorites
-? implement a way to download torrent or megaupload files
+when shows list is empty it should print a warning or a message on how to configure
+add an option to import tv shows from thetvdb favorites
 

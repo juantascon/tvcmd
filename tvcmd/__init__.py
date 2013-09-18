@@ -1,6 +1,6 @@
 import inspect, sys, os
 
-def version(): return "0.8.2"
+def version(): return "0.8.3"
 
 def msg(value):
     sys.stderr.write(str(value))
@@ -13,4 +13,4 @@ def msg(value):
 # def info(value):
 #     msg("INFO::%s\n" %(value))
 
-msg("Using tvcmd lib version: %s\n"%(version()))
+msg("tvcmd version: %s\n"%(version()))

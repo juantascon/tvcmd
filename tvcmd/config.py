@@ -66,6 +66,13 @@ class Main(ConfigFileParser):
             if len(s) > 0: l.append(s)
         return l
         
+    def get_formats(self):
+        l = []
+        for s in self.get("general", "formats", fallback="").split(","):
+            s = s.strip()
+            if len(s) > 0: l.append(s)
+        return l
+        
     def add_show(self, show):
         shows = self.get_shows()
         if not show in shows:

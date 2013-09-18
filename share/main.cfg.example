@@ -1,4 +1,9 @@
 [general]
+
 shows =
- an_idiot_abroad, nova_sciencenow, through_the_wormhole
+ an_idiot_abroad, nova_sciencenow, through_the_wormhole,
  community
+
+formats =
+ https://torrentz.eu/verified?f=${show+}+s${season}e${episode},
+ http://fenopy.se/search/${show}+s${season}e${episode}.html?quality=1&order=1
