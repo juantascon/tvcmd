@@ -1,5 +1,8 @@
 NEWS / CHANGELOG:
 
+*** v0.8.3
+* dropped command tor, replace by new configurable command format
+
 *** v0.8.2
 * improved colors
 * tor command prints only torrentz and fenopy urls
