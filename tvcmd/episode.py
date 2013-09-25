@@ -25,8 +25,8 @@ class Url(dict):
         fmt = fmt.replace("${show}", self["show"])
         fmt = fmt.replace("${show+}", self["show"].replace("_", "+"))
         fmt = fmt.replace("${season}", "%02d" % self["season"])
-        fmt = fmt.replace("${episode}", "%02d" % self["season"])
-        return fmt + "\n"
+        fmt = fmt.replace("${episode}", "%02d" % self["episode"])
+        return fmt
     
     def fmt(self):
         return "%s : [ %s ] [ %s ]" % (self.url(), str(self["date"]), self["name"])

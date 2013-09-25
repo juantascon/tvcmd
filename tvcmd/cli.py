@@ -179,11 +179,15 @@ class Cmd(cmd.Cmd, manager.Manager):
         db = episode.DB()
         for pattern in args.filters:
             db.extend(self.episode_db.filter(lambda url: not url.future() and url["status"] in [cons.NEW] and url.match(pattern)))
-
+        
         formats = self.main.get_formats()
+        if len(formats) == 0:
+            print("no formats defined, please check your config")
+            return
+        
         for eurl in db:
             for fmt in formats:
-                msg(eurl.format(fmt))
+                print(eurl.format(fmt))
     
     def do_ls(self,line):
         parser = ArgumentParser(prog="ls", description="Show episodes information", epilog="example: ls -as lost*")
