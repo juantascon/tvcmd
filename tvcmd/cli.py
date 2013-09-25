@@ -229,7 +229,7 @@ class Cmd(cmd.Cmd, manager.Manager):
     #
     def do_help(self, line):
         sep = "\n   "
-        msg("To get specific help type: COMMAND --help\n\n")
+        msg("\nTo get specific help type: COMMAND --help\n\n")
         msg("Auxiliary commands:"+sep+sep.join(["exit", "quit", "help"]) + "\n")
         msg("DB commands:"+sep+sep.join(["save", "reload"]) + "\n")
         msg("Episodes commands:"+sep+sep.join(["new", "adquire", "see", "format", "ls"]) + "\n")
