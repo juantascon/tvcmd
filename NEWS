@@ -1,5 +1,9 @@
 NEWS / CHANGELOG:
 
+*** v0.8.4
+* fixed bugs on format command
+* fixed invalid command message 
+
 *** v0.8.3
 * dropped command tor, replace by new configurable command format
 
