@@ -15,7 +15,7 @@ setup (
     
     packages=["tvcmd"],
     scripts=["script/tvcmd"],
-    data_files=[("share/tvcmd", ["README", "LICENSE", "TODO", "share/tvcmd.svg", "share/main.cfg.example"])],
+    data_files=[("share/tvcmd", ["README", "LICENSE", "share/tvcmd.svg", "share/main.cfg.example"])],
     
     license="GPL, Version 3.0"
 )
