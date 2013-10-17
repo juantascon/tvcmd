@@ -1,5 +1,5 @@
-from tvcmd import cons, episode, show, config, thetvdb
-from tvcmd.errors import (ServerError, ConfigError, TrackError, SearchError)
+from . import cons, episode, show, config, thetvdb
+from . import errors
 
 import logging
 def log(): return logging.getLogger(__name__)
@@ -40,6 +40,7 @@ class Manager():
     def search_shows(self, patternx):
         try:
             shows = thetvdb.get_shows(patternx)
+            log().debug(shows)
             db = show.DB()
             
             for s in shows:

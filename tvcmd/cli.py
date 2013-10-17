@@ -1,8 +1,8 @@
 import readline, cmd, argparse, sys
 from tvcmd import episode, show, cons, manager
 
-from tvcmd.errors import (ServerError, ConfigError, TrackError)
-from tvcmd import msg
+from . import errors
+from . import msg
 
 import logging
 def log(): return logging.getLogger(__name__)

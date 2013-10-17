@@ -5,14 +5,13 @@ import urllib.parse
 import xml.etree.cElementTree as ElementTree
 import datetime
 
-from tvcmd.errors import (ServerError)
-from tvcmd import cons
+from . import errors, cons
 
 import logging
 def log(): return logging.getLogger(__name__)
 
 def _get_url(url):
-    # log().debug("\nGETURL: %s\n"%(url))
+    log().debug("\nGETURL: %s\n"%(url))
     
     try:
         h = httplib2.Http(cache = cons.CACHEDIR)
@@ -22,21 +21,11 @@ def _get_url(url):
     if (resp["status"] == "200"): return content
     else: raise ServerError("Invalid thetvdb.com response")
 
-# def _get_xml_zip():
-#     response = zipfile.ZipFile(io.BytesIO(_get_url(url))).read("en.xml")
-#     return response
-    
 def _get_xml(url):
     response = _get_url(url)
     
     try: return ElementTree.XML(response.decode("utf-8"))
     except Exception as ex: raise ServerError("Unexpected thetvdb.com XML response (%s)"%(ex))
-
-def get_show_info(show_name):
-    shows = get_shows(show_name)
-    
-    try: return shows[0]
-    except: raise ServerError("Show not found")
     
 def get_shows(pattern):
     url = "http://thetvdb.com/api/GetSeries.php?seriesname=%s" % (urllib.parse.quote(pattern))

@@ -1,4 +1,4 @@
-from tvcmd import cons
+from . import cons
 
 import os, configparser
 

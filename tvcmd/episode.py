@@ -1,6 +1,6 @@
 import fnmatch, datetime
 
-from tvcmd import cons
+from . import cons
 
 import logging
 def log(): return logging.getLogger(__name__)
