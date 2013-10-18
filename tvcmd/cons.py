@@ -19,9 +19,9 @@ ENUM_EPISODE_STATUS = {
     FUTURE: {"text": "FUTURE", "color":"\033[01;38;5;129m" } }
 
 # config
-CONFIGDIR = os.environ["XDG_CONFIG_HOME"]+"/tvcmd/"
-MAINCONFIGFILE = CONFIGDIR + "main.cfg"
-STATUSDBFILE = CONFIGDIR + "status.db"
+CONFIGDIR = os.environ["XDG_CONFIG_HOME"]+"/tvcmd"
+MAINCONFIGFILE = CONFIGDIR + "/main.cfg"
+STATUSDBFILE = CONFIGDIR + "/status.db"
 
 # cache
 CACHEDIR = os.environ["XDG_CACHE_HOME"]+"/tvcmd"

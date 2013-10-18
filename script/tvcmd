@@ -64,7 +64,8 @@ if __name__ == "__main__":
         sys.path.insert(0, os.path.dirname(__file__)+"/..")
         
         import tvcmd.cons
-        tvcmd.cons.CONFIGDIR = tvcmd.cons.CONFIGDIR+"_debug"
+        tvcmd.cons.MAINCONFIGFILE = tvcmd.cons.CONFIGDIR + "_debug/main.cfg"
+        tvcmd.cons.STATUSDBFILE = tvcmd.cons.CONFIGDIR + "_debug/status.db"
         
         import traceback
         try: main()
