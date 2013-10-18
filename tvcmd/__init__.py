@@ -1,16 +1,11 @@
-import inspect, sys, os
+import sys
 
-def version(): return "0.8.4"
+__author__ = 'Juan Tascon'
+__version__ = '0.9'
+__license__ = 'GPL3'
 
 def msg(value):
     sys.stderr.write(str(value))
     sys.stderr.flush()
 
-# def debug(value):
-#     info = inspect.getframeinfo(inspect.stack()[1][0])
-#     msg("DEBUG::%s.%s(): %s\n"%(os.path.basename(info.filename), info.function, value))
-    
-# def info(value):
-#     msg("INFO::%s\n" %(value))
-
-msg("tvcmd version: %s\n"%(version()))
+msg("tvcmd version: %s\n"%(__version__))

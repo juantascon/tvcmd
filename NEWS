@@ -1,20 +1,30 @@
 NEWS / CHANGELOG:
 
-*** v0.8.4
+*** 0.9
+* added support for different sources
+* added tvrage as source plugin
+* better error handling
+* sources simplified
+* status file now loads from status.db, manual rename of status.cfg is required
+
+*** 0.8.4.1
+* fixed small bug on setup.py
+
+*** 0.8.4
 * fixed bugs on format command
 * fixed invalid command message 
 
-*** v0.8.3
+*** 0.8.3
 * dropped command tor, replace by new configurable command format
 
-*** v0.8.2
+*** 0.8.2
 * improved colors
 * tor command prints only torrentz and fenopy urls
 
-*** v0.8.1
+*** 0.8.1
 * adquire, see, new, and tor exlude future episodes
 
-*** v0.8
+*** 0.8
 * added command:new to revert episode status to NEW
 * commands:ls, tor, new, adquire, see allow multiple inputs
 * command:ls has new options to filter status
@@ -23,19 +33,19 @@ NEWS / CHANGELOG:
 * every command has a -h/--help option
 * divided TODO file and created a NEWS file
 
-*** v0.7.3
+*** 0.7.3
 * fix cache path to per-user directory
 * on exit do you wish to save should accept only y/n
 * command:reload should ask before proceding and should mark the database as not modified
 
-*** v0.7.2
+*** 0.7.2
 * fixed bug when searching
 
-*** v0.7.1
+*** 0.7.1
 * APIKEY moved to cons.py
 * fixed bug when receiving invalid response from thetvdb.com
 
-*** v0.7
+*** 0.7
 * implement tool dist.sh to distribute in every server
 * fix python3 shebangs
 * add btjunkie urls to tor command
@@ -45,7 +55,7 @@ NEWS / CHANGELOG:
 * better information displayed: loading, searching, saving, updating, using tvcmd lib XX
 * new command: reload
 
-*** v0.6:
+*** 0.6:
 * help for every command
 * TAB shouldnt include the EOF command
 * ctrl+c should act like in bash4 (print C and not run anythin)
@@ -53,25 +63,25 @@ NEWS / CHANGELOG:
 * help command shouldnt include the EOF command, but instead some personlized text
 * help on how to configure
 
-*** v0.5:
+*** 0.5:
 * improved save command
 
-*** v0.4:
+*** 0.4:
 * command: search, search tv shows in thetvdb.com
 * command: shows, print tracked tv shows
 
-*** v0.3:
+*** 0.3:
 * added commands: show_add and show_list
 * added thetvdb.get_show_info
 * improved config handling
 * better error handling in thetvdb queries
 * added debug mode and normal mode
 
-*** v0.2:
+*** 0.2:
 * new tools directory
 * added example main.cfg
 * several bugs fixed
 * handling of DEBUG env variable
 
-*** v0.1:
+*** 0.1:
 * initial version, basic commands: ls, see, adquire, save, exit
