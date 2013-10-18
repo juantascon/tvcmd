@@ -26,15 +26,15 @@ def main():
     # print configuration help
     if args.help_conf:
         import tvcmd.cons
-        print("PATHS:")
-        print(" config: %s"%(tvcmd.cons.CONFIGDIR+"/"+tvcmd.cons.MAINCONFIGFILE))
-        print(" status-db: %s"%(tvcmd.cons.CONFIGDIR+"/"+tvcmd.cons.STATUSDBFILE))
-        print("")
-        print("EXAMPLE CONFIG:")
-        print("")
-        print("[general]")
-        print("shows = an_idiot_abroad, the_office_us, lost")
-        print("formats = https://torrentz.eu/verified?f=${show+}+s${season}e${episode}")
+        help = ('\nPaths:\n'
+                ' config: %s\n'
+                ' status-db: %s\n\n'
+                'Example Config:\n'
+                '[general]\n'
+                'shows = an_idiot_abroad, the_office_us, lost\n'
+                'formats = https://torrentz.eu/verified?f=${show+}+s${season}e${episode}\n'
+                'source = tvrage\n')
+        print(help %(tvcmd.cons.MAINCONFIGFILE, tvcmd.cons.STATUSDBFILE))
         return
     
     import tvcmd.cli

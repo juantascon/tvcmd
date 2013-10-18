@@ -7,7 +7,7 @@ def log(): return logging.getLogger(__name__)
 
 class ConfigFileParser(configparser.ConfigParser):
     
-    def __init__(self,filename):
+    def __init__(self, filename):
         super().__init__()
         self.filename = filename
         
@@ -25,7 +25,7 @@ class ConfigFileParser(configparser.ConfigParser):
 class Status(ConfigFileParser):
     
     def __init__(self):
-        super().__init__(cons.CONFIGDIR+"/"+cons.STATUSDBFILE)
+        super().__init__(cons.STATUSDBFILE)
         
     def read(self):
         super().read()
@@ -52,7 +52,7 @@ class Status(ConfigFileParser):
 class Main(ConfigFileParser):
     
     def __init__(self):
-        super().__init__(cons.CONFIGDIR+"/"+cons.MAINCONFIGFILE)
+        super().__init__(cons.MAINCONFIGFILE)
         
     def read(self):
         super().read()
