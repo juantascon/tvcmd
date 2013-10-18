@@ -1,5 +1,8 @@
 NEWS / CHANGELOG:
 
+*** 0.9.1
+* fixed small bugs
+
 *** 0.9
 * added support for different sources
 * added tvrage as source plugin
