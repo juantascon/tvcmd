@@ -13,7 +13,7 @@ setup (
     url="http://tvcmd.horlux.org",
     keywords=["tvcmd", "episodes", "tv", "shows", "cli"],
     
-    packages=["tvcmd"],
+    packages=["tvcmd", "tvcmd.lib", "tvcmd.sources"],
     scripts=["script/tvcmd"],
     data_files=[("share/tvcmd", ["README", "LICENSE", "share/tvcmd.svg", "share/main.cfg.example"])],
     
