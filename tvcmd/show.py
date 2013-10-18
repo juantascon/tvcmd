@@ -3,7 +3,7 @@ def log(): return logging.getLogger(__name__)
 
 class Url(dict):
     
-    # expected: id, name, language
+    # expected: id, name
     def __init__(self, **kwargs):
         self.update(**kwargs)
     
@@ -18,7 +18,7 @@ class Url(dict):
             self[key] = value
     
     def fmt(self):
-        return "%s: [ %s ] [ %s ]" % (self.url(), self["id"], self["language"])
+        return "[ %s ]: %s" % (self["id"], self.url())
     
     def url(self):
         return self["name"].replace("(","").replace(")","").replace(" ", "_").lower()

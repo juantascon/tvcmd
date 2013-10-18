@@ -73,9 +73,6 @@ class Main(ConfigFileParser):
             if len(s) > 0: l.append(s)
         return l
         
-    def add_show(self, show):
-        shows = self.get_shows()
-        if not show in shows:
-            shows.append(show)
-            self.set("general", "shows", ",".join(shows))
+    def get_source(self):
+        return self.get("general", "source")
         

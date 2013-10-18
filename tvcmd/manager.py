@@ -1,5 +1,5 @@
-from . import cons, episode, show, config, thetvdb
-from . import errors
+from . import errors, cons, episode, show, config
+from .sources import thetvdb, tvrage
 
 import logging
 def log(): return logging.getLogger(__name__)
@@ -12,67 +12,55 @@ class Manager():
         
         self.episode_db = episode.DB()
         self.show_db = show.DB()
-    
+        
     def load(self):
-        try: 
-            self.status.read()
-            self.main.read()
-            
-            self.episode_db.clear()
-            self.show_db.clear()
-        except Exception as ex:
-            raise ConfigError("Error loading db (%s)"%(ex))
+        self.main.read()
+        _source = self.main.get_source()
+        
+        if _source == "thetvdb": self.source = thetvdb.TheTVDB()
+        elif _source == "tvrage": self.source = tvrage.TVRage()
+        else: raise errors.ConfigError("Invalid source: %s" %(_source))
+        
+        self.status.read()
+        
+        self.episode_db.clear()
+        self.show_db.clear()
             
     def save(self):
-        try:
-            # sync status
-            for eurl in self.episode_db:
-                if eurl["status"] == cons.NEW:
-                    self.status.remove(eurl.url())
-                else:
-                    self.status.set(eurl.url(), eurl["status"])
-                    
-            # write status
-            self.status.write()
-        except Exception as ex:
-            raise ConfigError("Error saving db (%s)"%(ex))
+        # sync status
+        for eurl in self.episode_db:
+            if eurl["status"] == cons.NEW:
+                self.status.remove(eurl.url())
+            else:
+                self.status.set(eurl.url(), eurl["status"])
+        # write status
+        self.status.write()
         
-    def search_shows(self, patternx):
-        try:
-            shows = thetvdb.get_shows(patternx)
-            log().debug(shows)
-            db = show.DB()
-            
-            for s in shows:
-                surl = show.Url(id=s["id"], name=s["name"], language=s["language"])
-                db.append(surl)
-            
-            return db
-        except Exception as ex:
-            raise SearchError("Error searching show %s (%s)"%(pattern, ex))
-    
+    def search_shows(self, pattern):
+        shows = self.source.get_shows(pattern)
+        db = show.DB()
+        
+        for s in shows:
+            surl = show.Url(id=s["id"], name=s["name"])
+            db.append(surl)
+        
+        return db
+        
     def search_episodes(self, surl):
-        try:
-            episodes = thetvdb.get_episodes(surl["id"])
-            db = episode.DB()
-            
-            for e in episodes:
-                eurl = episode.Url(show=surl.url(), season=e["season"], episode=e["episode"], name=e["name"], date=e["date"])
-                eurl.update(status = self.status.get(eurl.url()) or cons.NEW)
-                db.append(eurl)
-            
-            return db
+        episodes = self.source.get_episodes(surl["id"])
+        db = episode.DB()
         
-        except Exception as ex:
-            raise SearchError("Error searching episodes %s (%s)"%(surl, ex))
-
+        for e in episodes:
+            eurl = episode.Url(show=surl.url(), season=e["season"], episode=e["episode"], name=e["name"], date=e["date"])
+            eurl.update(status = self.status.get(eurl.url()) or cons.NEW)
+            db.append(eurl)
+        
+        return db
+        
     def track(self, show_name):
-        try:
-            surl = self.search_shows(show_name)[0]
-            edb = self.search_episodes(surl)
-            self.show_db.append(surl)
-            self.episode_db.extend(edb)
-        except Exception as ex:
-            raise TrackError("Error tracking show %s (%s)"%(show_name, ex))
+        surl = self.search_shows(show_name)[0]
+        edb = self.search_episodes(surl)
+        self.show_db.append(surl)
+        self.episode_db.extend(edb)
         
         return surl, edb
