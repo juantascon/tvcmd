@@ -29,29 +29,21 @@ class TVRage(base.Base):
         url = "http://services.tvrage.com/feeds/episode_list.php?sid=%s" % (show_id)
         
         try:
-            xml = self._get_url(url)
-            xml_dict = xmltodict.parse(xml)
-        except xml.parsers.expat.ExpatError:
+            xml_content = self._get_url(url)
+            xml_content_dict = xmltodict.parse(xml_content)
+        except xml_content.parsers.expat.ExpatError:
             raise errors.SourceError("Invalid show id: unexpected source response")
         except:
             raise
         
         l = []
-        for season in xml_dict["Show"]["Episodelist"]["Season"]:
+        for season in xml_content_dict["Show"]["Episodelist"]["Season"]:
             for episode in season["episode"]:
-                e = {
+                l.append({
                     "name": episode["title"],
                     "episode": int(episode["seasonnum"]),
                     "season": int(season["@no"]),
-                    "date": datetime.date.max
-                }
-                try: e["date"] = datetime.date(
-                    int(episode["airdate"][0:4]),
-                    int(episode["airdate"][5:7]),
-                    int(episode["airdate"][8:10])
-                )
-                except: pass
-                l.append(e)
-        
+                    "date": self._isostr_to_date(episode["airdate"])
+                })
         return l
         
