@@ -64,7 +64,7 @@ class Cmd(cmd.Cmd, manager.Manager):
             msg("OK\n")
             self.modified = False
             return True
-        except ConfigError as ex:
+        except errors.ConfigError as ex:
             msg("FAIL: (%s)\n"%(ex))
             return False
     
@@ -97,8 +97,8 @@ class Cmd(cmd.Cmd, manager.Manager):
             db = self.search_shows(args.filter)
             msg("OK: %d shows found\n"%(len(db)))
             if (len(db)): print("\n%s\n"%(db.fmt()))
-        except ServerError as ex:
-            msg("FAIL: (%s)\n"%(ex))
+        except Exception as ex:
+                msg("FAIL: (%s)\n"%(ex))
     
     #
     # Complete text
