@@ -9,20 +9,16 @@ class Manager():
     def __init__(self):
         self.status = config.Status()
         self.main = config.Main()
-        
         self.episode_db = episode.DB()
         self.show_db = show.DB()
         
     def load(self):
         self.main.read()
         _source = self.main.get_source()
-        
         if _source == "thetvdb": self.source = thetvdb.TheTVDB()
         elif _source == "tvrage": self.source = tvrage.TVRage()
-        else: raise errors.ConfigError("Invalid source: %s" %(_source))
         
         self.status.read()
-        
         self.episode_db.clear()
         self.show_db.clear()
             

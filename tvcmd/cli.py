@@ -1,5 +1,5 @@
 import readline, cmd, argparse, sys
-from tvcmd import episode, show, cons, manager
+from tvcmd import manager, episode, show, cons, errors
 
 from . import errors
 from . import msg
@@ -30,7 +30,11 @@ class Cmd(cmd.Cmd, manager.Manager):
     # DB IO commands
     #
     def load(self):
-        manager.Manager.load(self)
+        try:
+            manager.Manager.load(self)
+        except errors.ConfigError as ex:
+            msg("Error loading: %s\n" % (ex))
+            return
         
         for show_name in self.main.get_shows():
             msg("Tracking show %s ... "%(show_name))

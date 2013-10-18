@@ -1,4 +1,4 @@
-from . import cons
+from . import cons, errors
 
 import os, configparser
 
@@ -74,5 +74,10 @@ class Main(ConfigFileParser):
         return l
         
     def get_source(self):
-        return self.get("general", "source")
+        _source = self.get("general", "source", fallback="thetvdb")
+        
+        if _source not in ["thetvdb", "tvrage"]:
+             raise errors.ConfigError("Invalid source: %s" %(_source))
+        
+        return _source
         
