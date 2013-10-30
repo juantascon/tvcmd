@@ -4,7 +4,7 @@ from distutils.core import setup
 
 setup (
     name="tvcmd",
-    version="0.9.1",
+    version="0.9.1.1",
     description="Command line tool to keep track of tv shows",
     author="Juan Tascon",
     author_email="juantascon@horlux.org",

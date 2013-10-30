@@ -1,5 +1,8 @@
 NEWS / CHANGELOG:
 
+*** 0.9.1.1
+* fixed bug when accessing xdg variables
+
 *** 0.9.1
 * fixed small bugs
 
