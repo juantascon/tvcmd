@@ -1,4 +1,5 @@
 import os
+import xdg.BaseDirectory
 
 # episodes status
 NEW = 0
@@ -19,12 +20,12 @@ ENUM_EPISODE_STATUS = {
     FUTURE: {"text": "FUTURE", "color":"\033[01;38;5;129m" } }
 
 # config
-CONFIGDIR = os.environ["XDG_CONFIG_HOME"]+"/tvcmd"
+CONFIGDIR = xdg.BaseDirectory.save_config_path("tvcmd")
 MAINCONFIGFILE = CONFIGDIR + "/main.cfg"
 STATUSDBFILE = CONFIGDIR + "/status.db"
 
 # cache
-CACHEDIR = os.environ["XDG_CACHE_HOME"]+"/tvcmd"
+CACHEDIR = xdg.BaseDirectory.save_cache_path("tvcmd")
 
 # thetvdb.com
 APIKEY = "FD9D34DB64F25A09"
