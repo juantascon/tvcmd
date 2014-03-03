@@ -5,6 +5,8 @@ import sys, os
 import logging
 import argparse
 
+
+# use for debugging only, launches the python interactive shell
 def interactive():
     import readline
     import rlcompleter
@@ -13,7 +15,7 @@ def interactive():
     import code
     print("\nLaunching python interactive shell ...\n")
     code.interact(local=globals())
-    
+
 def main():
     parser = argparse.ArgumentParser(description = "tvcmd command line tv episodes tracker")
 
@@ -41,18 +43,19 @@ def main():
     ui = tvcmd.cli.Cmd()
     ui.load()
     
-    # print formated urls and exit
+    # prints formated urls and exits
     if args.format:
         ui.onecmd("format *")
         ui.exit()
         return
     
+    # executes one single command and exits
     if args.execute:
         ui.onecmd(args.execute)
         ui.exit()
         return
     
-    # main execution mode
+    # executes in shell mode
     ui.cmdloop()
     
 if __name__ == "__main__":

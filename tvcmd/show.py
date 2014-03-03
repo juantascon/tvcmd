@@ -1,6 +1,12 @@
 import logging
 def log(): return logging.getLogger(__name__)
 
+
+# Show URL represent show names in low case and _ charaters, ex:
+# steins_gate
+# how_i_met_your_mother
+# the_office_us
+
 class Url(dict):
     
     # expected: id, name
