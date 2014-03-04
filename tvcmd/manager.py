@@ -9,8 +9,8 @@ class Manager():
     def __init__(self):
         self.status = config.Status()
         self.main = config.Main()
-        self.episode_db = episode.DB()
-        self.show_db = show.DB()
+        self.episodes = episode.List()
+        self.shows = show.List()
         
     def load(self):
         self.main.read()
@@ -19,44 +19,44 @@ class Manager():
         elif _source == "tvrage": self.source = tvrage.TVRage()
         
         self.status.read()
-        self.episode_db.clear()
-        self.show_db.clear()
-            
+        self.episodes.clear()
+        self.shows.clear()
+        
     def save(self):
         # sync status
-        for eurl in self.episode_db:
-            if eurl["status"] == cons.NEW:
-                self.status.remove(eurl.url())
+        for e in self.episodes:
+            if e.status == cons.NEW:
+                self.status.remove(e.url())
             else:
-                self.status.set(eurl.url(), eurl["status"])
+                self.status.set(e.url(), e.status)
         # write status
         self.status.write()
         
+    def search_episodes(self, show):
+        raw_episodes = self.source.get_episodes(show.id)
+        l = episode.List()
+        
+        for raw in raw_episodes:
+            e = episode.Item(show.url(), raw["season"], raw["episode"], raw["name"], raw["date"])
+            e.status = self.status.get(e.url()) or cons.NEW
+            l.append(e)
+        
+        return l
+    
     def search_shows(self, pattern):
-        shows = self.source.get_shows(pattern)
-        db = show.DB()
+        raw_shows = self.source.get_shows(pattern)
+        l = show.List()
         
-        for s in shows:
-            surl = show.Url(id=s["id"], name=s["name"])
-            db.append(surl)
+        for raw in raw_shows:
+            s = show.Item(raw["id"], raw["name"])
+            l.append(s)
         
-        return db
-        
-    def search_episodes(self, surl):
-        episodes = self.source.get_episodes(surl["id"])
-        db = episode.DB()
-        
-        for e in episodes:
-            eurl = episode.Url(show=surl.url(), season=e["season"], episode=e["episode"], name=e["name"], date=e["date"])
-            eurl.update(status = self.status.get(eurl.url()) or cons.NEW)
-            db.append(eurl)
-        
-        return db
-        
+        return l
+    
     def track(self, show_name):
-        surl = self.search_shows(show_name)[0]
-        edb = self.search_episodes(surl)
-        self.show_db.append(surl)
-        self.episode_db.extend(edb)
+        s = self.search_shows(show_name)[0]
+        l = self.search_episodes(s)
+        self.shows.append(s)
+        self.episodes.extend(l)
         
-        return surl, edb
+        return l

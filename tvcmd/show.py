@@ -1,45 +1,39 @@
 import logging
 def log(): return logging.getLogger(__name__)
 
-
-# Show URL represent show names in low case and _ charaters, ex:
-# steins_gate
-# how_i_met_your_mother
-# the_office_us
-
-class Url(dict):
+#
+# Shows and episodes are handled separately because it is easier to
+# filter, in tvcmd a show is not a group episode, it is only
+# a name and id used to get episodes lists from a source
+# shows are represented in low case and _ charaters, ex:
+# steins_gate, how_i_met_your_mother, the_office_us
+#
+class Item():
     
     # expected: id, name
-    def __init__(self, **kwargs):
-        self.update(**kwargs)
+    def __init__(self, id, name):
+        self.id = id
+        self.name = name
     
     def __repr__(self):
         return self.url()
     
     def __eq__(self, other):
-        return (self["id"] == other["id"])
-    
-    def update(self, **kwargs):
-        for key,value in kwargs.items():
-            self[key] = value
+        return (self.id == other.id)
     
     def fmt(self):
-        return "[ %s ]: %s" % (self["id"], self.url())
+        return "[ %s ]: %s" % (self.id, self.url())
     
     def url(self):
-        return self["name"].replace("(","").replace(")","").replace(" ", "_").lower()
+        return self.name.replace("(","").replace(")","").replace(" ", "_").lower()
     
-class DB(list):
+class List(list):
     
     def clear(self):
         while len(self) > 0 : self.pop()
     
     def fmt(self):
-        return "\n".join([ url.fmt() for url in self ])
+        return "\n".join([ s.fmt() for s in self ])
         
-    def update(self, **kwargs):
-        for url in self:
-            url.update(**kwargs)
-    
     def filter(self, function):
-        return DB(item for item in self if function(item))
+        return List(item for item in self if function(item))

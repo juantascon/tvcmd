@@ -1,7 +1,6 @@
 import readline, cmd, argparse, sys
-from tvcmd import manager, episode, show, cons, errors
+from . import manager, episode, show, cons, errors
 
-from . import errors
 from . import msg
 
 import logging
@@ -38,11 +37,11 @@ class Cmd(cmd.Cmd, manager.Manager):
         
         for show_name in self.main.get_shows():
             msg("Tracking show %s ... "%(show_name))
-            try:
-                surl, edb = self.track(show_name)
-                msg("OK: %d episodes found\n"%(len(edb)))
-            except Exception as ex:
-                msg("FAIL: (%s)\n"%(ex))
+            #try:
+            l = self.track(show_name)
+            msg("OK: %d episodes found\n"%(len(l)))
+            #except Exception as ex:
+                #msg("FAIL: (%s)\n"%(ex))
                 
         self.modified = False
         
@@ -83,8 +82,8 @@ class Cmd(cmd.Cmd, manager.Manager):
         try: args = parser.parse_args(line.split())
         except SystemExit: return
         
-        db = self.show_db
-        print("\n%s\n"%(db.fmt()))
+        l = self.shows
+        print("\n%s\n"%(l.fmt()))
     
     def do_search(self, line):
         parser = ArgumentParser(prog="shows", description="Search for shows in thetvdb.com database", epilog="example: search the office")
@@ -94,46 +93,46 @@ class Cmd(cmd.Cmd, manager.Manager):
         
         msg("Searching [%s] ... "%(args.filter))
         try:
-            db = self.search_shows(args.filter)
-            msg("OK: %d shows found\n"%(len(db)))
-            if (len(db)): print("\n%s\n"%(db.fmt()))
+            l = self.search_shows(args.filter)
+            msg("OK: %d shows found\n"%(len(l)))
+            if (len(l)): print("\n%s\n"%(l.fmt()))
         except Exception as ex:
                 msg("FAIL: (%s)\n"%(ex))
     
     #
     # Complete text
     #
-    def _complete(self, text, options, db):
+    def _complete(self, text, options, elist):
         _options = [ opt for opt in options if opt.startswith(text) ]
-        _episodes = db.complete_text(text)
+        _episodes = elist.complete_text(text)
         
         return _options + _episodes
     
     def complete_format(self, text, line, start_index, end_index):
-        return self._complete(text, ["-h", "--help"], self.episode_db.filter(lambda url: not url.future() and url["status"] in [cons.NEW]))
+        return self._complete(text, ["-h", "--help"], self.episodes.filter(lambda e: not e.future() and e.status in [cons.NEW]))
     
     def complete_ls(self, text, line, start_index, end_index):
-        return self._complete(text, ["-n", "--new", "-a", "--adquired", "-s", "--seen", "-f", "--future"], self.episode_db)
+        return self._complete(text, ["-n", "--new", "-a", "--adquired", "-s", "--seen", "-f", "--future"], self.episodes)
     
     def complete_new(self, text, line, start_index, end_index):
-        return self._complete(text, ["-h", "--help"], self.episode_db.filter(lambda url: not url.future() and url["status"] in [cons.ADQUIRED, cons.SEEN]))
+        return self._complete(text, ["-h", "--help"], self.episodes.filter(lambda e: not e.future() and e.status in [cons.ADQUIRED, cons.SEEN]))
     
     def complete_adquire(self, text, line, start_index, end_index):
-        return self._complete(text, ["-h", "--help"], self.episode_db.filter(lambda url: not url.future() and url["status"] in [cons.NEW]))
+        return self._complete(text, ["-h", "--help"], self.episodes.filter(lambda e: not e.future() and e.status in [cons.NEW]))
     
     def complete_see(self, text, line, start_index, end_index):
-        return self._complete(text, ["-h", "--help"], self.episode_db.filter(lambda url: not url.future() and url["status"] in [cons.NEW, cons.ADQUIRED]))
+        return self._complete(text, ["-h", "--help"], self.episodes.filter(lambda e: not e.future() and e.status in [cons.NEW, cons.ADQUIRED]))
     
     #
     # Episode Status Commands
     #
-    def _mark(self, edb, status):
-        msg("Marking %d episode(s) as %s:\n"%(len(edb), cons.ENUM_EPISODE_STATUS[status]["text"]))
-        if len(edb): self.modified = True
+    def _mark(self, elist, status):
+        msg("Marking %d episode(s) as %s:\n"%(len(elist), cons.ENUM_EPISODE_STATUS[status]["text"]))
+        if len(elist): self.modified = True
         
-        for eurl in edb:
-            eurl.update(status = status)
-            print(eurl.fmt_color())
+        for e in elist:
+            e.status = status
+            print(e.fmt_color())
     
     def do_new(self, line):
         parser = ArgumentParser(prog="new", description="Mark episodes as NEW", epilog="example: new lost.s01* lost.s02*")
@@ -141,11 +140,11 @@ class Cmd(cmd.Cmd, manager.Manager):
         try: args = parser.parse_args(line.split())
         except SystemExit: return
         
-        db = episode.DB()
+        l = episode.List()
         for pattern in args.filters:
-            db.extend(self.episode_db.filter(lambda url: url.match(pattern) and not url.future() and url["status"] in [cons.ADQUIRED, cons.SEEN]))
+            l.extend(self.episodes.filter(lambda e: e.match(pattern) and not e.future() and e.status in [cons.ADQUIRED, cons.SEEN]))
         
-        self._mark(db, cons.NEW)
+        self._mark(l, cons.NEW)
     
     def do_adquire(self, line):
         parser = ArgumentParser(prog="adquire", description="Mark episodes as ADQUIRED", epilog="example: adquire lost.s01* lost.s02*")
@@ -153,11 +152,11 @@ class Cmd(cmd.Cmd, manager.Manager):
         try: args = parser.parse_args(line.split())
         except SystemExit: return
         
-        db = episode.DB()
+        l = episode.List()
         for pattern in args.filters:
-            db.extend(self.episode_db.filter(lambda url: url.match(pattern) and not url.future() and url["status"] in [cons.NEW]))
+            l.extend(self.episodes.filter(lambda e: e.match(pattern) and not e.future() and e.status in [cons.NEW]))
         
-        self._mark(db, cons.ADQUIRED)
+        self._mark(l, cons.ADQUIRED)
     
     def do_see(self, line):
         parser = ArgumentParser(prog="see", description="Mark episodes as SEEN", epilog="example: see lost.s01* lost.s02*")
@@ -165,11 +164,11 @@ class Cmd(cmd.Cmd, manager.Manager):
         try: args = parser.parse_args(line.split())
         except SystemExit: return
         
-        db = episode.DB()
+        l = episode.List()
         for pattern in args.filters:
-            db.extend(self.episode_db.filter(lambda url: url.match(pattern) and not url.future() and url["status"] in [cons.NEW, cons.ADQUIRED]))
+            l.extend(self.episodes.filter(lambda e: e.match(pattern) and not e.future() and e.status in [cons.NEW, cons.ADQUIRED]))
         
-        self._mark(db, cons.SEEN)
+        self._mark(l, cons.SEEN)
     
     #
     # Episode info Commands
@@ -180,18 +179,18 @@ class Cmd(cmd.Cmd, manager.Manager):
         try: args = parser.parse_args(line.split())
         except SystemExit: return
         
-        db = episode.DB()
+        l = episode.List()
         for pattern in args.filters:
-            db.extend(self.episode_db.filter(lambda url: not url.future() and url["status"] in [cons.NEW] and url.match(pattern)))
+            l.extend(self.episodes.filter(lambda e: e.match(pattern) and not e.future() and e.status in [cons.NEW]))
         
         formats = self.main.get_formats()
         if len(formats) == 0:
             print("no formats defined, please check your config")
             return
         
-        for eurl in db:
+        for e in l:
             for fmt in formats:
-                print(eurl.format(fmt))
+                print(e.format(fmt))
     
     def do_ls(self,line):
         parser = ArgumentParser(prog="ls", description="Show episodes information", epilog="example: ls -as lost*")
@@ -204,29 +203,29 @@ class Cmd(cmd.Cmd, manager.Manager):
         try: args = parser.parse_args(line.split())
         except SystemExit: return
         
-        db = episode.DB()
+        l = episode.List()
         for pattern in args.filters:
-            db.extend(self.episode_db.filter(lambda url: url.match(pattern)))
+            l.extend(self.episodes.filter(lambda e: e.match(pattern)))
         
         # defaults: NEW and ADQUIRED
         if not (args.new or args.adquired or args.seen or args.future):
             args.new = args.adquired = True
         
-        # future implies every other status
         if args.future:
-            db = db.filter( lambda url: url.future() )
+            l = l.filter(lambda e: e.future())
+            # future implies every other status
             args.new = args.adquired = args.seen = True
         else:
-            db = db.filter( lambda url: not url.future() )
+            l = l.filter(lambda e: not e.future())
         
-        if not args.new: db = db.filter( lambda url: url["status"] != cons.NEW )
-        if not args.adquired: db = db.filter( lambda url: url["status"] != cons.ADQUIRED )
-        if not args.seen: db = db.filter( lambda url: url["status"] != cons.SEEN )
+        if not args.new: l = l.filter(lambda e: e.status != cons.NEW)
+        if not args.adquired: l = l.filter(lambda e: e.status != cons.ADQUIRED)
+        if not args.seen: l = l.filter(lambda e: e.status != cons.SEEN)
         
-        db.sort(key=lambda url: url["date"], reverse = True)
+        l.sort(key=lambda e: e.date, reverse = True)
         
-        for eurl in db:
-            print(eurl.fmt_color())
+        for e in l:
+            print(e.fmt_color())
     
     #
     # Auxiliary commands:
