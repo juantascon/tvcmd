@@ -6,12 +6,11 @@ from . import msg
 import logging
 def log(): return logging.getLogger(__name__)
 
-class ArgumentParser(argparse.ArgumentParser):
-    
+class ArgumentParser(argparse.ArgumentParser):    
     def _print_message(self, message, file=None):
         if message:
             msg(message)
-            
+
 class Cmd(cmd.Cmd, manager.Manager):
     def __init__(self):
         readline.set_completer_delims(" ")
@@ -37,11 +36,11 @@ class Cmd(cmd.Cmd, manager.Manager):
         
         for show_name in self.main.get_shows():
             msg("Tracking show %s ... "%(show_name))
-            #try:
-            l = self.track(show_name)
-            msg("OK: %d episodes found\n"%(len(l)))
-            #except Exception as ex:
-                #msg("FAIL: (%s)\n"%(ex))
+            try:
+                l = self.track(show_name)
+                msg("OK: %d episodes found\n"%(len(l)))
+            except Exception as ex:
+                msg("FAIL: (%s)\n"%(ex))
                 
         self.modified = False
         

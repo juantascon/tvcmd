@@ -5,12 +5,12 @@ from . import cons
 import logging
 def log(): return logging.getLogger(__name__)
 
-
+#
 # Episode URL is a string that follow this pattern: ${showname}.s${seasonnumber%d2}e${episodenumber%d2},ex:
 # lost.s01e03, how_i_met_your_mother.s09e18, community.s05e07
+#
 class Item():
     
-    # expected: show, season, episode, name, date, status
     def __init__(self, show, season=None, episode=None, name=None, date=None, status=None):
         self.show = show
         self.season = season

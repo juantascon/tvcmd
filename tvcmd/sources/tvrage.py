@@ -48,6 +48,8 @@ class TVRage(base.Base):
         l = []
         for s in seasons:
             episodes = s["episode"]
+            
+            # hack: xmltodict doesn't create lists on singleitems
             if (not isinstance(episodes, list)): episodes = [episodes]
             for e in episodes:
                 l.append({
@@ -57,4 +59,3 @@ class TVRage(base.Base):
                     "date": self._isostr_to_date(e["airdate"])
                 })
         return l
-        

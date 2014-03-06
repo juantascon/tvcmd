@@ -2,17 +2,15 @@ import urllib.parse
 import datetime
 
 import xml.parsers.expat
-from collections import OrderedDict
 
-from .. import errors, cons
+from .. import errors
 from . import base
 from ..lib import xmltodict
 
-#import zipfile, io
-import xml.etree.cElementTree as ElementTree
-
 import logging
 def log(): return logging.getLogger(__name__)
+
+APIKEY = "FD9D34DB64F25A09"
 
 class TheTVDB(base.Base):
     def get_shows(self, pattern):
@@ -35,7 +33,7 @@ class TheTVDB(base.Base):
             raise
             
     def get_episodes(self, show_id):
-        url = "http://thetvdb.com/api/%s/series/%s/all/en.xml" % (cons.APIKEY, show_id)
+        url = "http://thetvdb.com/api/%s/series/%s/all/en.xml" % (APIKEY, show_id)
         
         try:
             xml_content = self._get_url(url)
@@ -56,4 +54,3 @@ class TheTVDB(base.Base):
             raise errors.SourceError("Invalid show id: unexpected source response")
         except:
             raise
-        

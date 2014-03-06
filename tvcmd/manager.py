@@ -23,13 +23,12 @@ class Manager():
         self.shows.clear()
         
     def save(self):
-        # sync status
         for e in self.episodes:
+            # deletes NEWs and insert/update the rest
             if e.status == cons.NEW:
                 self.status.remove(e.url())
             else:
                 self.status.set(e.url(), e.status)
-        # write status
         self.status.write()
         
     def search_episodes(self, show):

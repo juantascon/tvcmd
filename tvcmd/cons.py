@@ -17,7 +17,8 @@ ENUM_EPISODE_STATUS = {
     NEW: {"text": "NEW", "color":"\033[01;38;5;245m" },
     ADQUIRED: {"text": "ADQUIRED", "color":"\033[01;38;5;142m" },
     SEEN: {"text": "SEEN", "color":"\033[01;38;5;70m" },
-    FUTURE: {"text": "FUTURE", "color":"\033[01;38;5;129m" } }
+    FUTURE: {"text": "FUTURE", "color":"\033[01;38;5;129m" }
+}
 
 # config
 CONFIGDIR = xdg.BaseDirectory.save_config_path("tvcmd")
@@ -26,6 +27,3 @@ STATUSDBFILE = CONFIGDIR + "/status.db"
 
 # cache
 CACHEDIR = xdg.BaseDirectory.save_cache_path("tvcmd")
-
-# thetvdb.com
-APIKEY = "FD9D34DB64F25A09"
