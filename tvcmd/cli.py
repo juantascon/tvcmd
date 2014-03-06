@@ -1,7 +1,7 @@
-import readline, cmd, argparse, sys
+import readline, cmd, argparse
 from . import manager, episode, show, cons, errors
 
-from . import msg
+from . import __version__
 
 import logging
 def log(): return logging.getLogger(__name__)
@@ -9,7 +9,7 @@ def log(): return logging.getLogger(__name__)
 class ArgumentParser(argparse.ArgumentParser):    
     def _print_message(self, message, file=None):
         if message:
-            msg(message)
+            print(message)
 
 class Cmd(cmd.Cmd, manager.Manager):
     def __init__(self):
@@ -31,16 +31,16 @@ class Cmd(cmd.Cmd, manager.Manager):
         try:
             manager.Manager.load(self)
         except errors.ConfigError as ex:
-            msg("Error loading: %s\n" % (ex))
+            print("Error loading: %s" % (ex))
             return
         
         for show_name in self.main.get_shows():
-            msg("Tracking show %s ... "%(show_name))
+            print("Tracking show %s ... "%(show_name), end="")
             try:
                 l = self.track(show_name)
-                msg("OK: %d episodes found\n"%(len(l)))
+                print("OK: %d episodes found"%(len(l)))
             except Exception as ex:
-                msg("FAIL: (%s)\n"%(ex))
+                print("FAIL: (%s)"%(ex))
                 
         self.modified = False
         
@@ -57,13 +57,13 @@ class Cmd(cmd.Cmd, manager.Manager):
     
     def save(self):
         try:
-            msg("Saving ... ")
+            print("Saving ... ", end="")
             manager.Manager.save(self)
-            msg("OK\n")
+            print("OK")
             self.modified = False
             return True
         except errors.ConfigError as ex:
-            msg("FAIL: (%s)\n"%(ex))
+            print("FAIL: (%s)"%(ex))
             return False
     
     def do_save(self, line):
@@ -82,7 +82,7 @@ class Cmd(cmd.Cmd, manager.Manager):
         except SystemExit: return
         
         l = self.shows
-        print("\n%s\n"%(l.print_str()))
+        print(l.print_str())
     
     def do_search(self, line):
         parser = ArgumentParser(prog="shows", description="Search for shows in thetvdb.com database", epilog="example: search the office")
@@ -90,13 +90,13 @@ class Cmd(cmd.Cmd, manager.Manager):
         try: args = parser.parse_args([line])
         except SystemExit: return
         
-        msg("Searching [%s] ... "%(args.filter))
+        print("Searching [%s] ... "%(args.filter), end="")
         try:
             l = self.search_shows(args.filter)
-            msg("OK: %d shows found\n"%(len(l)))
-            if (len(l)): print("\n%s\n"%(l.print_str()))
+            print("OK: %d shows found"%(len(l)))
+            if (len(l)): print("\n"+l.print_str())
         except Exception as ex:
-                msg("FAIL: (%s)\n"%(ex))
+                print("FAIL: (%s)"%(ex))
     
     #
     # Complete text
@@ -126,7 +126,7 @@ class Cmd(cmd.Cmd, manager.Manager):
     # Episode Status Commands
     #
     def _mark(self, elist, status):
-        msg("Marking %d episode(s) as %s:\n"%(len(elist), cons.ENUM_EPISODE_STATUS[status]["text"]))
+        print("Marking %d episode(s) as %s"%(len(elist), cons.ENUM_EPISODE_STATUS[status]["text"]))
         if len(elist): self.modified = True
         
         for e in elist:
@@ -228,13 +228,16 @@ class Cmd(cmd.Cmd, manager.Manager):
     #
     # Auxiliary commands:
     #
+    def do_version(self, line):
+        print(__version__)
+    
     def do_help(self, line):
         sep = "\n   "
-        msg("\nTo get specific help type: COMMAND --help\n\n")
-        msg("Auxiliary commands:"+sep+sep.join(["exit", "quit", "help"]) + "\n")
-        msg("DB commands:"+sep+sep.join(["save", "reload"]) + "\n")
-        msg("Episodes commands:"+sep+sep.join(["new", "adquire", "see", "format", "ls"]) + "\n")
-        msg("Shows commands:"+sep+sep.join(["shows", "search"]) + "\n")
+        print("\nTo get specific help type: COMMAND --help\n")
+        print("Auxiliary commands:"+sep+sep.join(["version", "exit", "quit", "help"]) + "\n")
+        print("DB commands:"+sep+sep.join(["save", "reload"]) + "\n")
+        print("Episodes commands:"+sep+sep.join(["new", "adquire", "see", "format", "ls"]) + "\n")
+        print("Shows commands:"+sep+sep.join(["shows", "search"]) + "\n")
     
     def ask_yn(self, question):
         answer = ""
@@ -266,7 +269,7 @@ class Cmd(cmd.Cmd, manager.Manager):
             print()
             return self.exit()
         
-        msg("Invalid command: %s"%(line.split(" ")[0]))
+        print("Invalid command: %s"%(line.split(" ")[0]))
         return self.do_help("")
     
     def cmdloop(self):
