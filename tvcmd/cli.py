@@ -82,7 +82,7 @@ class Cmd(cmd.Cmd, manager.Manager):
         except SystemExit: return
         
         l = self.shows
-        print("\n%s\n"%(l.fmt()))
+        print("\n%s\n"%(l.print_str()))
     
     def do_search(self, line):
         parser = ArgumentParser(prog="shows", description="Search for shows in thetvdb.com database", epilog="example: search the office")
@@ -94,7 +94,7 @@ class Cmd(cmd.Cmd, manager.Manager):
         try:
             l = self.search_shows(args.filter)
             msg("OK: %d shows found\n"%(len(l)))
-            if (len(l)): print("\n%s\n"%(l.fmt()))
+            if (len(l)): print("\n%s\n"%(l.print_str()))
         except Exception as ex:
                 msg("FAIL: (%s)\n"%(ex))
     
@@ -131,7 +131,7 @@ class Cmd(cmd.Cmd, manager.Manager):
         
         for e in elist:
             e.status = status
-            print(e.fmt_color())
+            print(e.print_str())
     
     def do_new(self, line):
         parser = ArgumentParser(prog="new", description="Mark episodes as NEW", epilog="example: new lost.s01* lost.s02*")
@@ -223,8 +223,7 @@ class Cmd(cmd.Cmd, manager.Manager):
         
         l.sort(key=lambda e: e.date, reverse = True)
         
-        for e in l:
-            print(e.fmt_color())
+        print(l.print_str())
     
     #
     # Auxiliary commands:

@@ -10,30 +10,26 @@ def log(): return logging.getLogger(__name__)
 #
 class Item():
     
-    # expected: id, name
     def __init__(self, id, name):
         self.id = id
         self.name = name
     
-    def __repr__(self):
-        return self.url()
-    
     def __eq__(self, other):
-        return (self.id == other.id)
-    
-    def fmt(self):
-        return "[ %s ]: %s" % (self.id, self.url())
+        return (self.url() == other.url())
     
     def url(self):
         return self.name.replace("(","").replace(")","").replace(" ", "_").lower()
+    
+    def print_str(self):
+        return "[ %s ]: %s" % (self.id, self.url())
     
 class List(list):
     
     def clear(self):
         while len(self) > 0 : self.pop()
     
-    def fmt(self):
-        return "\n".join([ s.fmt() for s in self ])
+    def print_str(self):
+        return "\n".join([ s.print_str() for s in self ])
         
     def filter(self, function):
         return List(item for item in self if function(item))

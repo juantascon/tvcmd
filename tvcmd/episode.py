@@ -19,11 +19,23 @@ class Item():
         self.date = date
         self.status = status
     
-    def __repr__(self):
-        return self.url()
+    def url(self):
+        return self.str_show() + self.str_season() + self.str_episode()
     
     def __eq__(self, other):
         return (self.url() == other.url())
+        
+    def str_episode(self):
+        try: return ( "e%02d" %(self.episode) )
+        except KeyError: return ""
+    
+    def str_season(self):
+        try: return ( "s%02d" %(self.season) )
+        except KeyError: return ""
+    
+    def str_show(self):
+        try: return ( self.show + "." )
+        except KeyError: return ""
     
     def format(self, fmt):
         fmt = fmt.replace("${show}", self.show)
@@ -32,9 +44,14 @@ class Item():
         fmt = fmt.replace("${episode}", "%02d" % self.episode)
         return fmt
     
-    def fmt(self):
-        return "%s : [ %s ] [ %s ]" % (self.url(), str(self.date), self.name)
-    
+    def print_str(self):
+        COLOR_END = "\033[0m"
+        
+        if self.future(): color = cons.ENUM_EPISODE_STATUS[cons.FUTURE]["color"]
+        else: color = cons.ENUM_EPISODE_STATUS[self.status]["color"]
+        
+        return color + "%s : [ %s ] [ %s ]" % (self.url(), str(self.date), self.name) + COLOR_END
+        
     def match(self, pattern):
         return fnmatch.fnmatch(self.url(), pattern)
     
@@ -49,29 +66,6 @@ class Item():
         
         return True
         
-    def fmt_color(self):
-        COLOR_END = "\033[0m"
-        
-        if self.future(): color = cons.ENUM_EPISODE_STATUS[cons.FUTURE]["color"]
-        else: color = cons.ENUM_EPISODE_STATUS[self.status]["color"]
-        
-        return color + self.fmt() + COLOR_END
-    
-    def fmt_episode(self):
-        try: return ( "e%02d" %(self.episode) )
-        except KeyError: return ""
-    
-    def fmt_season(self):
-        try: return ( "s%02d" %(self.season) )
-        except KeyError: return ""
-    
-    def fmt_show(self):
-        try: return ( self.show + "." )
-        except KeyError: return ""
-        
-    def url(self):
-        return self.fmt_show() + self.fmt_season() + self.fmt_episode()
-    
     @classmethod
     def new_from_url(cls, _str):
         parts1 = _str.partition(".")
@@ -120,17 +114,20 @@ class List(list):
     def list_episodes(self):
         s = set()
         for e in self:
-            s.add( e.fmt_show() + e.fmt_season() + e.fmt_episode() )
+            s.add( e.str_show() + e.str_season() + e.str_episode() )
         return list(s)
     
     def list_seasons(self):
         s = set()
         for e in self:
-            s.add( e.fmt_show() + e.fmt_season() )
+            s.add( e.str_show() + e.str_season() )
         return list(s)
     
     def list_shows(self):
         s = set()
         for e in self:
-            s.add( e.fmt_show() )
+            s.add( e.str_show() )
         return list(s)
+        
+    def print_str(self):
+        return "\n".join([ e.print_str() for e in self ])
