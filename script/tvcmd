@@ -21,6 +21,7 @@ def main():
     
     parser.add_argument("-e", "--execute", default=None, metavar="COMMAND", help="execute COMMAND and exit")
     parser.add_argument("-f", "--format", action="store_true", help="print formated episodes and exit")
+    parser.add_argument("-v", "--version", action="store_true", help="print version info and exit")
     parser.add_argument("--help-conf", action="store_true", help="print help on how to configure")
     
     args = parser.parse_args()
@@ -46,6 +47,12 @@ def main():
     # prints formated urls and exits
     if args.format:
         ui.onecmd("format *")
+        ui.exit()
+        return
+    
+    # prints version info and exits
+    if args.version:
+        ui.onecmd("version")
         ui.exit()
         return
     
