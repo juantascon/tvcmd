@@ -241,7 +241,7 @@ class Cmd(cmd.Cmd, manager.Manager):
         print("\nTo get specific help type: COMMAND --help\n")
         print("Auxiliary commands:"+sep+sep.join(["version", "exit", "quit", "help"]) + "\n")
         print("DB commands:"+sep+sep.join(["save", "reload"]) + "\n")
-        print("Episodes commands:"+sep+sep.join(["new", "adquire", "see", "format", "ls"]) + "\n")
+        print("Episodes commands:"+sep+sep.join(["update", "new", "adquire", "see", "format", "ls"]) + "\n")
         print("Shows commands:"+sep+sep.join(["shows", "search"]) + "\n")
     
     def ask_yn(self, question):
