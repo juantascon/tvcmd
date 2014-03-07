@@ -31,13 +31,14 @@ def main():
         import tvcmd.cons
         help = ('\nPaths:\n'
                 ' config: %s\n'
-                ' status-db: %s\n\n'
-                'Example Config:\n'
+                ' status-db: %s\n'
+                ' cache: %s\n'
+                '\nExample Config:\n'
                 '[general]\n'
                 'shows = an_idiot_abroad, the_office_us, lost\n'
                 'formats = https://torrentz.eu/verified?f=${show+}+s${season}e${episode}\n'
                 'source = tvrage\n')
-        print(help %(tvcmd.cons.MAINCONFIGFILE, tvcmd.cons.STATUSDBFILE))
+        print(help %(tvcmd.cons.MAINCONFIGFILE, tvcmd.cons.STATUSDBFILE, tvcmd.cons.CACHEFILE))
         return
     
     import tvcmd.cli
@@ -69,6 +70,7 @@ if __name__ == "__main__":
     
     # DEBUG mode
     if os.environ.get("DEBUG"):
+        print("Running on DEBUG mode")
         
         logging.basicConfig(level=logging.DEBUG)
         sys.path.insert(0, os.path.dirname(__file__)+"/..")
@@ -76,6 +78,7 @@ if __name__ == "__main__":
         import tvcmd.cons
         tvcmd.cons.MAINCONFIGFILE = tvcmd.cons.CONFIGDIR + "_debug/main.cfg"
         tvcmd.cons.STATUSDBFILE = tvcmd.cons.CONFIGDIR + "_debug/status.db"
+        tvcmd.cons.CACHEFILE = tvcmd.cons.CONFIGDIR + "_debug/cache.db"
         
         import traceback
         try: main()

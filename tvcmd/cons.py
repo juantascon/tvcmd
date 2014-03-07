@@ -1,4 +1,3 @@
-import os
 import xdg.BaseDirectory
 
 # episodes status
@@ -24,6 +23,7 @@ ENUM_EPISODE_STATUS = {
 CONFIGDIR = xdg.BaseDirectory.save_config_path("tvcmd")
 MAINCONFIGFILE = CONFIGDIR + "/main.cfg"
 STATUSDBFILE = CONFIGDIR + "/status.db"
+CACHEFILE = CONFIGDIR + "/cache.db"
 
 # cache
 CACHEDIR = xdg.BaseDirectory.save_cache_path("tvcmd")

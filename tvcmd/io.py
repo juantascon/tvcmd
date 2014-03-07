@@ -1,6 +1,6 @@
 from . import cons, errors
 
-import os, configparser
+import os, configparser, json
 
 import logging
 def log(): return logging.getLogger(__name__)
@@ -13,14 +13,13 @@ class ConfigFileParser(configparser.ConfigParser):
         
     def read(self):
         return super().read(self.filename)
-        
+    
     def write(self):
         try: os.makedirs(os.path.dirname(self.filename))
         except: pass
         
         with open(self.filename, "w") as f:
             return super().write(f)
-
 
 class Status(ConfigFileParser):
     
@@ -78,4 +77,24 @@ class Main(ConfigFileParser):
         if _source not in ["thetvdb", "tvrage"]:
              raise errors.ConfigError("Invalid source: %s" %(_source))
         return _source
+
+class Cache(dict):
+    
+    def __init__(self):
+        self._filename = cons.CACHEFILE
+    
+    def read(self):
+        self.clear()
+        try:
+            with open(self._filename) as f:
+                self.update(json.load(f))
+        except Exception as ex:
+            pass
+            
+    def write(self):
+        try: os.makedirs(os.path.dirname(self._filename))
+        except: pass
         
+        with open(self._filename, "w") as f:
+            return json.dump(dict(self), f, indent=2, separators=(',', ': '))
+    

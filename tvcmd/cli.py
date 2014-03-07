@@ -19,7 +19,8 @@ class Cmd(cmd.Cmd, manager.Manager):
         cmd.Cmd.__init__(self)
         
         self.update_prompt()
-        self.modified = False
+        self.modified_status = False
+        self.modified_cache = False
         
     def update_prompt(self):
         self.prompt = "tvcmd:> "
@@ -32,16 +33,7 @@ class Cmd(cmd.Cmd, manager.Manager):
             manager.Manager.load(self)
         except errors.ConfigError as ex:
             print("Error loading: %s" % (ex))
-            return
         
-        for show_name in self.main.get_shows():
-            print("Tracking show %s ... "%(show_name), end="")
-            try:
-                l = self.track(show_name)
-                print("OK: %d episodes found"%(len(l)))
-            except Exception as ex:
-                print("FAIL: (%s)"%(ex))
-                
         self.modified = False
         
     def do_reload(self, line):
@@ -50,10 +42,23 @@ class Cmd(cmd.Cmd, manager.Manager):
         except SystemExit: return
         
         if self.modified:
-            answer = self.ask_yn("Database has been modified. Are you sure you want to reload?")
+            answer = self.ask_yn("Status database has been modified. Are you sure you want to reload?")
             if not answer: return
             
         self.load()
+        
+    def do_update(self, line):
+        parser = ArgumentParser(prog="update", description="Updates episodes from source", epilog="example: upload")
+        try: args = parser.parse_args(line.split())
+        except SystemExit: return
+        
+        for show_name in self.main.get_shows():
+            print("Tracking show %s ... "%(show_name), end="")
+            try:
+                l = self.track(show_name)
+                print("OK: %d episodes found"%(len(l)))
+            except Exception as ex:
+                print("FAIL: (%s)"%(ex))
     
     def save(self):
         try:
@@ -67,7 +72,7 @@ class Cmd(cmd.Cmd, manager.Manager):
             return False
     
     def do_save(self, line):
-        parser = ArgumentParser(prog="save", description="Save episodes status DB", epilog="example: save")
+        parser = ArgumentParser(prog="save", description="Save episodes status DB and cache", epilog="example: save")
         try: args = parser.parse_args(line.split())
         except SystemExit: return
         

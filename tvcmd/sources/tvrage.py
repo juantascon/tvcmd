@@ -1,5 +1,4 @@
 import urllib.parse
-import datetime
 
 import xml.parsers.expat
 
@@ -56,6 +55,6 @@ class TVRage(base.Base):
                     "name": e["title"],
                     "episode": int(e["seasonnum"]),
                     "season": int(s["@no"]),
-                    "date": self._isostr_to_date(e["airdate"])
+                    "date": e["airdate"]
                 })
         return l

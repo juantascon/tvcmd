@@ -1,5 +1,4 @@
 import urllib.parse
-import datetime
 
 import xml.parsers.expat
 
@@ -47,7 +46,7 @@ class TheTVDB(base.Base):
                     "name": e["EpisodeName"],
                     "episode": int(e["EpisodeNumber"]),
                     "season": int(e["SeasonNumber"]),
-                    "date": self._isostr_to_date(e["FirstAired"])
+                    "date": e["FirstAired"]
                 })
             return l
         except xml_content.parsers.expat.ExpatError:

@@ -11,13 +11,17 @@ def log(): return logging.getLogger(__name__)
 #
 class Item():
     
-    def __init__(self, show, season=None, episode=None, name=None, date=None, status=None):
+    def __init__(self, show="", season=0, episode=0, name="", date=str(datetime.date.max), status=cons.NEW):
         self.show = show
         self.season = season
         self.episode = episode
         self.name = name
+        
         self.date = date
         self.status = status
+        
+    def to_dict(self):
+        return { "url": self.url(), "date": self.date, "name": self.name, "status": self.status }
     
     def url(self):
         return self.str_show() + self.str_season() + self.str_episode()
@@ -50,7 +54,7 @@ class Item():
         if self.future(): color = cons.ENUM_EPISODE_STATUS[cons.FUTURE]["color"]
         else: color = cons.ENUM_EPISODE_STATUS[self.status]["color"]
         
-        return color + "%s : [ %s ] [ %s ]" % (self.url(), str(self.date), self.name) + COLOR_END
+        return color + "%s : [ %s ] [ %s ]" % (self.url(), self.date, self.name) + COLOR_END
         
     def match(self, pattern):
         return fnmatch.fnmatch(self.url(), pattern)
@@ -60,12 +64,26 @@ class Item():
     
     def future(self):
         try:
-            if self.date < datetime.date.today():
+            if datetime.datetime.strptime(self.date, "%Y-%m-%d").date() < datetime.date.today():
                 return False
         except: pass
         
         return True
+    
+    @classmethod
+    def new_from_dict(cls, _dict):
+        # use ether url or independent fields
+        if _dict.get("url") is None:
+            e = Item(_dict.get("show"), _dict.get("season"), _dict.get("episode"))
+        else:
+            e = Item.new_from_url(_dict.get("url"))
         
+        e.name = _dict.get("name")
+        e.date = _dict.get("date")
+        e.status = _dict.get("status")
+        
+        return e
+    
     @classmethod
     def new_from_url(cls, _str):
         parts1 = _str.partition(".")
@@ -87,6 +105,21 @@ class Item():
         return e
     
 class List(list):
+    
+    def upsert_r(self, items):
+        for i in items:
+            self.upsert(i)
+    
+    #
+    # updates/inserts an element, on update status is kept untouched
+    #
+    def upsert(self, e):
+        for item in self:
+            if item.url() == e.url():
+                item.name = e.name
+                item.date = e.date
+                return
+        self.append(e)
     
     def clear(self):
         while len(self) > 0 : self.pop()
