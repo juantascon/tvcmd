@@ -1,5 +1,11 @@
 NEWS / CHANGELOG:
 
+*** 0.9.2
+* better code organization
+* new command: version
+* new command: update
+* episodes are now kept in cache and updated with the update command
+
 *** 0.9.1.1
 * fixed bug when accessing xdg variables
 
