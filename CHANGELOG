@@ -1,5 +1,8 @@
 NEWS / CHANGELOG:
 
+*** 0.9.2.2
+* cache is now only saved automatically after update
+
 *** 0.9.2.1
 * shownames can't contain : -
 
