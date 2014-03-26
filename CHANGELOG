@@ -1,5 +1,9 @@
 NEWS / CHANGELOG:
 
+*** 0.9.2.3
+* changed readme to readme.md in setup.py
+
+
 *** 0.9.2.2
 * cache is now only saved automatically after update
 

@@ -4,7 +4,7 @@ from distutils.core import setup
 
 setup (
     name="tvcmd",
-    version="0.9.2.2",
+    version="0.9.2.3",
     description="Command line tool to keep track of tv shows",
     author="Juan Tascon",
     author_email="juantascon@horlux.org",
@@ -15,7 +15,7 @@ setup (
     
     packages=["tvcmd", "tvcmd.lib", "tvcmd.sources"],
     scripts=["script/tvcmd"],
-    data_files=[("share/tvcmd", ["README", "LICENSE", "share/tvcmd.svg", "share/main.cfg.example"])],
+    data_files=[("share/tvcmd", ["README.md", "LICENSE", "share/tvcmd.svg", "share/main.cfg.example"])],
     
     license="GPL, Version 3.0"
 )
