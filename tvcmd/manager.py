@@ -28,20 +28,23 @@ class Manager():
         
         for k,v in self.cache.items():
             self.episodes.append(episode.Item.new_from_dict(v))
+    
+    def save_cache(self):
+        for e in self.episodes:
+            self.cache[e.url()] = e.to_dict()
         
-    def save(self):
+        self.cache.write()
+    
+    def save_status(self):
         for e in self.episodes:
             # deletes NEWs and insert/update the rest
             if e.status == cons.NEW:
                 self.status.remove(e.url())
             else:
                 self.status.set(e.url(), e.status)
-            
-            # updates cache
-            self.cache[e.url()] = e.to_dict()
         
         self.status.write()
-        self.cache.write()    
+        
         
     def search_episodes(self, show):
         raw_episodes = self.source.get_episodes(show.id)

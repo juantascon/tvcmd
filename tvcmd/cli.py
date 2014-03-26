@@ -59,11 +59,18 @@ class Cmd(cmd.Cmd, manager.Manager):
                 print("OK: %d episodes found"%(len(l)))
             except Exception as ex:
                 print("FAIL: (%s)"%(ex))
+        
+        try:
+            print("Saving cache ... ", end="")
+            self.save_cache()
+            print("OK")
+        except Exception as ex:
+            print("FAIL: (%s)"%(ex))
     
     def save(self):
         try:
             print("Saving ... ", end="")
-            manager.Manager.save(self)
+            manager.Manager.save_status(self)
             print("OK")
             self.modified = False
             return True
