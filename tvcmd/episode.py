@@ -12,14 +12,14 @@ def log(): return logging.getLogger(__name__)
 class Item():
     
     def __init__(self, show="", season=0, episode=0, name="", date=str(datetime.date.max), status=cons.NEW):
-        self.show = show
-        self.season = season
-        self.episode = episode
-        self.name = name
+        self.show = show or ""
+        self.season = season or 0
+        self.episode = episode or 0
+        self.name = name or ""
         
-        self.date = date
-        self.status = status
-        
+        self.date = date or str(datetime.date.max)
+        self.status = status or cons.NEW
+    
     def to_dict(self):
         return { "url": self.url(), "date": self.date, "name": self.name, "status": self.status }
     
@@ -78,9 +78,9 @@ class Item():
         else:
             e = Item.new_from_url(_dict.get("url"))
         
-        e.name = _dict.get("name")
-        e.date = _dict.get("date")
-        e.status = _dict.get("status")
+        e.name = _dict.get("name") or ""
+        e.date = _dict.get("date") or str(datetime.date.max)
+        e.status = _dict.get("status") or cons.NEW
         
         return e
     
