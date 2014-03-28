@@ -2,14 +2,16 @@
 
 from distutils.core import setup
 
+from tvcmd import __author__, __author_email__, __version__, __license__
+
 setup (
     name="tvcmd",
-    version="0.9.2.3",
+    version=__version__,
     description="Command line tool to keep track of tv shows",
-    author="Juan Tascon",
-    author_email="juantascon@horlux.org",
-    maintainer="Juan Tascón",
-    maintainer_email="juantascon@horlug.org",
+    author=__author__,
+    author_email=__author_email__,
+    maintainer=__author__,
+    maintainer_email=__author_email__,
     url="http://tvcmd.horlux.org",
     keywords=["tvcmd", "episodes", "tv", "shows", "cli"],
     
@@ -17,5 +19,5 @@ setup (
     scripts=["script/tvcmd"],
     data_files=[("share/tvcmd", ["README.md", "LICENSE", "share/tvcmd.svg", "share/main.cfg.example"])],
     
-    license="GPL, Version 3.0"
+    license=__license__
 )
