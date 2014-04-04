@@ -19,8 +19,7 @@ class Cmd(cmd.Cmd, manager.Manager):
         cmd.Cmd.__init__(self)
         
         self.update_prompt()
-        self.modified_status = False
-        self.modified_cache = False
+        self.modified = False
         
     def update_prompt(self):
         self.prompt = "tvcmd:> "
@@ -70,7 +69,7 @@ class Cmd(cmd.Cmd, manager.Manager):
     def save(self):
         try:
             print("Saving ... ", end="")
-            manager.Manager.save_status(self)
+            self.save_status()
             print("OK")
             self.modified = False
             return True

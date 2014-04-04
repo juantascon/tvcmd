@@ -13,7 +13,7 @@ class Manager():
         
         self.episodes = episode.List()
         self.shows = show.List()
-        
+    
     def load(self):
         self.main.read()
         _source = self.main.get_source()
@@ -27,7 +27,13 @@ class Manager():
         self.shows.clear()
         
         for k,v in self.cache.items():
-            self.episodes.append(episode.Item.new_from_dict(v))
+            item = episode.Item.new_from_dict(v)
+            item_status = self.status.get(item.url())
+            if item_status is not None:
+                item.status = item_status
+            
+            self.episodes.append(item)
+            
     
     def save_cache(self):
         for e in self.episodes:
@@ -44,8 +50,7 @@ class Manager():
                 self.status.set(e.url(), e.status)
         
         self.status.write()
-        
-        
+    
     def search_episodes(self, show):
         raw_episodes = self.source.get_episodes(show.id)
         l = episode.List()
