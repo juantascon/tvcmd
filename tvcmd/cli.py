@@ -51,10 +51,10 @@ class Cmd(cmd.Cmd, manager.Manager):
         try: args = parser.parse_args(line.split())
         except SystemExit: return
         
-        for show_name in self.main.get_shows():
-            print("Tracking show %s ... "%(show_name), end="")
+        for show in self.shows:
+            print("Tracking show %s ... "%(show.name), end="")
             try:
-                l = self.track(show_name)
+                l = self.track(show.name)
                 print("OK: %d episodes found"%(len(l)))
             except Exception as ex:
                 print("FAIL: (%s)"%(ex))

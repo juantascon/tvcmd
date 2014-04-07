@@ -15,25 +15,34 @@ class Manager():
         self.shows = show.List()
     
     def load(self):
+        self.episodes.clear()
+        self.shows.clear()
+        
+        # read every config file
         self.main.read()
+        self.status.read()
+        self.cache.read()
+        
+        # load the source
         _source = self.main.get_source()
         if _source == "thetvdb": self.source = thetvdb.TheTVDB()
         elif _source == "tvrage": self.source = tvrage.TVRage()
         
-        self.status.read()
-        self.cache.read()
+        # load the shows
+        for show_name in self.main.get_shows():
+            s = show.Item(show_name)
+            self.shows.append(s)
         
-        self.episodes.clear()
-        self.shows.clear()
-        
+        # load the episodes cache
         for k,v in self.cache.items():
             item = episode.Item.new_from_dict(v)
+            if len(self.shows.filter(lambda e: e.name == item.show)) == 0: continue
+            
             item_status = self.status.get(item.url())
             if item_status is not None:
                 item.status = item_status
             
             self.episodes.append(item)
-            
     
     def save_cache(self):
         for e in self.episodes:
@@ -71,7 +80,7 @@ class Manager():
         l = show.List()
         
         for raw in raw_shows:
-            s = show.Item(raw["id"], raw["name"])
+            s = show.Item(raw["name"], raw["id"])
             l.append(s)
         
         return l
@@ -80,7 +89,7 @@ class Manager():
         s = self.search_shows(show_name)[0]
         l = self.search_episodes(s)
         
-        self.shows.append(s)
+        self.shows.upsert(s)
         self.episodes.upsert_r(l)
         
         return l

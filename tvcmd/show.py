@@ -10,9 +10,9 @@ def log(): return logging.getLogger(__name__)
 #
 class Item():
     
-    def __init__(self, id, name):
-        self.id = id
+    def __init__(self, name, id=0):
         self.name = name
+        self.id = id or 0
     
     def __eq__(self, other):
         return (self.url() == other.url())
@@ -24,6 +24,14 @@ class Item():
         return "[ %s ]: %s" % (self.id, self.url())
     
 class List(list):
+    
+    def upsert(self, s):
+        for item in self:
+            if item.url() == s.url():
+                item.name = s.name
+                item.id = s.id
+                return
+        self.append(s)
     
     def clear(self):
         while len(self) > 0 : self.pop()
