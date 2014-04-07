@@ -1,5 +1,8 @@
 NEWS / CHANGELOG:
 
+** 0.9.2.6
+* only shows in config are tracked
+
 ** 0.9.2.5
 * fixed: status not loaded from status.db
 
