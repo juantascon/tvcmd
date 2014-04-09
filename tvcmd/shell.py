@@ -1,5 +1,5 @@
 import readline, cmd, argparse
-from . import commands, io
+from . import commands, manager, io
 
 from . import __version__
 
@@ -95,17 +95,17 @@ class Shell(cmd.Cmd):
         pass
     
     def do_exit(self, line):
-        if manager.modified:
-            answer = self.ask_yn("Database has been modified. Do you want to save it now?")
-            if answer: return self.save()
+        if manager.instance.modified:
+            answer = self.ask_yn("Database has been modified. Do you want to save it before closing?")
+            if answer: self.onecmd("save")
         return True
     
     do_quit = do_exit
     
     def default(self, line):
         if line == "EOF":
-            io.msg()
-            return self.exit()
+            io.msg("")
+            return self.onecmd("exit")
         
         io.msg("Invalid command: %s"%(line.split(" ")[0]))
         return self.do_help("")
