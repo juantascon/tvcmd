@@ -27,6 +27,12 @@ class Base(ArgumentParser):
             e.status = status
             io.msg(e.print_str())
     
+    def parse_args(*args, **kargs):
+        try:
+            return ArgumentParser.parse_args(*args, **kargs)
+        except SystemExit:
+            return None
+    
     def do(self):
         pass
     
@@ -39,8 +45,8 @@ class Reload(Base):
         ArgumentParser.__init__(self, prog="reload", description="Reloads configuration", epilog="example: reload")
     
     def do(self, line):
-        try: args = self.parse_args(line.split())
-        except SystemExit: return
+        args = self.parse_args(line.split())
+        if not args: return
         
         if m.modified:
             answer = io.ask_yn("Status database has been modified. Are you sure you want to reload?")
@@ -58,6 +64,7 @@ class Update(Base):
     
     def do(self, line):
         args = self.parse_args(line.split())
+        if not args: return
         
         for show in m.shows:
             io.msg("Tracking show %s ... "%(show.name), end="")
@@ -96,6 +103,7 @@ class Shows(Base):
     
     def do(self, line):
         args = self.parse_args(line.split())
+        if not args: return
         
         l = m.shows
         io.msg(l.print_str())
@@ -108,6 +116,7 @@ class Search(Base):
     
     def do(self, line):
         args = self.parse_args([line])
+        if not args: return
         
         io.msg("Searching [%s] ... "%(args.filter), end="")
         try:
@@ -121,10 +130,11 @@ class New(Base):
     
     def __init__(self):
         ArgumentParser.__init__(self, prog="new", description="Mark episodes as NEW", epilog="example: new lost.s01* lost.s02*")
-        self.add_argument("filters", metavar="EPISODE", nargs="*", default=["*"], help="episode name or filter, ex: lost.s01e0*")
+        self.add_argument("filters", metavar="EPISODE", nargs="+", default=[""], help="episode name or filter, ex: lost.s01e0*")
     
     def do(self, line):
         args = self.parse_args(line.split())
+        if not args: return
         
         l = episode.List()
         for pattern in args.filters:
@@ -139,10 +149,11 @@ class Adquire(Base):
     
     def __init__(self):
         ArgumentParser.__init__(self, prog="adquire", description="Mark episodes as ADQUIRED", epilog="example: adquire lost.s01* lost.s02*")
-        self.add_argument("filters", metavar="EPISODE", nargs="*", default=["*"], help="episode name or filter, ex: lost.s01e0*")
+        self.add_argument("filters", metavar="EPISODE", nargs="+", default=[""], help="episode name or filter, ex: lost.s01e0*")
     
     def do(self, line):
         args = self.parse_args(line.split())
+        if not args: return
         
         l = episode.List()
         for pattern in args.filters:
@@ -157,10 +168,11 @@ class See(Base):
     
     def __init__(self):
         ArgumentParser.__init__(self, prog="see", description="Mark episodes as SEEN", epilog="example: see lost.s01* lost.s02*")
-        self.add_argument("filters", metavar="EPISODE", nargs="*", default=["*"], help="episode name or filter, ex: lost.s01e0*")
+        self.add_argument("filters", metavar="EPISODE", nargs="+", default=[""], help="episode name or filter, ex: lost.s01e0*")
     
     def do(self, line):
         args = self.parse_args(line.split())
+        if not args: return
         
         l = episode.List()
         for pattern in args.filters:
@@ -179,6 +191,7 @@ class Format(Base):
 
     def do(self, line):
         args = self.parse_args(line.split())
+        if not args: return
         
         l = episode.List()
         for pattern in args.filters:
@@ -207,6 +220,7 @@ class Ls(Base):
 
     def do(self, line):
         args = self.parse_args(line.split())
+        if not args: return
         
         l = episode.List()
         for pattern in args.filters:
