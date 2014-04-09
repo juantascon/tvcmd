@@ -43,7 +43,6 @@ def main():
     
     import tvcmd.shell
     ui = tvcmd.shell.Shell()
-    ui.load()
     
     # prints formated urls and exits
     if args.format:
