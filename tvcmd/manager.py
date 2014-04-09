@@ -1,4 +1,4 @@
-from . import errors, cons, episode, show, io
+from . import errors, cons, episode, show, fs
 from .sources import thetvdb, tvrage
 
 import logging
@@ -7,9 +7,9 @@ def log(): return logging.getLogger(__name__)
 class Manager():
     
     def __init__(self):
-        self._main = io.Main()
-        self._status = io.Status()
-        self._cache = io.Cache()
+        self._main = fs.Main()
+        self._status = fs.Status()
+        self._cache = fs.Cache()
         
         self.episodes = episode.List()
         self.shows = show.List()

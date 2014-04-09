@@ -6,7 +6,7 @@ import logging
 import argparse
 
 
-# use for debugging only, launches the python interactive shell
+# use for debugging only, launches the python interactive shell in the middle of a tvcmd session
 def interactive():
     import readline
     import rlcompleter
@@ -41,8 +41,8 @@ def main():
         print(help %(tvcmd.cons.MAINCONFIGFILE, tvcmd.cons.STATUSDBFILE, tvcmd.cons.CACHEFILE))
         return
     
-    import tvcmd.cli
-    ui = tvcmd.cli.Cmd()
+    import tvcmd.shell
+    ui = tvcmd.shell.Shell()
     ui.load()
     
     # prints formated urls and exits

@@ -97,4 +97,3 @@ class Cache(dict):
         
         with open(self._filename, "w") as f:
             return json.dump(dict(self), f, indent=2, separators=(',', ': '))
-    

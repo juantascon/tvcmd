@@ -100,7 +100,7 @@ class Shell(cmd.Cmd):
     #        answer = self.ask_yn("Database has been modified. Do you want to save it now?")
     #        if answer: return self.save()
     #    return True
-        
+    
     #do_quit = do_exit
     
     def default(self, line):
