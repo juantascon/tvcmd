@@ -6,6 +6,8 @@ from . import __version__
 import logging
 def log(): return logging.getLogger(__name__)
 
+readline.set_completer_delims(" ")
+
 class CommandContainer():
     def __init__(self):
         self.reload = commands.Reload()
@@ -21,7 +23,6 @@ class CommandContainer():
 
 class Shell(cmd.Cmd):
     def __init__(self):
-        readline.set_completer_delims(" ")
         cmd.Cmd.__init__(self)
         
         self.prompt = "tvcmd:> "
