@@ -108,7 +108,7 @@ class Shell(cmd.Cmd):
             return self.onecmd("exit")
         
         io.msg("Invalid command: %s"%(line.split(" ")[0]))
-        return self.do_help("")
+        self.onecmd("help")
     
     def cmdloop(self):
         try:
