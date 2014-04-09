@@ -86,7 +86,9 @@ def Save(Base):
             io.msg("OK")
         except errors.ConfigError as ex:
             io.msg("FAIL: (%s)"%(ex))
-            
+            answer = io.ask_yn("There was a problem saving, do you want to try again?")
+            if answer: return self.do(line)
+
 def Shows(Base):
     
     def __init__(self):
