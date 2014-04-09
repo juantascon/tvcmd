@@ -1,4 +1,4 @@
-import argparse
+from argparse import ArgumentParser
 from . import manager, io, cons, errors
 
 import logging
@@ -7,7 +7,7 @@ def log(): return logging.getLogger(__name__)
 # manager singleton instance shortcut
 m = manager.instance
 
-class Base(argparse.ArgumentParser):
+class Base(ArgumentParser):
     
     def _print_message(self, message, file=None):
         if message:
@@ -33,10 +33,10 @@ class Base(argparse.ArgumentParser):
     def complete(self):
         pass
 
-def Reload(Base):
+class Reload(Base):
     
     def __init__(self):
-        super().__init__(self, prog="reload", description="Reload episodes list and status", epilog="example: reload")
+        ArgumentParser.__init__(self, prog="reload", description="Reloads configuration", epilog="example: reload")
     
     def do(self, line):
         try: args = self.parse_args(line.split())
@@ -51,10 +51,10 @@ def Reload(Base):
         except errors.ConfigError as ex:
             io.msg("Error loading: %s" % (ex))
             
-def Update(Base):
+class Update(Base):
     
     def __init__(self):
-        super().__init__(self, prog="update", description="Updates episodes from source", epilog="example: upload")
+        ArgumentParser.__init__(self, prog="update", description="Updates episodes from source", epilog="example: upload")
     
     def do(self, line):
         args = self.parse_args(line.split())
@@ -74,10 +74,10 @@ def Update(Base):
         except Exception as ex:
             io.msg("FAIL: (%s)"%(ex))
 
-def Save(Base):
+class Save(Base):
     
     def __init__(self):
-        super().__init__(self, prog="save", description="Save episodes status DB and cache", epilog="example: save")
+        ArgumentParser.__init__(self, prog="save", description="Save episodes status DB and cache", epilog="example: save")
         
     def do(self, line):
         try:
@@ -89,10 +89,10 @@ def Save(Base):
             answer = io.ask_yn("There was a problem saving, do you want to try again?")
             if answer: return self.do(line)
 
-def Shows(Base):
+class Shows(Base):
     
     def __init__(self):
-        super().__init__(self, prog="save", description="Save episodes status DB and cache", epilog="example: save")
+        ArgumentParser.__init__(self, prog="save", description="Save episodes status DB and cache", epilog="example: save")
     
     def do(self, line):
         args = self.parse_args(line.split())
@@ -100,10 +100,10 @@ def Shows(Base):
         l = m.shows
         io.msg(l.print_str())
 
-def Search(Base):
+class Search(Base):
     
     def __init__(self):
-        super().__init__(self, prog="save", description="Save episodes status DB and cache", epilog="example: save")
+        ArgumentParser.__init__(self, prog="save", description="Save episodes status DB and cache", epilog="example: save")
         self.add_argument("filter", metavar="SHOW", help="show name or part, ex: the offi")
     
     def do(self, line):
@@ -117,10 +117,10 @@ def Search(Base):
         except Exception as ex:
             io.msg("FAIL: (%s)"%(ex))
 
-def New(Base):
+class New(Base):
     
     def __init__(self):
-        super().__init__(self, prog="new", description="Mark episodes as NEW", epilog="example: new lost.s01* lost.s02*")
+        ArgumentParser.__init__(self, prog="new", description="Mark episodes as NEW", epilog="example: new lost.s01* lost.s02*")
         self.add_argument("filters", metavar="EPISODE", nargs="*", default=["*"], help="episode name or filter, ex: lost.s01e0*")
     
     def do(self, line):
@@ -135,10 +135,10 @@ def New(Base):
     def complete(self, text, line, start_index, end_index):
         return self._complete(text, ["-h", "--help"], m.episodes.filter(lambda e: not e.future() and e.status in [cons.ADQUIRED, cons.SEEN]))
 
-def Adquire(Base):
+class Adquire(Base):
     
     def __init__(self):
-        super().__init__(self, prog="adquire", description="Mark episodes as ADQUIRED", epilog="example: adquire lost.s01* lost.s02*")
+        ArgumentParser.__init__(self, prog="adquire", description="Mark episodes as ADQUIRED", epilog="example: adquire lost.s01* lost.s02*")
         self.add_argument("filters", metavar="EPISODE", nargs="*", default=["*"], help="episode name or filter, ex: lost.s01e0*")
     
     def do(self, line):
@@ -153,10 +153,10 @@ def Adquire(Base):
     def complete(self, text, line, start_index, end_index):
         return self._complete(text, ["-h", "--help"], m.episodes.filter(lambda e: not e.future() and e.status in [cons.NEW]))
 
-def See(Base):
+class See(Base):
     
     def __init__(self):
-        super().__init__(self, prog="see", description="Mark episodes as SEEN", epilog="example: see lost.s01* lost.s02*")
+        ArgumentParser.__init__(self, prog="see", description="Mark episodes as SEEN", epilog="example: see lost.s01* lost.s02*")
         self.add_argument("filters", metavar="EPISODE", nargs="*", default=["*"], help="episode name or filter, ex: lost.s01e0*")
     
     def do(self, line):
@@ -171,10 +171,10 @@ def See(Base):
     def complete(self, text, line, start_index, end_index):
         return self._complete(text, ["-h", "--help"], m.episodes.filter(lambda e: not e.future() and e.status in [cons.NEW, cons.ADQUIRED]))
 
-def Format(Base):
+class Format(Base):
     
     def __init__(self):
-        super().__init__(self, prog="format", description="print episodes with given formats", epilog="example: format lost*")
+        ArgumentParser.__init__(self, prog="format", description="print episodes with given formats", epilog="example: format lost*")
         self.add_argument("filters", metavar="EPISODE", nargs="*", default=["*"], help="episode name or filter, ex: lost.s01e0*")
 
     def do(self, line):
@@ -195,10 +195,10 @@ def Format(Base):
     def complete(self, text, line, start_index, end_index):
         return self._complete(text, ["-h", "--help"], m.episodes.filter(lambda e: not e.future() and e.status in [cons.NEW]))
 
-def Ls(Base):
+class Ls(Base):
     
     def __init__(self):
-        super().__init__(self, prog="ls", description="Show episodes information", epilog="example: ls -as lost*")
+        ArgumentParser.__init__(self, prog="ls", description="Show episodes information", epilog="example: ls -as lost*")
         self.add_argument("-n", "--new", action="store_true", help="list NEW episodes (default)")
         self.add_argument("-a", "--adquired", action="store_true", help="list ADQUIRED episodes (default)")
         self.add_argument("-s", "--seen", action="store_true", help="list SEEN episodes")
