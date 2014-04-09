@@ -1,17 +1,17 @@
 import argparse
-from . import manager, cons, errors
+from . import manager, io, cons, errors
 
 import logging
 def log(): return logging.getLogger(__name__)
 
-# manager shortcut
+# manager singleton instance shortcut
 m = manager.instance
 
 class Base(argparse.ArgumentParser):
     
     def _print_message(self, message, file=None):
         if message:
-            print(message)
+            io.msg(message)
     
     def _complete(self, text, options, elist):
         _options = [ opt for opt in options if opt.startswith(text) ]
@@ -20,19 +20,12 @@ class Base(argparse.ArgumentParser):
         return _options + _episodes
     
     def _mark(self, elist, status):
-        print("Marking %d episode(s) as %s"%(len(elist), cons.ENUM_EPISODE_STATUS[status]["text"]))
+        io.msg("Marking %d episode(s) as %s"%(len(elist), cons.ENUM_EPISODE_STATUS[status]["text"]))
         if len(elist): self.modified = True
         
         for e in elist:
             e.status = status
-            print(e.print_str())
-    
-    def _ask_yn(self, question):
-        answer = ""
-        while True:
-            answer = input(question + " [y/n]: ").lower()
-            if answer in ["y", "yes"]: return True
-            elif answer in ["n", "no"]: return False
+            io.msg(e.print_str())
     
     def do(self):
         pass
@@ -50,13 +43,13 @@ def Reload(Base):
         except SystemExit: return
         
         if m.modified:
-            answer = self._ask_yn("Status database has been modified. Are you sure you want to reload?")
+            answer = io.ask_yn("Status database has been modified. Are you sure you want to reload?")
             if not answer: return
         
         try:
             m.load()
         except errors.ConfigError as ex:
-            print("Error loading: %s" % (ex))
+            io.msg("Error loading: %s" % (ex))
             
 def Update(Base):
     
@@ -67,19 +60,19 @@ def Update(Base):
         args = self.parse_args(line.split())
         
         for show in m.shows:
-            print("Tracking show %s ... "%(show.name), end="")
+            io.msg("Tracking show %s ... "%(show.name), end="")
             try:
                 l = m.track(show.name)
-                print("OK: %d episodes found"%(len(l)))
+                io.msg("OK: %d episodes found"%(len(l)))
             except Exception as ex:
-                print("FAIL: (%s)"%(ex))
+                io.msg("FAIL: (%s)"%(ex))
         
         try:
-            print("Saving cache ... ", end="")
+            io.msg("Saving cache ... ", end="")
             self.save_cache()
-            print("OK")
+            io.msg("OK")
         except Exception as ex:
-            print("FAIL: (%s)"%(ex))
+            io.msg("FAIL: (%s)"%(ex))
 
 def Save(Base):
     
@@ -88,11 +81,11 @@ def Save(Base):
         
     def do(self, line):
         try:
-            print("Saving ... ", end="")
+            io.msg("Saving ... ", end="")
             m.save_status()
-            print("OK")
+            io.msg("OK")
         except errors.ConfigError as ex:
-            print("FAIL: (%s)"%(ex))
+            io.msg("FAIL: (%s)"%(ex))
             
 def Shows(Base):
     
@@ -103,7 +96,7 @@ def Shows(Base):
         args = self.parse_args(line.split())
         
         l = m.shows
-        print(l.print_str())
+        io.msg(l.print_str())
 
 def Search(Base):
     
@@ -114,13 +107,13 @@ def Search(Base):
     def do(self, line):
         args = self.parse_args([line])
         
-        print("Searching [%s] ... "%(args.filter), end="")
+        io.msg("Searching [%s] ... "%(args.filter), end="")
         try:
             l = m.search_shows(args.filter)
-            print("OK: %d shows found"%(len(l)))
-            if (len(l)): print("\n"+l.print_str())
+            io.msg("OK: %d shows found"%(len(l)))
+            if (len(l)): io.msg("\n"+l.print_str())
         except Exception as ex:
-            print("FAIL: (%s)"%(ex))
+            io.msg("FAIL: (%s)"%(ex))
 
 def New(Base):
     
@@ -190,12 +183,12 @@ def Format(Base):
             l.extend(m.episodes.filter(lambda e: e.match(pattern) and not e.future() and e.status in [cons.NEW]))
         
         if len(m.formats) == 0:
-            print("no formats defined, please check your config")
+            io.msg("no formats defined, please check your config")
             return
         
         for e in l:
             for fmt in m.formats:
-                print(e.format(fmt))
+                io.msg(e.format(fmt))
     
     def complete(self, text, line, start_index, end_index):
         return self._complete(text, ["-h", "--help"], m.episodes.filter(lambda e: not e.future() and e.status in [cons.NEW]))
@@ -234,7 +227,7 @@ def Ls(Base):
         
         l.sort(key=lambda e: e.date, reverse = True)
         
-        print(l.print_str())
+        io.msg(l.print_str())
         
     def complete(self, text, line, start_index, end_index):
         return self._complete(text, ["-n", "--new", "-a", "--adquired", "-s", "--seen", "-f", "--future"], m.episodes)

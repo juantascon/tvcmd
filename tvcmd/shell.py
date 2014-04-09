@@ -1,5 +1,5 @@
 import readline, cmd, argparse
-from . import manager, commands
+from . import commands, io
 
 from . import __version__
 
@@ -81,39 +81,38 @@ class Shell(cmd.Cmd):
     # basic commands
     #
     def do_version(self, line):
-        print(__version__)
+        io.msg(__version__)
     
     def do_help(self, line):
         sep = "\n   "
-        print("\nTo get specific help type: COMMAND --help\n")
-        print("Auxiliary commands:"+sep+sep.join(["version", "exit", "quit", "help"]) + "\n")
-        print("DB commands:"+sep+sep.join(["save", "reload"]) + "\n")
-        print("Episodes commands:"+sep+sep.join(["update", "new", "adquire", "see", "format", "ls"]) + "\n")
-        print("Shows commands:"+sep+sep.join(["shows", "search"]) + "\n")
+        io.msg("\nTo get specific help type: COMMAND --help\n")
+        io.msg("Auxiliary commands:"+sep+sep.join(["version", "exit", "quit", "help"]) + "\n")
+        io.msg("DB commands:"+sep+sep.join(["save", "reload"]) + "\n")
+        io.msg("Episodes commands:"+sep+sep.join(["update", "new", "adquire", "see", "format", "ls"]) + "\n")
+        io.msg("Shows commands:"+sep+sep.join(["shows", "search"]) + "\n")
     
     def emptyline(self):
         pass
     
-    #TODO:
-    #def do_exit(self, line):
-    #    if self.modified:
-    #        answer = self.ask_yn("Database has been modified. Do you want to save it now?")
-    #        if answer: return self.save()
-    #    return True
+    def do_exit(self, line):
+        if manager.modified:
+            answer = self.ask_yn("Database has been modified. Do you want to save it now?")
+            if answer: return self.save()
+        return True
     
-    #do_quit = do_exit
+    do_quit = do_exit
     
     def default(self, line):
         if line == "EOF":
-            print()
+            io.msg()
             return self.exit()
         
-        print("Invalid command: %s"%(line.split(" ")[0]))
+        io.msg("Invalid command: %s"%(line.split(" ")[0]))
         return self.do_help("")
     
     def cmdloop(self):
         try:
             return cmd.Cmd.cmdloop(self)
         except KeyboardInterrupt:
-            print("^C")
+            io.msg("^C")
             return self.cmdloop()
