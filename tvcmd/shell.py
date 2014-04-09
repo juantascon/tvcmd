@@ -96,7 +96,7 @@ class Shell(cmd.Cmd):
     
     def do_exit(self, line):
         if manager.instance.modified:
-            answer = self.ask_yn("Database has been modified. Do you want to save it before closing?")
+            answer = io.ask_yn("Database has been modified. Do you want to save it before closing?")
             if answer: self.onecmd("save")
         return True
     

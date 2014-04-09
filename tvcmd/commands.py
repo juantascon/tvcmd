@@ -1,5 +1,5 @@
 from argparse import ArgumentParser
-from . import manager, io, cons, errors
+from . import manager, io, cons, errors, episode
 
 import logging
 def log(): return logging.getLogger(__name__)
@@ -21,7 +21,7 @@ class Base(ArgumentParser):
     
     def _mark(self, elist, status):
         io.msg("Marking %d episode(s) as %s"%(len(elist), cons.ENUM_EPISODE_STATUS[status]["text"]))
-        if len(elist): self.modified = True
+        if len(elist): m.modified = True
         
         for e in elist:
             e.status = status
@@ -69,7 +69,7 @@ class Update(Base):
         
         try:
             io.msg("Saving cache ... ", end="")
-            self.save_cache()
+            m.save_cache()
             io.msg("OK")
         except Exception as ex:
             io.msg("FAIL: (%s)"%(ex))

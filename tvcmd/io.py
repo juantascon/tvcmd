@@ -4,7 +4,7 @@ def log(): return logging.getLogger(__name__)
 def msg(*args, **kwargs):
     return print(*args, **kwargs)
 
-def ask_yn(self, question):
+def ask_yn(question):
     answer = ""
     while True:
         answer = input(question + " [y/n]: ").lower()
