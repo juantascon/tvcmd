@@ -1,4 +1,4 @@
-import readline, cmd, argparse
+import readline, cmd
 from . import commands, manager, io
 
 from . import __version__
