@@ -22,11 +22,10 @@ class CommandContainer():
 class Shell(cmd.Cmd):
     def __init__(self):
         readline.set_completer_delims(" ")
-        super().__init__(self)
+        cmd.Cmd.__init__(self)
         
         self.prompt = "tvcmd:> "
         self.cmds = CommandContainer()
-    
     
     #
     # bypass command handling to each command class
