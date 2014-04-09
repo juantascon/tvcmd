@@ -111,3 +111,4 @@ class Manager():
 
 # singleton
 instance = Manager()
+instance.load()
