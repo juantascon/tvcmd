@@ -1,38 +1,40 @@
 from . import cons, errors
 
+from configparser import ConfigParser 
+
 import os, configparser, json
 
 import logging
 def log(): return logging.getLogger(__name__)
 
-class ConfigFileParser(configparser.ConfigParser):
+class ConfigFileParser(ConfigParser):
     
     def __init__(self, filename):
-        super().__init__()
+        ConfigParser.__init__(self)
         self.filename = filename
         
     def read(self):
-        return super().read(self.filename)
+        return ConfigParser.read(self, self.filename)
     
     def write(self):
         try: os.makedirs(os.path.dirname(self.filename))
         except: pass
         
         with open(self.filename, "w") as f:
-            return super().write(f)
+            return ConfigParser.write(self, f)
 
 class Status(ConfigFileParser):
     
     def __init__(self):
-        super().__init__(cons.STATUSDBFILE)
+        ConfigFileParser.__init__(self, cons.STATUSDBFILE)
         
     def read(self):
-        super().read()
+        ConfigFileParser.read(self)
         try: self.add_section("status")
         except: pass
 
     def get(self, eurl):
-        try: return int(super().get("status", eurl))
+        try: return int(ConfigFileParser.get(self, "status", eurl))
         except: return None
         
     def get_all(self):
@@ -42,7 +44,7 @@ class Status(ConfigFileParser):
         return d
     
     def set(self, eurl, status):
-        super().set("status", eurl, str(status))
+        ConfigFileParser.set(self, "status", eurl, str(status))
         
     def remove(self, eurl):
         self.remove_option("status", eurl)
@@ -51,10 +53,10 @@ class Status(ConfigFileParser):
 class Main(ConfigFileParser):
     
     def __init__(self):
-        super().__init__(cons.MAINCONFIGFILE)
+        ConfigFileParser.__init__(self, cons.MAINCONFIGFILE)
         
     def read(self):
-        super().read()
+        ConfigFileParser.read(self)
         try: self.add_section("general")
         except: pass
         
