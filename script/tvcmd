@@ -58,11 +58,6 @@ if __name__ == "__main__":
         logging.basicConfig(level=logging.DEBUG)
         sys.path.insert(0, os.path.dirname(__file__)+"/..")
         
-        import tvcmd.cons
-        tvcmd.cons.MAINCONFIGFILE = tvcmd.cons.CONFIGDIR + "_debug/main.cfg"
-        tvcmd.cons.STATUSDBFILE = tvcmd.cons.CONFIGDIR + "_debug/status.db"
-        tvcmd.cons.CACHEFILE = tvcmd.cons.CONFIGDIR + "_debug/cache.db"
-        
         import traceback
         try: main()
         except SystemExit: pass
