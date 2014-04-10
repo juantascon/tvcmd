@@ -17,29 +17,13 @@ def interactive():
     code.interact(local=globals())
 
 def main():
-    parser = argparse.ArgumentParser(description = "tvcmd command line tv episodes tracker")
+    parser = argparse.ArgumentParser(description="tvcmd command line tv episodes tracker", epilog="Form extra help run: tvcmd -e help")
     
     parser.add_argument("-e", "--execute", default=None, metavar="COMMAND", help="execute COMMAND and exit")
     parser.add_argument("-f", "--format", action="store_true", help="print formated episodes and exit")
     parser.add_argument("-v", "--version", action="store_true", help="print version info and exit")
-    parser.add_argument("--help-conf", action="store_true", help="print help on how to configure")
     
     args = parser.parse_args()
-    
-    # print configuration help
-    if args.help_conf:
-        import tvcmd.cons
-        help = ('\nPaths:\n'
-                ' config: %s\n'
-                ' status-db: %s\n'
-                ' cache: %s\n'
-                '\nExample Config:\n'
-                '[general]\n'
-                'shows = an_idiot_abroad, the_office_us, lost\n'
-                'formats = https://torrentz.eu/verified?f=${show+}+s${season}e${episode}\n'
-                'source = tvrage\n')
-        print(help %(tvcmd.cons.MAINCONFIGFILE, tvcmd.cons.STATUSDBFILE, tvcmd.cons.CACHEFILE))
-        return
     
     import tvcmd.shell
     ui = tvcmd.shell.Shell()
@@ -47,19 +31,19 @@ def main():
     # prints formated urls and exits
     if args.format:
         ui.onecmd("format *")
-        ui.exit()
+        ui.onecmd("exit")
         return
     
     # prints version info and exits
     if args.version:
         ui.onecmd("version")
-        ui.exit()
+        ui.onecmd("exit")
         return
     
     # executes one single command and exits
     if args.execute:
         ui.onecmd(args.execute)
-        ui.exit()
+        ui.onecmd("exit")
         return
     
     # executes in shell mode

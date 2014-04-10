@@ -1,5 +1,5 @@
 import readline, cmd
-from . import commands, manager, io
+from . import commands, manager, io, cons
 
 from . import __version__
 
@@ -85,11 +85,27 @@ class Shell(cmd.Cmd):
     
     def do_help(self, line):
         sep = "\n   "
-        io.msg("\nTo get specific help type: COMMAND --help\n")
-        io.msg("Auxiliary commands:"+sep+sep.join(["version", "exit", "quit", "help"]) + "\n")
-        io.msg("DB commands:"+sep+sep.join(["save", "reload"]) + "\n")
-        io.msg("Episodes commands:"+sep+sep.join(["update", "new", "adquire", "see", "format", "ls"]) + "\n")
-        io.msg("Shows commands:"+sep+sep.join(["shows", "search"]) + "\n")
+        help = (
+                "** COMMANDS **\n"
+                "To get specific help type: COMMAND --help\n"
+                "Auxiliary commands: version, exit, quit, help\n"
+                "DB commands: update, save, reload\n"
+                "Episodes commands: new, adquire, see, format, ls\n"
+                "Shows commands: shows, search\n"
+                
+                "\n** PATHS **\n"
+                "config: %s\n"
+                "status-db: %s\n"
+                "cache: %s\n"
+                
+                "\n** Example Config **\n"
+                "[general]\n"
+                "shows = an_idiot_abroad, the_office_us, lost\n"
+                "formats = https://torrentz.eu/verified?f=${show+}+s${season}e${episode}\n"
+                "source = tvrage"
+        )
+        print(help %(cons.MAINCONFIGFILE, cons.STATUSDBFILE, cons.CACHEFILE))
+        return
     
     def emptyline(self):
         pass
