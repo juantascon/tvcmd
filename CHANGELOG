@@ -1,5 +1,16 @@
 NEWS / CHANGELOG:
 
+** 1.0.0
+* commands reworked they are now classes instead of functions
+* io renamed to fs and cmd to shell
+* new io module handles print() and input()
+* if save fails it will ask to retry
+* internal calls to help, exit and save are now made trough onecmd()
+* readline completed delims is now set outside the Shell class
+* see, new and adquire now requires at least 1 argument
+* DEBUG DIR is now set in cons.py
+* reorganized and much better help texts
+
 ** 0.9.2.6
 * only shows in config are tracked
 
