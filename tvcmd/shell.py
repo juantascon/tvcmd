@@ -8,6 +8,9 @@ def log(): return logging.getLogger(__name__)
 
 readline.set_completer_delims(" ")
 
+# manager singleton instance shortcut
+m = manager.instance
+
 class CommandContainer():
     def __init__(self):
         self.reload = commands.Reload()
@@ -27,6 +30,50 @@ class Shell(cmd.Cmd):
         
         self.prompt = "tvcmd:> "
         self.cmds = CommandContainer()
+        
+        self.check_configured()
+    
+    def check_configured(self):
+        _configured = True
+        if (len(m.shows)) <= 0:
+            io.msg("WARNING: shows list is empty, make sure you configure tvcmd first")
+            _configured = False
+        
+        if (not m.source):
+            io.msg("WARNING: source is empty, make sure you configure tvcmd first")
+            _configured = False
+            
+        if not _configured:
+            io.msg("type *help* for config paths and examples")
+            io.msg("type *reload* to reload the config files")
+        
+    def help_txt(self):
+        return (
+            "\n=== Commands:\n\n"
+            "To get specific help type: COMMAND --help\n"
+            ":: Auxiliary commands: *version*, *exit*, *quit*, *help*\n"
+            ":: DB commands: update, save, reload\n"
+            ":: Episodes commands: *new*, *adquire*, *see*, *format*, *ls*\n"
+            ":: Shows commands: *shows*, *search*\n"
+            
+            "\n=== Files:\n\n"
+            ":: main.cfg [ %s ]:\n"
+            "   main configuration file, check the example below\n"
+            ":: status.db [ %s ]:\n"
+            "   this file contains the current status of each episode\n"
+            "   episode status can be changed with the commands: *new*, *adquire* and *see*\n"
+            "   after you change them make sure you save it to disk with the command: *save*\n"
+            ":: cache.db [ %s ]:\n"
+            "   this file keeps the current list of episodes and some extra information\n"
+            "   it is automatically saved everytime the *update* command is executed\n"
+            
+            "\n=== Example main.cfg:\n\n"
+            "[general]\n"
+            "source = tvrage\n"
+            "#source = thetvdb\n"
+            "shows = an_idiot_abroad, the_office_us, lost\n"
+            "formats = https://torrentz.eu/verified?f=${show+}+s${season}e${episode}\n"
+        ) % ( cons.MAINCONFIGFILE, cons.STATUSDBFILE, cons.CACHEFILE )
     
     #
     # bypass command handling to each command class
@@ -84,34 +131,14 @@ class Shell(cmd.Cmd):
         io.msg(__version__)
     
     def do_help(self, line):
-        sep = "\n   "
-        help = (
-                "** COMMANDS **\n"
-                "To get specific help type: COMMAND --help\n"
-                "Auxiliary commands: version, exit, quit, help\n"
-                "DB commands: update, save, reload\n"
-                "Episodes commands: new, adquire, see, format, ls\n"
-                "Shows commands: shows, search\n"
-                
-                "\n** PATHS **\n"
-                "config: %s\n"
-                "status-db: %s\n"
-                "cache: %s\n"
-                
-                "\n** Example Config **\n"
-                "[general]\n"
-                "shows = an_idiot_abroad, the_office_us, lost\n"
-                "formats = https://torrentz.eu/verified?f=${show+}+s${season}e${episode}\n"
-                "source = tvrage"
-        )
-        print(help %(cons.MAINCONFIGFILE, cons.STATUSDBFILE, cons.CACHEFILE))
+        io.msg(self.help_txt())
         return
     
     def emptyline(self):
         pass
     
     def do_exit(self, line):
-        if manager.instance.modified:
+        if m.modified:
             answer = io.ask_yn("Database has been modified. Do you want to save it before closing?")
             if answer: self.onecmd("save")
         return True

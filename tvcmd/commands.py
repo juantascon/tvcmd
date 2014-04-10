@@ -198,7 +198,9 @@ class Format(Base):
             l.extend(m.episodes.filter(lambda e: e.match(pattern) and not e.future() and e.status in [cons.NEW]))
         
         if len(m.formats) == 0:
-            io.msg("no formats defined, please check your config")
+            io.msg("WARNING: no formats defined, please check your config")
+            io.msg("type *help* for config paths and examples")
+            io.msg("type *reload* to reload the config files")
             return
         
         for e in l:
