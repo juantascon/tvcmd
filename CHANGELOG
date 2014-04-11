@@ -1,5 +1,10 @@
 NEWS / CHANGELOG:
 
+** 1.0.1
+* fixed: NEW status not being saved correctly
+* default status for cached episodes is NEW
+* SEEN episodes can be marked as ADQUIRED
+
 ** 1.0.0
 * commands reworked they are now classes instead of functions
 * io renamed to fs and cmd to shell
