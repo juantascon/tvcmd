@@ -48,6 +48,9 @@ class Manager():
             # get only cache for tracked shows
             if len(self.shows.filter(lambda e: e.name == item.show)) == 0: continue
             
+            # status defaults to NEW
+            item.status = cons.NEW
+            
             # load status from separate config file
             item_status = self._status.get(item.url())
             if item_status is not None:
