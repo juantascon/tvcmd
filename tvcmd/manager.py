@@ -65,11 +65,7 @@ class Manager():
     
     def save_status(self):
         for e in self.episodes:
-            # deletes NEWs and insert/update the rest
-            if e.status == cons.NEW:
-                self._status.remove(e.url())
-            else:
-                self._status.set(e.url(), e.status)
+            self._status.set(e.url(), e.status)
         
         self._status.write()
         
