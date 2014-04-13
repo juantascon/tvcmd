@@ -54,7 +54,9 @@ class Item():
         if self.future(): color = cons.ENUM_EPISODE_STATUS[cons.FUTURE]["color"]
         else: color = cons.ENUM_EPISODE_STATUS[self.status]["color"]
         
-        return color + "%s : [ %s ] [ %s ]" % (self.url(), self.date, self.name) + COLOR_END
+        status_text = cons.ENUM_EPISODE_STATUS[self.status]["text"]
+        
+        return color + "%s : [ %s ] [ %s ] [ %s ]" % (self.url(), status_text, self.date, self.name) + COLOR_END
         
     def match(self, pattern):
         return fnmatch.fnmatch(self.url(), pattern)
