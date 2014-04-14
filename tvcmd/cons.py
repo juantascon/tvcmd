@@ -1,4 +1,4 @@
-import xdg.BaseDirectory, os
+import xdg.BaseDirectory as xdg_dir, os
 
 # episodes status
 NEW = 0
@@ -13,17 +13,14 @@ ENUM_EPISODE_STATUS = {
     FUTURE: {"text": "FUTURE", "color": "\033[34m" }
 }
 
-# config
-CONFIGDIRBASE = "tvcmd"
-
-# on debug config dir = ~/.config/tvcmd_debug/
+BASE = "tvcmd"
 if os.environ.get("DEBUG"):
-    CONFIGDIRBASE += "_debug"
+    BASE = "tvcmd_debug"
 
-CONFIGDIR = xdg.BaseDirectory.save_config_path(CONFIGDIRBASE)
-MAINCONFIGFILE = CONFIGDIR + "/main.cfg"
-STATUSDBFILE = CONFIGDIR + "/status.db"
-CACHEFILE = CONFIGDIR + "/cache.db"
+CONFIG = xdg_dir.save_config_path(BASE)
+CONFIG_MAIN = CONFIG + "/main.cfg"
+CONFIG_STATUS = CONFIG + "/status.db"
 
-# cache
-CACHEDIR = xdg.BaseDirectory.save_cache_path("tvcmd")
+CACHE = xdg_dir.save_cache_path(BASE)
+CACHE_HTTP = CACHE + "/http"
+CACHE_EPISODES = CACHE + "/episodes.db"

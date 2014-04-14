@@ -63,9 +63,6 @@ class Shell(cmd.Cmd):
             "   this file contains the current status of each episode\n"
             "   episode status can be changed with the commands: *new*, *adquire* and *see*\n"
             "   after you change them make sure you save it to disk with the command: *save*\n"
-            ":: cache.db [ %s ]:\n"
-            "   this file keeps the current list of episodes and some extra information\n"
-            "   it is automatically saved everytime the *update* command is executed\n"
             
             "\n=== Example main.cfg:\n\n"
             "[general]\n"
@@ -73,7 +70,7 @@ class Shell(cmd.Cmd):
             "#source = thetvdb\n"
             "shows = an_idiot_abroad, the_office_us, lost\n"
             "formats = https://torrentz.eu/verified?f=${show+}+s${season}e${episode}\n"
-        ) % ( cons.MAINCONFIGFILE, cons.STATUSDBFILE, cons.CACHEFILE )
+        ) % ( cons.CONFIG_MAIN, cons.CONFIG_STATUS )
     
     #
     # bypass command handling to each command class

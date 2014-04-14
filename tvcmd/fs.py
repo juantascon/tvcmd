@@ -26,7 +26,7 @@ class ConfigFileParser(ConfigParser):
 class Status(ConfigFileParser):
     
     def __init__(self):
-        ConfigFileParser.__init__(self, cons.STATUSDBFILE)
+        ConfigFileParser.__init__(self, cons.CONFIG_STATUS)
         
     def read(self):
         ConfigFileParser.read(self)
@@ -53,7 +53,7 @@ class Status(ConfigFileParser):
 class Main(ConfigFileParser):
     
     def __init__(self):
-        ConfigFileParser.__init__(self, cons.MAINCONFIGFILE)
+        ConfigFileParser.__init__(self, cons.CONFIG_MAIN)
         
     def read(self):
         ConfigFileParser.read(self)
@@ -83,7 +83,7 @@ class Main(ConfigFileParser):
 class Cache(dict):
     
     def __init__(self):
-        self._filename = cons.CACHEFILE
+        self._filename = cons.CACHE_EPISODES
     
     def read(self):
         self.clear()
