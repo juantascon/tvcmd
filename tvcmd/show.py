@@ -18,7 +18,10 @@ class Item():
         return (self.url() == other.url())
     
     def url(self):
-        return self.name.replace("(","").replace(")","").replace(":","").replace("-","_").replace(" ", "_").lower()
+        ret = self.name.replace("(","").replace(")","")
+        ret = ret.replace(":","").replace(";","_")
+        ret = ret.replace("-","_").replace(" ", "_")
+        return ret.lower()
     
     def print_str(self):
         return "[ %s ]: %s" % (self.id, self.url())
