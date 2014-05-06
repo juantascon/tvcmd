@@ -1,5 +1,8 @@
 NEWS / CHANGELOG:
 
+** 1.1.0.1
+* show names can't have ;
+
 ** 1.1.0
 * ls now shows status as text
 * bettery tty colors
