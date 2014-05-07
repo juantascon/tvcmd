@@ -18,11 +18,11 @@ torrent urls.
 
 Create a configuration file on .config/tvcmd/main.cfg:
 
-    $ source = tvrage
-    $ shows = friends, scrubs, firefly, attack_on_titan, the_ricky_gervais_show
-    $ formats =
-    $   https://torrentz.eu/verifiedP?f=${show+}+s${season}e${episode},
-    $   http://fenopy.se/search/${show+}+s${season}e${episode}.html?quality=1&order=1
+    source = tvrage
+    shows = friends, scrubs, firefly, attack_on_titan, the_ricky_gervais_show
+    formats =
+      https://torrentz.eu/verifiedP?f=${show+}+s${season}e${episode},
+      http://fenopy.se/search/${show+}+s${season}e${episode}.html?quality=1&order=1
 
 ## Usage
 
