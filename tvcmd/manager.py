@@ -100,13 +100,16 @@ class Manager():
         return l
     
     def track(self, show_name):
-        s = self.search_shows(show_name)[0]
-        l = self.search_episodes(s)
+        for s in self.search_shows(show_name):
+            if s.url() == show_name:
+                l = self.search_episodes(s)
+                
+                self.shows.upsert(s)
+                self.episodes.upsert_r(l)
+                
+                return l
         
-        self.shows.upsert(s)
-        self.episodes.upsert_r(l)
-        
-        return l
+        raise errors.TrackError("Show not found, try: search")
 
 # singleton
 instance = Manager()

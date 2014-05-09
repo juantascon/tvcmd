@@ -7,4 +7,7 @@ class SourceError(TVCMDError):
     """Error contacting the source server or unexpected response"""
 
 class ConfigError(TVCMDError):
-    """Error on saving or loading a configuration file"""
+    """Error saving or loading a configuration file"""
+
+class TrackError(TVCMDError):
+    """Error tracking a show"""
