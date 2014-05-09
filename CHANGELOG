@@ -1,5 +1,11 @@
 NEWS / CHANGELOG:
 
+** 1.1.1
+* chars not allowed on show name: .,'
+* allow only track of exact show names
+* fixed help message on cmd: search
+* updated readme.md
+
 ** 1.1.0.1
 * show names can't have ;
 
