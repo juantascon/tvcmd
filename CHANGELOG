@@ -1,5 +1,8 @@
 NEWS / CHANGELOG:
 
+** 1.1.1.1
+* dot (.) allowed again as show name
+
 ** 1.1.1
 * chars not allowed on show name: .,'
 * allow only track of exact show names
