@@ -19,7 +19,7 @@ class Item():
     
     def url(self):
         ret = self.name.replace("(","").replace(")","")
-        ret = ret.replace(":","").replace(";","_").replace(",","")
+        ret = ret.replace(":","").replace(";","_").replace(",","").replace(".", "_")
         ret = ret.replace("'", "")
         ret = ret.replace("-","").replace(" ", "_")
         ret = ret.replace("__", "_")
