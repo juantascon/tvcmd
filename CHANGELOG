@@ -1,5 +1,9 @@
 NEWS / CHANGELOG:
 
+** 1.1.2
+* better handling of real and short show name
+* char . is allowed on show name as _
+
 ** 1.1.1.1
 * dot (.) allowed again as show name
 
