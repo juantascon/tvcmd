@@ -71,9 +71,8 @@ class Update(Base):
             try:
                 l = m.track(show.name)
                 io.msg("OK: %d episodes found"%(len(l)))
-            except Exception as ex:
+            except errors.TVCMDError as ex:
                 io.msg("FAIL: ( %s )"%(ex))
-                #raise ex
         
         try:
             io.msg("Saving cache ... ", end="")
