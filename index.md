@@ -4,10 +4,14 @@ layout: tvcmd
 
 ## About:
 
-tvcmd is a command line interface (CLI) to keep track of tv shows episodes.
+tvcmd is a command line interface (CLI) to keep track of tv shows and episodes.
 It is similar to websites such as myepisodes.com followmy.tv or mytvshows.org
 but for the command line, allowing greater flexibility like automatic
 torrent urls.
+
+## Screenshots:
+
+* [shell mode](img/screenshot.png)
 
 ## Features:
 
