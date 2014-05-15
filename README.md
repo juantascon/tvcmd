@@ -1,7 +1,3 @@
----
-layout: tvcmd
----
-
 ## About:
 
 tvcmd is a command line interface (CLI) to keep track of tv shows and episodes.
