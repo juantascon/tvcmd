@@ -7,7 +7,7 @@ torrent urls.
 
 ## Screenshots:
 
-* [shell mode](img/screenshot.png)
+* [shell mode](https://raw.githubusercontent.com/juantascon/tvcmd/gh-pages/img/screenshot.png)
 
 ## Features:
 
