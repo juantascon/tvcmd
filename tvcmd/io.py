@@ -7,6 +7,10 @@ def msg(*args, **kwargs):
 def ask_yn(question):
     answer = ""
     while True:
-        answer = input(question + " [y/n]: ").lower()
-        if answer in ["y", "yes"]: return True
-        elif answer in ["n", "no"]: return False
+        try:
+            answer = input(question + " [y/n]: ").lower()
+            if answer in ["y", "yes"]: return True
+            elif answer in ["n", "no"]: return False
+        except:
+            msg("")
+            continue
