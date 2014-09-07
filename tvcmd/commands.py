@@ -157,7 +157,7 @@ class Adquire(Base):
         
         l = episode.List()
         for pattern in args.filters:
-            l.extend(m.episodes.filter(lambda e: e.match(pattern) and not e.future() and e.status in [cons.NEW, cons.SEEN]))
+            l.extend(m.episodes.filter(lambda e: e.match(pattern) and not e.future() and e.status in [cons.NEW]))
         
         self._mark(l, cons.ADQUIRED)
     
