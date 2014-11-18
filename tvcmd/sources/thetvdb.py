@@ -19,15 +19,12 @@ class TheTVDB(base.Base):
             xml_content = self._get_url(url)
             xml_content_dict = xmltodict.parse(xml_content)
             
-            data = xml_content_dict["Data"]
-            if not data: raise errors.SourceError("Invalid show: empty source response")
-            
-            shows = data["Series"]
+            shows = xml_content_dict["Data"]["Series"]
             if (not isinstance(shows, list)): shows = [shows]
             
             return [{"id": s["seriesid"], "name": s["SeriesName"]} for s in shows]
-        except xml.parsers.expat.ExpatError:
-            raise errors.SourceError("Invalid show: unexpected source response")
+        except (xml.parsers.expat.ExpatError, KeyError):
+            raise errors.SourceError("Error listing shows: unexpected source response")
         except:
             raise
             
@@ -49,7 +46,7 @@ class TheTVDB(base.Base):
                     "date": e["FirstAired"]
                 })
             return l
-        except xml_content.parsers.expat.ExpatError:
-            raise errors.SourceError("Invalid show id: unexpected source response")
+        except (xml.parsers.expat.ExpatError, KeyError):
+            raise errors.SourceError("Error listing episodes: unexpected source response")
         except:
             raise

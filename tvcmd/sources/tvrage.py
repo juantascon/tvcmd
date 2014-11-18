@@ -17,16 +17,13 @@ class TVRage(base.Base):
             xml_content = self._get_url(url)
             xml_content_dict = xmltodict.parse(xml_content)
             
-            data = xml_content_dict["Results"]
-            if not data: raise errors.SourceError("Invalid show: empty source response")
-            
-            shows = data["show"]
+            shows = xml_content_dict["Results"]["show"]
             if (not isinstance(shows, list)): shows = [shows]
             
             return [{"id": s["showid"], "name": s["name"]} for s in shows]
             
-        except xml.parsers.expat.ExpatError:
-            raise errors.SourceError("Invalid show: unexpected source response")
+        except (xml.parsers.expat.ExpatError, KeyError):
+            raise errors.SourceError("Error listing shows: unexpected source response")
         except:
             raise
     
@@ -36,25 +33,25 @@ class TVRage(base.Base):
         try:
             xml_content = self._get_url(url)
             xml_content_dict = xmltodict.parse(xml_content)
-        except xml_content.parsers.expat.ExpatError:
-            raise errors.SourceError("Invalid show id: unexpected source response")
+            
+            seasons = xml_content_dict["Show"]["Episodelist"]["Season"]
+            if (not isinstance(seasons, list)): seasons = [seasons]
+            
+            l = []
+            for s in seasons:
+                episodes = s["episode"]
+                
+                # hack: xmltodict doesn't create lists on singleitems
+                if (not isinstance(episodes, list)): episodes = [episodes]
+                for e in episodes:
+                    l.append({
+                        "name": e["title"],
+                        "episode": int(e["seasonnum"]),
+                        "season": int(s["@no"]),
+                        "date": e["airdate"]
+                    })
+            return l
+        except (xml.parsers.expat.ExpatError, KeyError):
+            raise errors.SourceError("Error listing episodes: unexpected source response")
         except:
             raise
-        
-        seasons = xml_content_dict["Show"]["Episodelist"]["Season"]
-        if (not isinstance(seasons, list)): seasons = [seasons]
-        
-        l = []
-        for s in seasons:
-            episodes = s["episode"]
-            
-            # hack: xmltodict doesn't create lists on singleitems
-            if (not isinstance(episodes, list)): episodes = [episodes]
-            for e in episodes:
-                l.append({
-                    "name": e["title"],
-                    "episode": int(e["seasonnum"]),
-                    "season": int(s["@no"]),
-                    "date": e["airdate"]
-                })
-        return l
