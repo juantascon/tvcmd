@@ -19,6 +19,7 @@ class CommandContainer():
         self.shows = commands.Shows()
         self.search = commands.Search()
         self.new = commands.New()
+        self.ignore = commands.Ignore()
         self.adquire = commands.Adquire()
         self.see = commands.See()
         self.format = commands.Format()
@@ -53,7 +54,7 @@ class Shell(cmd.Cmd):
             "To get specific help type: COMMAND --help\n"
             ":: Auxiliary commands: *version*, *exit*, *quit*, *help*\n"
             ":: DB commands: update, save, reload\n"
-            ":: Episodes commands: *new*, *adquire*, *see*, *format*, *ls*\n"
+            ":: Episodes commands: *new*, *ignore*, *adquire*, *see*, *format*, *ls*\n"
             ":: Shows commands: *shows*, *search*\n"
             
             "\n=== Files:\n\n"
@@ -61,7 +62,7 @@ class Shell(cmd.Cmd):
             "   main configuration file, check the example below\n"
             ":: status.db [ %s ]:\n"
             "   this file contains the current status of each episode\n"
-            "   episode status can be changed with the commands: *new*, *adquire* and *see*\n"
+            "   episode status can be changed with the commands: *new*, *ignore*, *adquire* and *see*\n"
             "   after you change them make sure you save it to disk with the command: *save*\n"
             
             "\n=== Example main.cfg:\n\n"
@@ -107,6 +108,12 @@ class Shell(cmd.Cmd):
         
     def complete_new(self, text, line, start_index, end_index):
         return self.cmds.new.complete(text, line, start_index, end_index)
+
+    def do_ignore(self, line):
+        return self.cmds.ignore.do(line)
+
+    def complete_ignore(self, text, line, start_index, end_index):
+        return self.cmds.ignore.complete(text, line, start_index, end_index)
     
     def do_see(self, line):
         return self.cmds.see.do(line)
