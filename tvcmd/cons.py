@@ -5,12 +5,14 @@ NEW = 0
 ADQUIRED = 1
 SEEN = 2
 FUTURE = 3
+IGNORED = 4
     
 ENUM_EPISODE_STATUS = {
     NEW: {"text": "NEW", "color": "" },
     ADQUIRED: {"text": "ADQUIRED", "color": "\033[33m" },
     SEEN: {"text": "SEEN", "color": "\033[32m" },
-    FUTURE: {"text": "FUTURE", "color": "\033[34m" }
+    FUTURE: {"text": "FUTURE", "color": "\033[34m" },
+    IGNORED: {"text": "IGNORED", "color": "\033[94m" }
 }
 
 BASE = "tvcmd"

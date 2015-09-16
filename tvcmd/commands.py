@@ -145,6 +145,25 @@ class New(Base):
     def complete(self, text, line, start_index, end_index):
         return self._complete(text, ["-h", "--help"], m.episodes.filter(lambda e: not e.future() and e.status in [cons.ADQUIRED, cons.SEEN]))
 
+class Ignore(Base):
+
+    def __init__(self):
+        ArgumentParser.__init__(self, prog="ignore", description="Mark episodes as IGNORED", epilog="example: ignore lost.s01* lost.s02*")
+        self.add_argument("filters", metavar="EPISODE", nargs="+", default=[""], help="episode name or filter, ex: lost.s01e0*")
+
+    def do(self, line):
+        args = self.parse_args(line.split())
+        if not args: return
+
+        l = episode.List()
+        for pattern in args.filters:
+            l.extend(m.episodes.filter(lambda e: e.match(pattern) and not e.future() and e.status in [cons.NEW]))
+
+        self._mark(l, cons.IGNORED)
+
+    def complete(self, text, line, start_index, end_index):
+        return self._complete(text, ["-h", "--help"], m.episodes.filter(lambda e: not e.future() and e.status in [cons.NEW]))
+
 class Adquire(Base):
     
     def __init__(self):
@@ -215,6 +234,7 @@ class Ls(Base):
     def __init__(self):
         ArgumentParser.__init__(self, prog="ls", description="Show episodes information", epilog="example: ls -as lost*")
         self.add_argument("-n", "--new", action="store_true", help="list NEW episodes (default)")
+        self.add_argument("-i", "--ignored", action="store_true", help="list IGNORED episodes")
         self.add_argument("-a", "--adquired", action="store_true", help="list ADQUIRED episodes (default)")
         self.add_argument("-s", "--seen", action="store_true", help="list SEEN episodes")
         self.add_argument("-f", "--future", action="store_true", help="list episodes not aired to date, implies -nas")
@@ -229,7 +249,7 @@ class Ls(Base):
             l.extend(m.episodes.filter(lambda e: e.match(pattern)))
         
         # defaults: NEW and ADQUIRED
-        if not (args.new or args.adquired or args.seen or args.future):
+        if not (args.new or args.adquired or args.seen or args.future or args.ignored):
             args.new = args.adquired = True
         
         if args.future:
@@ -240,6 +260,7 @@ class Ls(Base):
             l = l.filter(lambda e: not e.future())
         
         if not args.new: l = l.filter(lambda e: e.status != cons.NEW)
+        if not args.ignored: l = l.filter(lambda e: e.status != cons.IGNORED)
         if not args.adquired: l = l.filter(lambda e: e.status != cons.ADQUIRED)
         if not args.seen: l = l.filter(lambda e: e.status != cons.SEEN)
         
@@ -248,4 +269,4 @@ class Ls(Base):
         io.msg(l.print_str())
         
     def complete(self, text, line, start_index, end_index):
-        return self._complete(text, ["-n", "--new", "-a", "--adquired", "-s", "--seen", "-f", "--future"], m.episodes)
+        return self._complete(text, ["-n", "--new", "-i", "--ignored", "-a", "--adquired", "-s", "--seen", "-f", "--future"], m.episodes)
