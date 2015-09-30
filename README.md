@@ -13,7 +13,7 @@ torrent urls.
 
 * Gather show information such as dates, names, etc from several sources: tvrage.com, thetvdb.com
 * Track only the shows you watch by editing a configuration file
-* Track the status of episodes: new &#10137; adquired &#10137; seen
+* Track the status of episodes: new &#10137; acquired &#10137; seen
 * Print each show in whichever format you like, handy for generating torrent links
 
 ## Configuration:
@@ -105,15 +105,15 @@ Both `format` and `ls` receive a pattern to identify episodes, this pattern is
 steins_gate.s01e10 or to select many: friends.s01e0* scrubs.*, steins_gate.s0*.
 
 By default every new episode is marked as `new`, once you download an episode
-you can marked them as adquired with the `adquire` command and when you see it
+you can marked them as acquired with the `acquire` command and when you see it
 you can mark it as seen with the `see` command. Episodes always follow this
-secuence: new &#10137; adquired &#10137; seen.
+secuence: new &#10137; acquired &#10137; seen.
 
 Going back to our example once we have downloaded the episodes we can mark them
-as adquired so they won't show up again with `format`:
+as acquired so they won't show up again with `format`:
 
 ``` bash
-tvcmd> adquire friends.s01*
+tvcmd> acquire friends.s01*
 tvcmd> format
 ```
 
