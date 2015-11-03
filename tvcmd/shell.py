@@ -20,7 +20,7 @@ class CommandContainer():
         self.search = commands.Search()
         self.new = commands.New()
         self.ignore = commands.Ignore()
-        self.adquire = commands.Adquire()
+        self.acquire = commands.Acquire()
         self.see = commands.See()
         self.format = commands.Format()
         self.ls = commands.Ls()
@@ -54,7 +54,7 @@ class Shell(cmd.Cmd):
             "To get specific help type: COMMAND --help\n"
             ":: Auxiliary commands: *version*, *exit*, *quit*, *help*\n"
             ":: DB commands: update, save, reload\n"
-            ":: Episodes commands: *new*, *ignore*, *adquire*, *see*, *format*, *ls*\n"
+            ":: Episodes commands: *new*, *ignore*, *acquire*, *see*, *format*, *ls*\n"
             ":: Shows commands: *shows*, *search*\n"
             
             "\n=== Files:\n\n"
@@ -62,7 +62,7 @@ class Shell(cmd.Cmd):
             "   main configuration file, check the example below\n"
             ":: status.db [ %s ]:\n"
             "   this file contains the current status of each episode\n"
-            "   episode status can be changed with the commands: *new*, *ignore*, *adquire* and *see*\n"
+            "   episode status can be changed with the commands: *new*, *ignore*, *acquire* and *see*\n"
             "   after you change them make sure you save it to disk with the command: *save*\n"
             
             "\n=== Example main.cfg:\n\n"
@@ -97,11 +97,11 @@ class Shell(cmd.Cmd):
     def complete_format(self, text, line, start_index, end_index):
         return self.cmds.format.complete(text, line, start_index, end_index)
                 
-    def do_adquire(self, line):
-        return self.cmds.adquire.do(line)
+    def do_acquire(self, line):
+        return self.cmds.acquire.do(line)
         
-    def complete_adquire(self, text, line, start_index, end_index):
-        return self.cmds.adquire.complete(text, line, start_index, end_index)
+    def complete_acquire(self, text, line, start_index, end_index):
+        return self.cmds.acquire.complete(text, line, start_index, end_index)
     
     def do_new(self, line):
         return self.cmds.new.do(line)

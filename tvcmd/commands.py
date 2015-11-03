@@ -138,12 +138,12 @@ class New(Base):
         
         l = episode.List()
         for pattern in args.filters:
-            l.extend(m.episodes.filter(lambda e: e.match(pattern) and not e.future() and e.status in [cons.ADQUIRED, cons.SEEN]))
+            l.extend(m.episodes.filter(lambda e: e.match(pattern) and not e.future() and e.status in [cons.ACQUIRED, cons.SEEN]))
         
         self._mark(l, cons.NEW)
     
     def complete(self, text, line, start_index, end_index):
-        return self._complete(text, ["-h", "--help"], m.episodes.filter(lambda e: not e.future() and e.status in [cons.ADQUIRED, cons.SEEN]))
+        return self._complete(text, ["-h", "--help"], m.episodes.filter(lambda e: not e.future() and e.status in [cons.ACQUIRED, cons.SEEN]))
 
 class Ignore(Base):
 
@@ -164,10 +164,10 @@ class Ignore(Base):
     def complete(self, text, line, start_index, end_index):
         return self._complete(text, ["-h", "--help"], m.episodes.filter(lambda e: not e.future() and e.status in [cons.NEW]))
 
-class Adquire(Base):
+class Acquire(Base):
     
     def __init__(self):
-        ArgumentParser.__init__(self, prog="adquire", description="Mark episodes as ADQUIRED", epilog="example: adquire lost.s01* lost.s02*")
+        ArgumentParser.__init__(self, prog="acquire", description="Mark episodes as ACQUIRED", epilog="example: acquire lost.s01* lost.s02*")
         self.add_argument("filters", metavar="EPISODE", nargs="+", default=[""], help="episode name or filter, ex: lost.s01e0*")
     
     def do(self, line):
@@ -178,7 +178,7 @@ class Adquire(Base):
         for pattern in args.filters:
             l.extend(m.episodes.filter(lambda e: e.match(pattern) and not e.future() and e.status in [cons.NEW]))
         
-        self._mark(l, cons.ADQUIRED)
+        self._mark(l, cons.ACQUIRED)
     
     def complete(self, text, line, start_index, end_index):
         return self._complete(text, ["-h", "--help"], m.episodes.filter(lambda e: not e.future() and e.status in [cons.NEW]))
@@ -195,12 +195,12 @@ class See(Base):
         
         l = episode.List()
         for pattern in args.filters:
-            l.extend(m.episodes.filter(lambda e: e.match(pattern) and not e.future() and e.status in [cons.NEW, cons.ADQUIRED]))
+            l.extend(m.episodes.filter(lambda e: e.match(pattern) and not e.future() and e.status in [cons.NEW, cons.ACQUIRED]))
         
         self._mark(l, cons.SEEN)
     
     def complete(self, text, line, start_index, end_index):
-        return self._complete(text, ["-h", "--help"], m.episodes.filter(lambda e: not e.future() and e.status in [cons.NEW, cons.ADQUIRED]))
+        return self._complete(text, ["-h", "--help"], m.episodes.filter(lambda e: not e.future() and e.status in [cons.NEW, cons.ACQUIRED]))
 
 class Format(Base):
     
@@ -235,7 +235,7 @@ class Ls(Base):
         ArgumentParser.__init__(self, prog="ls", description="Show episodes information", epilog="example: ls -as lost*")
         self.add_argument("-n", "--new", action="store_true", help="list NEW episodes (default)")
         self.add_argument("-i", "--ignored", action="store_true", help="list IGNORED episodes")
-        self.add_argument("-a", "--adquired", action="store_true", help="list ADQUIRED episodes (default)")
+        self.add_argument("-a", "--acquired", action="store_true", help="list ACQUIRED episodes (default)")
         self.add_argument("-s", "--seen", action="store_true", help="list SEEN episodes")
         self.add_argument("-f", "--future", action="store_true", help="list episodes not aired to date, implies -nas")
         self.add_argument("filters", metavar="EPISODE", nargs="*", default=["*"], help="episode name or filter, ex: lost.s01e0*")
@@ -248,20 +248,20 @@ class Ls(Base):
         for pattern in args.filters:
             l.extend(m.episodes.filter(lambda e: e.match(pattern)))
         
-        # defaults: NEW and ADQUIRED
-        if not (args.new or args.adquired or args.seen or args.future or args.ignored):
-            args.new = args.adquired = True
+        # defaults: NEW and ACQUIRED
+        if not (args.new or args.acquired or args.seen or args.future or args.ignored):
+            args.new = args.acquired = True
         
         if args.future:
             l = l.filter(lambda e: e.future())
             # future implies every other status
-            args.new = args.adquired = args.seen = True
+            args.new = args.acquired = args.seen = True
         else:
             l = l.filter(lambda e: not e.future())
         
         if not args.new: l = l.filter(lambda e: e.status != cons.NEW)
         if not args.ignored: l = l.filter(lambda e: e.status != cons.IGNORED)
-        if not args.adquired: l = l.filter(lambda e: e.status != cons.ADQUIRED)
+        if not args.acquired: l = l.filter(lambda e: e.status != cons.ACQUIRED)
         if not args.seen: l = l.filter(lambda e: e.status != cons.SEEN)
         
         l.sort(key=lambda e: e.date, reverse = True)
@@ -269,4 +269,4 @@ class Ls(Base):
         io.msg(l.print_str())
         
     def complete(self, text, line, start_index, end_index):
-        return self._complete(text, ["-n", "--new", "-i", "--ignored", "-a", "--adquired", "-s", "--seen", "-f", "--future"], m.episodes)
+        return self._complete(text, ["-n", "--new", "-i", "--ignored", "-a", "--acquired", "-s", "--seen", "-f", "--future"], m.episodes)
