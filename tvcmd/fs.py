@@ -23,31 +23,34 @@ class ConfigFileParser(ConfigParser):
         with open(self.filename, "w") as f:
             return ConfigParser.write(self, f)
 
-class Status(ConfigFileParser):
+class Status:
     
     def __init__(self):
-        ConfigFileParser.__init__(self, cons.CONFIG_STATUS)
+        self.parser = ConfigFileParser(cons.CONFIG_STATUS)
+        self.write = self.parser.write
         
     def read(self):
-        ConfigFileParser.read(self)
-        try: self.add_section("status")
+        self.parser.read()
+        try: self.parser.add_section("status")
         except: pass
 
     def get(self, eurl):
-        try: return int(ConfigFileParser.get(self, "status", eurl))
-        except: return None
+        try:
+            return int(self.parser.get("status", eurl))
+        except configparser.NoOptionError:
+            return None
         
     def get_all(self):
         d = {}
-        for s in self.items("status"):
+        for s in self.parser.items("status"):
             d[s[0]] = int(s[1])
         return d
     
     def set(self, eurl, status):
-        ConfigFileParser.set(self, "status", eurl, str(status))
+        self.parser.set("status", eurl, str(status))
         
     def remove(self, eurl):
-        self.remove_option("status", eurl)
+        self.parser.remove_option("status", eurl)
     
 
 class Main(ConfigFileParser):
