@@ -2,8 +2,7 @@
 
 tvcmd is a command line interface (CLI) to keep track of tv shows and episodes.
 It is similar to websites such as myepisodes.com followmy.tv or mytvshows.org
-but for the command line, allowing greater flexibility like automatic
-torrent urls.
+but for the command line, allowing greater flexibility like printing torrent urls.
 
 ## Screenshots:
 
@@ -12,14 +11,14 @@ torrent urls.
 ## Features:
 
 * Gather show information such as dates, names, etc from several sources: tvrage.com, thetvdb.com
-* Track only the shows you watch by editing a configuration file
-* Track the status of episodes: new &#10137; acquired &#10137; seen
+* Track the shows you watch by editing a configuration file
+* Track episodes status: new &#10137; acquired &#10137; seen
 * Print each show in whichever format you like, handy for generating torrent links
 
 ## Configuration:
 
 The main configuration file is located at `.config/tvcmd/main.cfg`, it is an ini style file
-composed of three subsections inside a `general` section.
+that only has three fields inside a `general` section.
 
 Example:
 
@@ -32,10 +31,10 @@ formats =
   http://fenopy.se/search/${show+}+s${season}e${episode}.html?quality=1&order=1
 ```
 
-The first subsection `source` defines which api use to query episodes information, at the
+The first field `source` defines which api use to query episodes information, at the
 moment tvcmd supports: [tvrage](http://www.tvrage.com/) and [thetvdb](http://thetvdb.com/).
 
-The second subsections `shows` is probably the most important as it is the list of shows to follow.
+The second field `shows` is probably the most important as it is the list of shows to follow.
 The list is separated by comma and the show names are lower case letters, numbers and/or the
 underscore symbol, ex: friends, attack_on_titan, steins_gate, marvels_agents_of_s_h_i_e_l_d_,
 the_office_us, cosmos_a_spacetime_odyssey, be careful though as some shows have different names
@@ -52,7 +51,7 @@ torrent url generation. The following expressions are automatically replaced for
 
 ## Usage
 
-tvcmd can be run in either command mode:
+tvcmd runs on either command mode:
 
 ``` bash
 $ tvcmd -e "ls friends.s0*"
@@ -65,11 +64,11 @@ $ tvcmd
 tvcmd> ls friends.s0*
 ```
 
-## Real Case Execution
+## Real Case Example
 
 Let's say we enjoy watching these shows: Friends, Scrubs and Attack On Titan.
 
-Being by creating a basic configuration file:
+Begin by creating a basic configuration file:
 
 ``` ini
 [general]
@@ -78,7 +77,7 @@ shows = friends, scrubs, attack_on_titan
 formats = http://fenopy.se/search/${show+}+s${season}e${episode}.html?quality=1&order=1
 ```
 
-Run the tvcmd in shell mode and execute the following secuence of commands:
+Run tvcmd in shell mode and execute the following secuence of commands:
 
 ``` bash
 tvcmd> update
@@ -102,10 +101,11 @@ $ firefox $(tvcmd -f "friends.s01*" |grep fenopy.se)
 
 Both `format` and `ls` receive a pattern to identify episodes, this pattern is
 {showname}.s{season#}e{episode#}, ex: friends.s01e01, scrubs.s03e21,
-steins_gate.s01e10 or to select many: friends.s01e0* scrubs.*, steins_gate.s0*.
+steins_gate.s01e10. Additionally you can use wildcards for easier selections:
+friends.s01e0* scrubs.*, steins_gate.s0*.
 
 By default every new episode is marked as `new`, once you download an episode
-you can marked them as acquired with the `acquire` command and when you see it
+you can marked them as acquired with the `acquire` command and once you see it
 you can mark it as seen with the `see` command. Episodes always follow this
 secuence: new &#10137; acquired &#10137; seen.
 
