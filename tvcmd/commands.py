@@ -111,7 +111,7 @@ class Shows(Base):
 class Search(Base):
     
     def __init__(self):
-        ArgumentParser.__init__(self, prog="save", description="Save episodes status DB and cache", epilog="example: search the offi")
+        ArgumentParser.__init__(self, prog="search", description="Search tv shows in sources", epilog="example: search the offi")
         self.add_argument("filter", metavar="SHOW", help="show name or part, ex: the offi")
     
     def do(self, line):
